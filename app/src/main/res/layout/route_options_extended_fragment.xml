@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/routeBackground">
+
+
+    <TextView
+        android:id="@+id/optionsText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="20dp"
+        android:text="Route Options"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/leaveNowGray"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="20dp"
+        android:layout_margin="20dp"
+        android:text="Leave Now"
+        android:textSize="14sp"
+        android:id="@+id/chooseTime"
+        />
+
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/routes"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/optionsText"
+        android:clipToPadding="false"
+        android:nestedScrollingEnabled="false"
+        android:onClick="filterClick"
+        android:background="@color/lightGray"
+        android:layout_marginTop="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+         />
+
+</RelativeLayout>

@@ -1,5 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="blue">#4a90e2</color>
+    <color name="red">#f2655d</color>
+    <color name="white">#ffffff</color>
+    <color name="green">#63c774</color>
+    <color name="black">#000000</color>
+    <color name="routeDetails">#212121</color>
+    <color name="colorWhite">#FFFFFF</color>
+    <color name="lightGray">#E5E5E5</color>
+    <color name="routeBackground">#FAFAFA</color>
+    <color name="leaveNowGray">#616161</color>
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
