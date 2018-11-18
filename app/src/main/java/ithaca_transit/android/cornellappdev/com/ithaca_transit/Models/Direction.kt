@@ -1,5 +1,8 @@
 package ithaca_transit.android.cornellappdev.com.ithaca_transit.Models
 
+import android.location.Location
+import com.google.android.gms.maps.model.LatLng
+import ithaca_transit.android.cornellappdev.com.ithaca_transit.R
 import java.util.*
 
 enum class DirectionType {
@@ -8,11 +11,12 @@ enum class DirectionType {
 
 class Direction(type: DirectionType, name: String, startLocation: LocationObject, endLocation: LocationObject,
                 startTime: Date, endTime: Date, routeNumer: Int, stops: Array<LocationObject>,
-                stayOnBusForTransfer: Boolean, tripIdentifiers: Array<String>, delay: Int) {
+                stayOnBusForTransfer: Boolean, tripIdentifiers: Array<String>, delay: Int, path: Array<LatLng>,
+                travelDistance: Double) {
 
     private var type: DirectionType? = null;
     private var name: String? = null;
-    private var startLocation: LocationObject = null;
+    private var startLocation: LocationObject? = null;
     private var endLocation: LocationObject? = null;
     private var startTime: Date? = null;
     private var endTime: Date? = null;
@@ -20,6 +24,9 @@ class Direction(type: DirectionType, name: String, startLocation: LocationObject
     private var stayOnBusForTransfer: Boolean? = null;
     private var tripIdentifiers: Array<String>? = null;
     private var delay: Int? = null;
+    private var path: Array<LatLng>? = null;
+    private var stops: Array<LocationObject>? = null;
+    private var travelDistance: Double? = null;
 
     init {
         this.type = type;
@@ -32,15 +39,30 @@ class Direction(type: DirectionType, name: String, startLocation: LocationObject
         this.stayOnBusForTransfer = stayOnBusForTransfer;
         this.tripIdentifiers = tripIdentifiers;
         this.delay = delay;
+        this.path = path;
+        this.stops = stops;
+        this.travelDistance = travelDistance;
     }
 
-    //secondary constructor for when no arguments are passed
-    val blankLocation = LocationObject();
-    val blankTime = Date();
+    //Static variables
+    companion object {
+        val blankLocation = LocationObject();
+        val blankTime = Date();
+    }
 
     constructor(name: String) : this(DirectionType.ARRIVE, if (name != null) name else "", blankLocation,
-            blankLocation, blankTime, blankTime, 0, false, emptyArray<String>(), null)
+            blankLocation, blankTime, blankTime, 0, emptyArray<LocationObject>(), false, emptyArray<String>(),
+            0, emptyArray<LatLng>(), 0.0)
 
-}
+    fun locationDescription(): String {
+        when (type) {
+            DirectionType.WALK -> return context.getString(R.string.location_walk) + name
+            DirectionType.ARRIVE -> return "Get off at " + name
+            DirectionType.DEPART -> "at " + name
+            DirectionType.TRANSFER -> "at " + name + ". Stay on bus"
+
+        }
+    }
+
 
 }

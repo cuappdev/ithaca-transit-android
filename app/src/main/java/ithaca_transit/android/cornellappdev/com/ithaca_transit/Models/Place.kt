@@ -15,6 +15,4 @@ class Place(name: String) {
         other as Place
         return (name.equals(other.name))
     }
-
-
 }

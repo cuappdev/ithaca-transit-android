@@ -25,6 +25,4 @@ class LocationObject(name: String, id: String, latitude: Double, longitude: Doub
     fun coordinates(): LatLng {
         return LatLng(latitude!!, longitude!!);
     }
-
-
 }
