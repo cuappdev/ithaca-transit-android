@@ -1,6 +1,7 @@
 package ithaca_transit.android.cornellappdev.com.ithaca_transit.Models
 
 import android.widget.ImageView
+import com.google.android.gms.maps.model.Marker
 import java.util.*
 
 enum class BusDataType {
@@ -32,7 +33,7 @@ class BusLocation(dataType: BusDataType, destination: String, deviation: Int, de
     private var tripID: String? = null
     private var vehicleID: Int? = null
 
-    private var icon: ImageView? = null
+    private var icon: Marker? = null
 
     init {
         this.dataType = dataType

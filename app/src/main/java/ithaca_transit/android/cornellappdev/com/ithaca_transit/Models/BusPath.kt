@@ -34,7 +34,16 @@ class BusPath(waypoints: Array<Waypoint>) : Path(waypoints) {
     init{
         //this.color = ContextCompat.getColor(R.colors.blue);
         this.dashColors = arrayOf(color!!, Color.rgb(0,0,0))
-        this.polylineWidth = 0.0F;
+        this.polylineWidth = 8.0F;
+    }
+
+    fun locationDescription(waypoints: Array<Waypoint>): Polyline {
+        var path = PolylineOptions();
+        for(point in waypoints)
+        {
+            path.add(point.coordinates())
+        }
+
     }
 
 

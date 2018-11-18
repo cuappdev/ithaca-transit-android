@@ -55,13 +55,15 @@ class Direction(type: DirectionType, name: String, startLocation: LocationObject
             0, emptyArray<LatLng>(), 0.0)
 
     fun locationDescription(): String {
+        var instruct = ""
         when (type) {
-            DirectionType.WALK -> return context.getString(R.string.location_walk) + name
-            DirectionType.ARRIVE -> return "Get off at " + name
-            DirectionType.DEPART -> "at " + name
-            DirectionType.TRANSFER -> "at " + name + ". Stay on bus"
+            DirectionType.WALK -> instruct = "Walk to " + name
+            DirectionType.ARRIVE -> instruct = "Get off at " + name
+            DirectionType.DEPART -> instruct = "at " + name
+            DirectionType.TRANSFER -> instruct = "at " + name + ". Stay on bus"
 
         }
+        return instruct
     }
 
 
