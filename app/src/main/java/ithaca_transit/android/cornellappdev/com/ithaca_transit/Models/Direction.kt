@@ -44,7 +44,7 @@ class Direction(type: DirectionType, name: String, startLocation: LocationObject
         this.travelDistance = travelDistance;
     }
 
-    //Static variables
+    //static variables
     companion object {
         val blankLocation = LocationObject();
         val blankTime = Date();
@@ -61,10 +61,8 @@ class Direction(type: DirectionType, name: String, startLocation: LocationObject
             DirectionType.ARRIVE -> instruct = "Get off at " + name
             DirectionType.DEPART -> instruct = "at " + name
             DirectionType.TRANSFER -> instruct = "at " + name + ". Stay on bus"
-
         }
         return instruct
     }
-
 
 }
