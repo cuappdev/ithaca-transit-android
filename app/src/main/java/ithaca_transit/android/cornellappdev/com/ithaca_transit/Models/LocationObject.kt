@@ -3,16 +3,16 @@ package ithaca_transit.android.cornellappdev.com.ithaca_transit.Models
 import com.google.android.gms.maps.model.LatLng
 
 class LocationObject(name: String, id: String, latitude: Double, longitude: Double){
-    var name: String ?= null;
-    var id: String ?= null;
-    var latitude: Double ?= null;
-    var longitude: Double ?= null;
+    var name: String ?= null
+    var id: String ?= null
+    var latitude: Double ?= null
+    var longitude: Double ?= null
 
     init{
-        this.name = name;
-        this.id = id;
-        this.latitude = latitude;
-        this.longitude = longitude;
+        this.name = name
+        this.id = id
+        this.latitude = latitude
+        this.longitude = longitude
     }
 
     constructor():this("","",0.0,0.0)
@@ -23,6 +23,6 @@ class LocationObject(name: String, id: String, latitude: Double, longitude: Doub
             longitude)
 
     fun coordinates(): LatLng {
-        return LatLng(latitude!!, longitude!!);
+        return LatLng(latitude!!, longitude!!)
     }
 }
