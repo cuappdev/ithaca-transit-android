@@ -13,24 +13,24 @@ enum class PathType {
 }
 
 open class Path(waypoints: Array<Waypoint>) {
-    var waypoints: Array<Waypoint> ?= null;
-    var traveledPolyline: PolylineOptions ?= null;
-    var color: Int;
+    var waypoints: Array<Waypoint> ?= null
+    var traveledPolyline: PolylineOptions ?= null
+    var color: Int
 
     init {
-        this.waypoints = waypoints;
-        this.traveledPolyline = PolylineOptions();
-        this.color = Color.rgb(0,0,0);
+        this.waypoints = waypoints
+        this.traveledPolyline = PolylineOptions()
+        this.color = Color.rgb(0,0,0)
     }
 }
 
 class BusPath(waypoints: Array<Waypoint>) : Path(waypoints) {
 
-    var dashLengths : Array<Int> = arrayOf(6, 4);
-    private var dashColors : Array<Int> = emptyArray();
-    private var polylineWidth : Float?;
-    private var traveledPath: List<LatLng> ?= null;
-    private var untraveledPath: List<LatLng> ?= null;
+    var dashLengths : Array<Int> = arrayOf(6, 4)
+    private var dashColors : Array<Int> = emptyArray()
+    private var polylineWidth : Float?
+    private var traveledPath: List<LatLng> ?= null
+    private var untraveledPath: List<LatLng> ?= null
 
     init{
         super.color = ContextCompat.getColor(R.colors.blue);
@@ -47,7 +47,7 @@ class BusPath(waypoints: Array<Waypoint>) : Path(waypoints) {
         var count = 0
         for(point in waypoints)
         {
-            this.traveledPolyline.add(point.coordinates())
+            this.traveledPolyline!!.add(point.coordinates())
             count = count + 1
         }
     }
