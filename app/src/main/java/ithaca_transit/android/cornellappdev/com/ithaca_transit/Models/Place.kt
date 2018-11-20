@@ -1,18 +1,30 @@
 package ithaca_transit.android.cornellappdev.com.ithaca_transit.Models
 
-class Place(name: String) {
+class Place {
 
     var name: String? = null
-    val nameKey = "name"
+    var detail: String? = null
+    var placeID: String? = null
 
-    init {
+    val nameKey = "name"
+    val detailKey = "name"
+    val placeIDKey = "name"
+
+    constructor(name:String) {
         this.name = name
+    }
+
+    constructor(name:String, detail:String, placeID: String) {
+        this.name = name
+        this.detail = detail
+        this.placeID = placeID
     }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
         other as Place
-        return (name.equals(other.name))
+        return (placeID.equals(other.placeID))
     }
+
 }

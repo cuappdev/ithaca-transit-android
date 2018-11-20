@@ -14,40 +14,40 @@ class Direction(type: DirectionType, name: String, startLocation: LocationObject
                 stayOnBusForTransfer: Boolean, tripIdentifiers: Array<String>, delay: Int, path: Array<LatLng>,
                 travelDistance: Double) {
 
-    private var type: DirectionType? = null;
-    private var name: String? = null;
-    private var startLocation: LocationObject? = null;
-    private var endLocation: LocationObject? = null;
-    private var startTime: Date? = null;
-    private var endTime: Date? = null;
-    private var routeNumer: Int? = null;
-    private var stayOnBusForTransfer: Boolean? = null;
-    private var tripIdentifiers: Array<String>? = null;
-    private var delay: Int? = null;
-    private var path: Array<LatLng>? = null;
-    private var stops: Array<LocationObject>? = null;
-    private var travelDistance: Double? = null;
+    private var type: DirectionType? = null 
+    private var name: String? = null 
+    private var startLocation: LocationObject? = null 
+    private var endLocation: LocationObject? = null 
+    private var startTime: Date? = null 
+    private var endTime: Date? = null 
+    private var routeNumer: Int? = null 
+    private var stayOnBusForTransfer: Boolean? = null 
+    private var tripIdentifiers: Array<String>? = null 
+    private var delay: Int? = null 
+    private var path: Array<LatLng>? = null 
+    private var stops: Array<LocationObject>? = null 
+    private var travelDistance: Double? = null 
 
     init {
-        this.type = type;
-        this.name = name;
-        this.startLocation = startLocation;
-        this.endLocation = endLocation;
-        this.startTime = startTime;
-        this.endTime = endTime;
-        this.routeNumer = routeNumer;
-        this.stayOnBusForTransfer = stayOnBusForTransfer;
-        this.tripIdentifiers = tripIdentifiers;
-        this.delay = delay;
-        this.path = path;
-        this.stops = stops;
-        this.travelDistance = travelDistance;
+        this.type = type 
+        this.name = name 
+        this.startLocation = startLocation 
+        this.endLocation = endLocation 
+        this.startTime = startTime 
+        this.endTime = endTime 
+        this.routeNumer = routeNumer 
+        this.stayOnBusForTransfer = stayOnBusForTransfer 
+        this.tripIdentifiers = tripIdentifiers 
+        this.delay = delay 
+        this.path = path 
+        this.stops = stops 
+        this.travelDistance = travelDistance 
     }
 
     //static variables
     companion object {
-        val blankLocation = LocationObject();
-        val blankTime = Date();
+        val blankLocation = LocationObject() 
+        val blankTime = Date() 
     }
 
     constructor(name: String) : this(DirectionType.ARRIVE, if (name != null) name else "", blankLocation,
