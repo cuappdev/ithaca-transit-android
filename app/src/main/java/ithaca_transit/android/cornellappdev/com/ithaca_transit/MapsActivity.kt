@@ -2,6 +2,7 @@ package ithaca_transit.android.cornellappdev.com.ithaca_transit
 
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.view.Menu
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -32,11 +33,17 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+
         setContentView(R.layout.activity_maps)
+
+        //Set up search bar
+        setContentView(R.layout.activity_toolbar_search)
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         val mapFragment = supportFragmentManager
                 .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
+
     }
 
     /**
@@ -59,3 +66,4 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         setMapLongClick(mMap)
     }
 }
+
