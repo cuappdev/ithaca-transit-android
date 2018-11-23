@@ -13,28 +13,28 @@ enum class PathType {
 }
 
 open class Path(waypoints: Array<Waypoint>) {
-    var waypoints: Array<Waypoint> ?= null
-    var traveledPolyline: PolylineOptions ?= null
+    var waypoints: Array<Waypoint>? = null
+    var traveledPolyline: PolylineOptions? = null
     var color: Int
 
     init {
         this.waypoints = waypoints
         this.traveledPolyline = PolylineOptions()
-        this.color = Color.rgb(0,0,0)
+        this.color = Color.rgb(0, 0, 0)
     }
 }
 
 class BusPath(waypoints: Array<Waypoint>) : Path(waypoints) {
 
-    var dashLengths : Array<Int> = arrayOf(6, 4)
-    private var dashColors : Array<Int> = emptyArray()
-    private var polylineWidth : Float?
-    private var traveledPath: List<LatLng> ?= null
-    private var untraveledPath: List<LatLng> ?= null
+    var dashLengths: Array<Int> = arrayOf(6, 4)
+    private var dashColors: Array<Int> = emptyArray()
+    private var polylineWidth: Float?
+    private var traveledPath: List<LatLng>? = null
+    private var untraveledPath: List<LatLng>? = null
 
-    init{
-        super.color = ContextCompat.getColor(R.colors.blue);
-        this.dashColors = arrayOf(color!!, Color.rgb(0,0,0))
+    init {
+        //super.color = ContextCompat.getColor(R.colors.blue);
+        this.dashColors = arrayOf(color!!, Color.rgb(0, 0, 0))
         this.polylineWidth = 8.0F
         createPath(waypoints)
         this.untraveledPath = super.traveledPolyline!!.points
@@ -45,8 +45,7 @@ class BusPath(waypoints: Array<Waypoint>) : Path(waypoints) {
 
     fun createPath(waypoints: Array<Waypoint>) {
         var count = 0
-        for(point in waypoints)
-        {
+        for (point in waypoints) {
             this.traveledPolyline!!.add(point.coordinates())
             count = count + 1
         }

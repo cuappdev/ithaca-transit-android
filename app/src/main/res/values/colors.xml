@@ -4,6 +4,7 @@
     <color name="red">#f2655d</color>
     <color name="white">#ffffff</color>
     <color name="green">#63c774</color>
+    <color name="colorWhite">#FFFFFF</color>
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>

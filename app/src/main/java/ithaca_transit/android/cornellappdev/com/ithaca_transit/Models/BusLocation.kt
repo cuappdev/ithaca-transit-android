@@ -32,10 +32,13 @@ class BusLocation(dataType: BusDataType, destination: String, deviation: Int, de
     private var speed: Int? = null
     private var tripID: String? = null
     private var vehicleID: Int? = null
+    private var direction: String? = null
+
 
     private var icon: Marker? = null
 
     init {
+        this.direction = direction
         this.dataType = dataType
         this.destination = destination
         this.deviation = deviation
