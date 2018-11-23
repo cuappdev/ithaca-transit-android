@@ -2,21 +2,21 @@ package ithaca_transit.android.cornellappdev.com.ithaca_transit.Models
 
 class Place {
 
-    var name: String? = null
     var detail: String? = null
+    var name: String? = null
     var placeID: String? = null
 
-    val nameKey = "name"
     val detailKey = "name"
+    val nameKey = "name"
     val placeIDKey = "name"
 
-    constructor(name:String) {
+    constructor(name: String) {
         this.name = name
     }
 
-    constructor(name:String, detail:String, placeID: String) {
-        this.name = name
+    constructor(name: String, detail: String, placeID: String) {
         this.detail = detail
+        this.name = name
         this.placeID = placeID
     }
 
