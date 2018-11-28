@@ -55,6 +55,5 @@ class BusPath(waypoints: Array<Waypoint>) : Path(waypoints) {
             count = count + 1
         }
     }
-
-
+    
 }
