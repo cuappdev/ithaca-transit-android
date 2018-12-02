@@ -2,18 +2,22 @@ package ithaca_transit.android.cornellappdev.com.ithaca_transit
 
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.v7.widget.RecyclerView
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import ithaca_transit.android.cornellappdev.com.ithaca_transit.Controllers.MapsController
 import java.util.*
 
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
+    private val mController =  MapsController()
     private lateinit var mMap: GoogleMap
+    private lateinit var mRecView: RecyclerView
 
     private fun setMapLongClick(map: GoogleMap) {
         map.setOnMapLongClickListener { latLng ->
@@ -34,9 +38,12 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_maps)
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-//        val mapFragment = supportFragmentManager
-//                .findFragmentById(R.id.map) as SupportMapFragment
-//        mapFragment.getMapAsync(this)
+        val mapFragment = supportFragmentManager
+                .findFragmentById(R.id.map) as SupportMapFragment
+        mapFragment.getMapAsync(this)
+        mRecView = findViewById(R.id.recycler_view_maps);
+        mController.mRecView = mRecView
+        mController.
     }
 
     /**
@@ -49,13 +56,12 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
      * installed Google Play services and returned to the app.
      */
     override fun onMapReady(googleMap: GoogleMap) {
-//        mMap = googleMap
-//
-//        // Add a marker in Sydney and move the camera
-//        val sydney = LatLng(-34.0, 151.0)
-//        mMap.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
-//        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
-//
-//        setMapLongClick(mMap)
+        mMap = googleMap
+
+        // Add a marker in Ithaca and move the camera
+        val ithaca = LatLng(42.4, -76.5)
+        mMap.addMarker(MarkerOptions().position(ithaca).title("Marker in Ithaca"))
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(ithaca))
+        setMapLongClick(mMap)
     }
 }

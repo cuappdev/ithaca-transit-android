@@ -10,21 +10,22 @@ class Waypoint(longitude: Double, latitude: Double, wpType: WaypointType, busNum
         origin, destination, stop, bus, walk, walking, bussing, none
     }
 
-    val smallDiameter = 12F
     val largeDiameter = 12F
+    val smallDiameter = 12F
 
-    private var latitude = 0.0
-    private var longitude = 0.0
 
-    private var wpType = WaypointType.origin
     private var busNumber = 0
     private var icon:ImageView ?= null
+    private var latitude = 0.0
+    private var longitude = 0.0
+    private var wpType = WaypointType.origin
+
 
     init {
+        this.busNumber = busNumber
         this.latitude = latitude
         this.longitude = longitude
         this.wpType = wpType
-        this.busNumber = busNumber
     }
 
     fun coordinates(): LatLng {
