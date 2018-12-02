@@ -43,7 +43,7 @@ class Direction(delay: Int, endLocation: LocationObject, endTime: Date,
         this.type = type
     }
 
-    //static variables
+    // static variables
     companion object {
         val blankLocation = LocationObject()
         val blankTime = Date()
@@ -54,14 +54,12 @@ class Direction(delay: Int, endLocation: LocationObject, endTime: Date,
             emptyArray<LocationObject>(), 0.0, emptyArray<String>(), DirectionType.ARRIVE)
 
     fun locationDescription(): String {
-        var instruct = ""
         when (type) {
-            DirectionType.WALK -> instruct = "Walk to " + name
-            DirectionType.ARRIVE -> instruct = "Get off at " + name
-            DirectionType.DEPART -> instruct = "at " + name
-            DirectionType.TRANSFER -> instruct = "at " + name + ". Stay on bus"
+            DirectionType.WALK -> return "Walk to " + name
+            DirectionType.ARRIVE -> return "Get off at " + name
+            DirectionType.DEPART -> return "at " + name
+            DirectionType.TRANSFER -> return "at " + name + ". Stay on bus"
         }
-        return instruct
     }
 
 }

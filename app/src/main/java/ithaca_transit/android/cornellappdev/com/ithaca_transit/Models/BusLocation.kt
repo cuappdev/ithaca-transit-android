@@ -55,7 +55,7 @@ class BusLocation(dataType: BusDataType, delay: Int, destination: String, deviat
         this.vehicleID = vehicleID
     }
 
-    fun routeNumer(): Int {
+    fun routeNumber(): Int {
         return if (routeID != null) Integer.parseInt(routeID) else 0
 
     }
