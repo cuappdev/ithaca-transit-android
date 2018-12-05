@@ -6,10 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import kotlinx.android.synthetic.main.route_options_fragment.view.*
 
-/**
- * Created by abdullahislam on 12/4/18.
- */
 class OptionsFragment : Fragment(){
 
     lateinit var allRoutesText:TextView
@@ -21,8 +19,19 @@ class OptionsFragment : Fragment(){
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        allRoutesText = container!!.findViewById<TextView>(R.id.optionsText)
-        return inflater?.inflate(R.layout.route_options_fragment, container, false)
+        val view: View = inflater!!.inflate(R.layout.route_options_fragment, container, false)
+
+        view.allRoutes.setOnClickListener { view ->
+            val extendedFragment = ExtendedFragment
+            val fragmentTransaction = fragmentManager.beginTransaction()
+            fragmentTransaction.replace(R.id.container, extendedFragment.newInstance())
+            fragmentTransaction.addToBackStack(null)
+            fragmentTransaction.commit()
+
+        }
+
+
+        return view
     }
 
 

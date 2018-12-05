@@ -63,7 +63,21 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         mController.setDynamicRecyclerView(this)
         mSearchView = findViewById(R.id.tb_toolbarsearch)
         mController.mSearchView = mSearchView
-        mController.enableSearchView()
+        mSearchView.setOnClickListener{
+            val optionsFragment = OptionsFragment
+            val fragmentTransaction = fragmentManager.beginTransaction()
+            fragmentTransaction.replace(R.id.container, optionsFragment.newInstance())
+            fragmentTransaction.addToBackStack(null)
+            fragmentTransaction.commit()
+        }
+//        mSearchView.getChildAt(R.id.allRoutes).setOnClickListener{
+//            val extendedFragment = ExtendedFragment
+//            val fragmentTransaction = fragmentManager.beginTransaction()
+//            fragmentTransaction.replace(R.id.container, extendedFragment.newInstance())
+//            fragmentTransaction.addToBackStack(null)
+//            fragmentTransaction.commit()
+//        }
+
     }
 
     /**
