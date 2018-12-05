@@ -1,7 +1,7 @@
 package ithaca_transit.android.cornellappdev.com.ithaca_transit.Models
 
 import com.google.android.gms.maps.model.LatLng
-import java.util.Date
+import java.util.*
 
 enum class DirectionType {
     ARRIVE, DEPART, TRANSFER, WALK
@@ -60,6 +60,7 @@ class Direction(delay: Int, endLocation: LocationObject, endTime: Date,
             DirectionType.DEPART -> return "at " + name
             DirectionType.TRANSFER -> return "at " + name + ". Stay on bus"
         }
+        return "";
     }
 
 }

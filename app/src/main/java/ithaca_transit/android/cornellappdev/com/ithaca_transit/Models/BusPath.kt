@@ -1,12 +1,8 @@
 package ithaca_transit.android.cornellappdev.com.ithaca_transit.Models
 
 import android.graphics.Color
-import android.support.v4.content.ContextCompat
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.Polyline
 import com.google.android.gms.maps.model.PolylineOptions
-import ithaca_transit.android.cornellappdev.com.ithaca_transit.R
-import java.security.AccessController.getContext
 
 enum class PathType {
     driving, walking
@@ -38,7 +34,7 @@ class BusPath(waypoints: Array<Waypoint>) : Path(waypoints) {
     private var untraveledPath: List<LatLng>? = null
 
     init {
-        super.color = ContextCompat.getColor(R.colors.blue);
+//        super.color = ContextCompat.getColor(R.colors.blue);
         this.dashColors = arrayOf(color!!, BLANK_COLOR)
         this.polylineWidth = LINE_WIDTH
         createPath(waypoints)
