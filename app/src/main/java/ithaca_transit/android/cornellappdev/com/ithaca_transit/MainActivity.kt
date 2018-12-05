@@ -5,6 +5,7 @@ import android.location.Location
 import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.RecyclerView
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -13,14 +14,17 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import ithaca_transit.android.cornellappdev.com.ithaca_transit.Controllers.MapsController
 import java.util.*
 
 
 class MainActivity : AppCompatActivity(), OnMapReadyCallback {
 
+    private val mController =  MapsController()
     private lateinit var mMap: GoogleMap
     private lateinit var lastLocation: Location
     private lateinit var fusedLocationClient: FusedLocationProviderClient
+    private lateinit var mRecView: RecyclerView
 
     companion object {
         private const val LOCATION_PERMISSION_REQUEST_CODE = 1
@@ -49,7 +53,9 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         val mapFragment = supportFragmentManager
                 .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
-
+        mRecView = findViewById(R.id.recycler_view_maps);
+        mController.mRecView = mRecView
+        mController.setDynamicRecyclerView(this)
     }
 
     /**
@@ -60,6 +66,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
         setMapLongClick(mMap)
+
         setUpMap()
     }
 
@@ -71,6 +78,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
             return
         }
         mMap.isMyLocationEnabled = true
+        mMap.uiSettings.isMyLocationButtonEnabled = false
         fusedLocationClient.lastLocation.addOnSuccessListener(this) { location ->
             if (location != null) {
                 lastLocation = location

@@ -1,8 +1,7 @@
 package ithaca_transit.android.cornellappdev.com.ithaca_transit.Models
 
-import android.widget.ImageView
 import com.google.android.gms.maps.model.Marker
-import java.util.Date
+import java.util.*
 
 enum class BusDataType {
     invalidData, noData, validData
@@ -32,9 +31,11 @@ class BusLocation(dataType: BusDataType, delay: Int, destination: String, deviat
     private var speed: Int? = null
     private var tripID: String? = null
     private var vehicleID: Int? = null
+    private var direction: String? = null
     private var icon: Marker? = null
 
     init {
+        this.direction = direction
         this.dataType = dataType
         this.destination = destination
         this.deviation = deviation

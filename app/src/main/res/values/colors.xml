@@ -5,12 +5,15 @@
     <color name="white">#ffffff</color>
     <color name="green">#63c774</color>
     <color name="black">#000000</color>
+    <color name="textBlack">#3D3D3D</color>
+    <color name="typeColor">#4A4A4A</color>
+    <color name="hintColor">#9B9B9B</color>
     <color name="routeDetails">#212121</color>
     <color name="colorWhite">#FFFFFF</color>
     <color name="lightGray">#E5E5E5</color>
     <color name="routeBackground">#FAFAFA</color>
     <color name="leaveNowGray">#616161</color>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="primary">#3F51B5</color>
+    <color name="primaryDark">#303F9F</color>
+    <color name="accent">#FF4081</color>
 </resources>

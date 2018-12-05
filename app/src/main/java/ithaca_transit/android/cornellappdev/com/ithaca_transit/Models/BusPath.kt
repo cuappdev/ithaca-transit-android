@@ -13,7 +13,6 @@ open class Path(waypoints: Array<Waypoint>) {
     val DASH_LENGTHS_X = 6
     val DASH_LENGTHS_Y = 4
     val LINE_WIDTH = 8.0F
-
     var waypoints: Array<Waypoint>? = null
     var traveledPolyline: PolylineOptions? = null
     var color: Int
@@ -27,6 +26,7 @@ open class Path(waypoints: Array<Waypoint>) {
 
 class BusPath(waypoints: Array<Waypoint>) : Path(waypoints) {
 
+
     var dashLengths: Array<Int> = arrayOf(DASH_LENGTHS_X, DASH_LENGTHS_Y)
     private var dashColors: Array<Int> = emptyArray()
     private var polylineWidth: Float?
@@ -34,9 +34,11 @@ class BusPath(waypoints: Array<Waypoint>) : Path(waypoints) {
     private var untraveledPath: List<LatLng>? = null
 
     init {
+
 //        super.color = ContextCompat.getColor(R.colors.blue);
         this.dashColors = arrayOf(color!!, BLANK_COLOR)
         this.polylineWidth = LINE_WIDTH
+
         createPath(waypoints)
         this.untraveledPath = super.traveledPolyline!!.points
         this.traveledPath = untraveledPath
