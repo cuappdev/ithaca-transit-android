@@ -1,19 +1,28 @@
 package ithaca_transit.android.cornellappdev.com.ithaca_transit.Controllers
 
+import android.app.FragmentManager
 import android.content.Context
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.widget.LinearLayout
+import android.widget.SearchView
+import android.widget.TextView
 import com.cornellappdev.android.eatery.MainListAdapter
+import ithaca_transit.android.cornellappdev.com.ithaca_transit.ExtendedFragment
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.Place
+import ithaca_transit.android.cornellappdev.com.ithaca_transit.OptionsFragment
+import ithaca_transit.android.cornellappdev.com.ithaca_transit.R
 
-class MapsController: MainListAdapter.ListAdapterOnClickHandler{
+class MapsController(manager:FragmentManager): MainListAdapter.ListAdapterOnClickHandler{
 
     lateinit var mRecView: RecyclerView
+    lateinit var mSearchView: SearchView
     private lateinit var listAdapter : MainListAdapter
+    private var mManager = manager
 
     companion object {
+
         // Dummy place objects
         val place1 = Place("To Goldwin Smith - Ithaca Commons")
         val place2 = Place("To Duffield - The Johnson Museum")
@@ -32,6 +41,28 @@ class MapsController: MainListAdapter.ListAdapterOnClickHandler{
         mRecView.setVisibility(View.VISIBLE)
         listAdapter.notifyDataSetChanged()
     }
+
+    fun enableSearchView()
+    {
+        mSearchView.setOnClickListener{
+            val optionsFragment = OptionsFragment
+            val fragmentTransaction = mManager.beginTransaction()
+            fragmentTransaction.replace(R.id.container, optionsFragment.newInstance())
+            fragmentTransaction.addToBackStack(null)
+            fragmentTransaction.commit()
+
+
+            optionsFragment.allRoutesText.setOnClickListener{
+                val extendedFragment = ExtendedFragment
+                val fragmentTransaction = mManager.beginTransaction()
+                fragmentTransaction.replace(R.id.container, extendedFragment.newInstance())
+                fragmentTransaction.addToBackStack(null)
+                fragmentTransaction.commit()
+            }
+
+        }
+    }
+
 
     override fun onClick(position: Int, list: Array<Place>) {
 

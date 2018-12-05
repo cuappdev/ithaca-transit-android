@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.RecyclerView
+import android.widget.SearchView
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -20,11 +21,13 @@ import java.util.*
 
 class MainActivity : AppCompatActivity(), OnMapReadyCallback {
 
-    private val mController =  MapsController()
+    lateinit var  mController : MapsController
     private lateinit var mMap: GoogleMap
     private lateinit var lastLocation: Location
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var mRecView: RecyclerView
+    private lateinit var mSearchView: SearchView
+
 
     companion object {
         private const val LOCATION_PERMISSION_REQUEST_CODE = 1
@@ -50,12 +53,17 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         setContentView(R.layout.activity_maps)
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+        val manager = fragmentManager
+        mController = MapsController(manager)
         val mapFragment = supportFragmentManager
                 .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
-        mRecView = findViewById(R.id.recycler_view_maps);
+        mRecView = findViewById(R.id.recycler_view_maps)
         mController.mRecView = mRecView
         mController.setDynamicRecyclerView(this)
+        mSearchView = findViewById(R.id.tb_toolbarsearch)
+        mController.mSearchView = mSearchView
+        mController.enableSearchView()
     }
 
     /**
