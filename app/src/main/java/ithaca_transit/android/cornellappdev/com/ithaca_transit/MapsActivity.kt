@@ -1,5 +1,6 @@
 package ithaca_transit.android.cornellappdev.com.ithaca_transit
 
+import android.app.Application
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v7.widget.RecyclerView
@@ -10,12 +11,15 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Controllers.MapsController
+import ithaca_transit.android.cornellappdev.com.ithaca_transit.Utils.App
 import java.util.*
 
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private val mController =  MapsController()
+    private val mApp =  App()
+
     private lateinit var mMap: GoogleMap
     private lateinit var mRecView: RecyclerView
 
@@ -43,7 +47,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         mapFragment.getMapAsync(this)
         mRecView = findViewById(R.id.recycler_view_maps);
         mController.mRecView = mRecView
-        mController.
+        mController.setDynamicRecyclerView(this)
     }
 
     /**
@@ -61,7 +65,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         // Add a marker in Ithaca and move the camera
         val ithaca = LatLng(42.4, -76.5)
         mMap.addMarker(MarkerOptions().position(ithaca).title("Marker in Ithaca"))
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(ithaca))
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(ithaca,14.0f))
         setMapLongClick(mMap)
     }
 }

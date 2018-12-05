@@ -9,9 +9,10 @@ import android.widget.TextView
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.Place
 
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.R
+import ithaca_transit.android.cornellappdev.com.ithaca_transit.Utils.App
 
 class MainListAdapter internal constructor(
-        private val mContext: Context,
+        private var mContext: Context,
         private val mListAdapterOnClickHandler: ListAdapterOnClickHandler,
         private var mPlaceList: Array<Place>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -36,13 +37,12 @@ class MainListAdapter internal constructor(
         var viewHolder: RecyclerView.ViewHolder? = null
 
         layoutId = R.layout.card_item_maps
+        System.out.println("context" + mContext);
         view = LayoutInflater.from(mContext).inflate(layoutId, parent, false)
         viewHolder = TextAdapterViewHolder(view)
 
-
         return viewHolder
     }
-
 
     override fun getItemCount(): Int {
         return mPlaceList.size
@@ -70,7 +70,6 @@ class MainListAdapter internal constructor(
 
     internal inner class TextAdapterViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
         var cafe_name: TextView
-
 
         init {
             cafe_name = itemView.findViewById(R.id.place_name)

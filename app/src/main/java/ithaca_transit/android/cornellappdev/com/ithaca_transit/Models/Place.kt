@@ -3,7 +3,6 @@ package ithaca_transit.android.cornellappdev.com.ithaca_transit.Models
 class Place {
 
     var name: String? = null
-        get() = name
     var detail: String? = null
     var placeID: String? = null
 

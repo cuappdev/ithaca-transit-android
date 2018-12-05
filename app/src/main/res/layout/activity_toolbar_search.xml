@@ -11,7 +11,7 @@
         android:id="@+id/tb_toolbarsearch"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorWhite"
+        android:background="@color/white"
         android:iconifiedByDefault="false"
         android:queryHint="Where to?"
         android:queryBackground="@android:color/transparent"
