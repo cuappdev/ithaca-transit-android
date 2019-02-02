@@ -9,6 +9,8 @@ import android.widget.LinearLayout
 import android.widget.SearchView
 import com.cornellappdev.android.eatery.MainListAdapter
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.Place
+import ithaca_transit.android.cornellappdev.com.ithaca_transit.OptionsFragment
+import ithaca_transit.android.cornellappdev.com.ithaca_transit.R
 
 class MapsController(manager:FragmentManager): MainListAdapter.ListAdapterOnClickHandler{
 
@@ -39,7 +41,11 @@ class MapsController(manager:FragmentManager): MainListAdapter.ListAdapterOnClic
     }
 
     override fun onClick(position: Int, list: Array<Place>) {
-
+        val optionsFragment = OptionsFragment
+        val fragmentTransaction = mManager.beginTransaction()
+        fragmentTransaction.replace(R.id.container, optionsFragment.newInstance())
+        fragmentTransaction.addToBackStack(null)
+        fragmentTransaction.commit()
     }
 
 

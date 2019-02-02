@@ -19,7 +19,7 @@ import ithaca_transit.android.cornellappdev.com.ithaca_transit.Controllers.MapsC
 import java.util.*
 
 
-class MainActivity : AppCompatActivity(), OnMapReadyCallback {
+class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     lateinit var  mController : MapsController
     private lateinit var mMap: GoogleMap

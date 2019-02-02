@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.Place
+import ithaca_transit.android.cornellappdev.com.ithaca_transit.OptionsFragment
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.R
 
 class MainListAdapter internal constructor(
@@ -48,12 +49,12 @@ class MainListAdapter internal constructor(
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder?, position: Int) {
         val holder2 = holder as TextAdapterViewHolder
-        holder2.cafe_name.setText(mPlaceList.get(position).name)
+        holder2.placeName.setText(mPlaceList.get(position).name)
     }
 
-    internal inner class ListAdapterViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
-        var placeName: TextView
 
+    internal inner class TextAdapterViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
+        var placeName: TextView
 
         init {
             placeName = itemView.findViewById(R.id.place_name)
@@ -63,20 +64,7 @@ class MainListAdapter internal constructor(
         override fun onClick(v: View) {
             val adapterPosition = adapterPosition
             mListAdapterOnClickHandler.onClick(adapterPosition, mPlaceList)
-        }
-    }
 
-    internal inner class TextAdapterViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
-        var cafe_name: TextView
-
-        init {
-            cafe_name = itemView.findViewById(R.id.place_name)
-            itemView.setOnClickListener(this)
-        }
-
-        override fun onClick(v: View) {
-            val adapterPosition = adapterPosition
-            mListAdapterOnClickHandler.onClick(adapterPosition, mPlaceList)
         }
     }
 }
