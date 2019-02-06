@@ -56,7 +56,7 @@ public final class LocationObject {
         return new LatLng(latitude, longitude);
     }
 
-    public LocationObject(@NotNull String name, @NotNull String id, double latitude, double longitude) {
+    public LocationObject(String name, String id, double latitude, double longitude) {
         super();
         this.id = id;
         this.name = name;

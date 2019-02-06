@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Date;
 
-public final class BusLocation {
+public final class Bus {
     private BusDataType dataType;
     private String destination;
     private Integer delay;
@@ -34,7 +34,11 @@ public final class BusLocation {
         return this.routeID != null ? Integer.parseInt(this.routeID) : 0;
     }
 
-    public BusLocation(@NotNull BusDataType dataType, int delay, @NotNull String destination, int deviation, @NotNull String direction, @NotNull String displayStatus, int gpsStatus, int heading, @NotNull String lastStop, @NotNull Date lastUpdated, double latitude, double longitude, int name, @NotNull String opStatus, @NotNull String routeID, int runID, int speed, @NotNull String tripID, int vehicleID) {
+    public Bus(@NotNull BusDataType dataType, int delay, @NotNull String destination,
+                       int deviation, @NotNull String direction, @NotNull String displayStatus,
+                       int gpsStatus, int heading, @NotNull String lastStop, @NotNull Date lastUpdated,
+                       double latitude, double longitude, int name, @NotNull String opStatus, @NotNull String routeID,
+                       int runID, int speed, @NotNull String tripID, int vehicleID) {
 
         super();
         this.direction = direction;
