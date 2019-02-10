@@ -11,24 +11,23 @@ import java.util.Date;
 public final class Bus {
     private BusDataType dataType;
     private String destination;
-    private Integer delay;
-    private Integer deviation;
+    private int delay;
+    private int deviation;
+    private String direction;
     private String displayStatus;
-    private Integer gpsStatus;
-    private Integer heading;
+    private int gpsStatus;
+    private int heading;
     private String lastStop;
     private Date lastUpdated;
     private Double latitude;
     private Double longitude;
-    private Integer name;
+    private int name;
     private String opStatus;
     private String routeID;
-    private Integer runID;
-    private Integer speed;
+    private int runID;
+    private int speed;
     private String tripID;
-    private Integer vehicleID;
-    private String direction;
-    private Marker icon;
+    private int vehicleID;
 
     public final int routeNumber() {
         return this.routeID != null ? Integer.parseInt(this.routeID) : 0;

@@ -1,5 +1,10 @@
 package ithaca_transit.android.cornellappdev.com.ithaca_transit.Models;
 
+import com.google.android.gms.maps.model.LatLng;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.Date;
 import java.util.List;
 
@@ -21,7 +26,8 @@ public class Route {
     private LocationObject startLocation;
 
     // To be drawn on the map, is an ordered list of paths from start to end
-    private Path[] pathsList;
+    private LatLng[] pathsList;
+
 
     public Date getArrivalTime() {
         return arrivalTime;
@@ -103,11 +109,31 @@ public class Route {
         this.startLocation = startLocation;
     }
 
-    public Path[] getPathsList() {
+    public LatLng[] getPathsList() {
         return pathsList;
     }
 
-    public void setPathsList(Path[] pathsList) {
+    public void setPathsList(LatLng[] pathsList) {
         this.pathsList = pathsList;
     }
+
+
+    public static Route fromJSON(JSONObject routeJSON)
+            throws JSONException {
+        Route route = new Route();
+        route.parseJSONObject(routeJSON);
+        return route;
+    }
+
+    private void parseJSONObject(JSONObject routeJSON) {
+        try {
+            arrivalTime = routeJSON.get("arrivalTime");
+
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+    }
+
 }

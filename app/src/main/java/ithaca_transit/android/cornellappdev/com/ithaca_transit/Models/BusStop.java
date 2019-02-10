@@ -6,9 +6,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class BusStop {
-    private String stopName;
     private Double latitude;
     private Double longitude;
+    private String stopName;
+
 
     public BusStop() {
 
@@ -38,10 +39,10 @@ public class BusStop {
         this.longitude = longitude;
     }
 
-    public static BusStop fromJSON(JSONObject eatery)
+    public static BusStop fromJSON(JSONObject busStopJSON)
             throws JSONException {
         BusStop model = new BusStop();
-        model.parseJSONObject(eatery);
+        model.parseJSONObject(busStopJSON);
         return model;
     }
 

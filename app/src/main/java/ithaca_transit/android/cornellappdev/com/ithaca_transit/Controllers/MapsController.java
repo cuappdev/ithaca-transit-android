@@ -9,8 +9,6 @@ import android.support.v7.widget.RecyclerView.Adapter;
 import android.support.v7.widget.RecyclerView.LayoutManager;
 import android.view.View;
 import android.widget.SearchView;
-import com.cornellappdev.android.eatery.MainListAdapter;
-import com.cornellappdev.android.eatery.MainListAdapter.ListAdapterOnClickHandler;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.OptionsFragment;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.Place;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.R;
@@ -18,7 +16,7 @@ import kotlin.jvm.internal.Intrinsics;
 import org.jetbrains.annotations.NotNull;
 
 
-public final class MapsController implements ListAdapterOnClickHandler {
+public final class MapsController implements MainListAdapter.ListAdapterOnClickHandler {
     @NotNull
     public RecyclerView mRecView;
     @NotNull
@@ -44,33 +42,26 @@ public final class MapsController implements ListAdapterOnClickHandler {
         return var10000;
     }
 
-    public final void setMSearchView(@NotNull SearchView var1) {
-        Intrinsics.checkParameterIsNotNull(var1, "<set-?>");
-        this.mSearchView = var1;
-    }
-
     public final void setDynamicRecyclerView(@NotNull Context context) {
         mRecView.setHasFixedSize(true);
         LinearLayoutManager layoutManager = new LinearLayoutManager(context, 0, false);
         mRecView.setLayoutManager((LayoutManager)layoutManager);
-        listAdapter = new MainListAdapter(context, (ListAdapterOnClickHandler)this, placeList);
+        listAdapter = new MainListAdapter(context, (MainListAdapter.ListAdapterOnClickHandler)this, placeList);
         mRecView.setAdapter(listAdapter);
         mRecView.setVisibility(View.GONE);
         listAdapter.notifyDataSetChanged();
     }
 
     public void onClick(int position, @NotNull Place[] list) {
-        Intrinsics.checkParameterIsNotNull(list, "list");
-        ithaca_transit.android.cornellappdev.com.ithaca_transit.OptionsFragment.Companion optionsFragment = OptionsFragment.Companion;
+         OptionsFragment optionsFragment = new OptionsFragment();
         FragmentTransaction fragmentTransaction = this.mManager.beginTransaction();
-        fragmentTransaction.replace(R.id.container, optionsFragment.newInstance());
+        fragmentTransaction.replace(R.id.container, optionsFragment);
         fragmentTransaction.addToBackStack((String)null);
         fragmentTransaction.commit();
     }
 
     public MapsController(@NotNull FragmentManager manager) {
         super();
-        Intrinsics.checkParameterIsNotNull(manager, "manager");
         this.mManager = manager;
     }
 
@@ -78,28 +69,4 @@ public final class MapsController implements ListAdapterOnClickHandler {
         placeList = new Place[]{place1, place2, place3};
     }
 
-    public static final class Companion {
-        @NotNull
-        public final Place getPlace1() {
-            return MapsController.place1;
-        }
-
-        @NotNull
-        public final Place getPlace2() {
-            return MapsController.place2;
-        }
-
-        @NotNull
-        public final Place getPlace3() {
-            return MapsController.place3;
-        }
-
-        @NotNull
-        public final Place[] getPlaceList() {
-            return MapsController.placeList;
-        }
-
-        private Companion() {
-        }
-        }
 }
