@@ -1,14 +1,17 @@
 package ithaca_transit.android.cornellappdev.com.ithaca_transit.Models;
 
+import android.content.Context;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class BusStop {
     private String stopName;
     private Double latitude;
     private Double longitude;
 
-    public BusStop(String stopName, Double latitude, Double longitude) {
-        this.stopName = stopName;
-        this.latitude = latitude;
-        this.longitude = longitude;
+    public BusStop() {
+
     }
 
     public String getStopName() {
@@ -33,5 +36,24 @@ public class BusStop {
 
     public void setLongitude(Double longitude) {
         this.longitude = longitude;
+    }
+
+    public static BusStop fromJSON(JSONObject eatery)
+            throws JSONException {
+        BusStop model = new BusStop();
+        model.parseJSONObject(eatery);
+        return model;
+    }
+
+    private void parseJSONObject(JSONObject busStop) {
+        try {
+            stopName = busStop.getString("name");
+            latitude = Double.parseDouble(busStop.getString("lat"));
+            longitude = Double.parseDouble(busStop.getString("long"));
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
     }
 }
