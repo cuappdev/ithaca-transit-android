@@ -5,10 +5,13 @@ import android.content.Context;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import ithaca_transit.android.cornellappdev.com.ithaca_transit.R;
+import ithaca_transit.android.cornellappdev.com.ithaca_transit.Singleton.Repository;
+
 public class BusStop {
-    private String stopName;
     private Double latitude;
     private Double longitude;
+    private String stopName;
 
     public BusStop() {
 
@@ -38,18 +41,21 @@ public class BusStop {
         this.longitude = longitude;
     }
 
-    public static BusStop fromJSON(JSONObject eatery)
+    public static BusStop fromJSON(JSONObject busStopJSON)
             throws JSONException {
         BusStop model = new BusStop();
-        model.parseJSONObject(eatery);
+        model.parseJSONObject(busStopJSON);
         return model;
     }
 
     private void parseJSONObject(JSONObject busStop) {
         try {
-            stopName = busStop.getString("name");
-            latitude = Double.parseDouble(busStop.getString("lat"));
-            longitude = Double.parseDouble(busStop.getString("long"));
+            stopName = busStop.getString(Repository.getInstance().getContext()
+                    .getString(R.string.field_name));
+            latitude = Double.parseDouble(busStop.getString(Repository.getInstance().getContext()
+                    .getString(R.string.field_latitude)));
+            longitude = Double.parseDouble(busStop.getString(Repository.getInstance().getContext()
+                    .getString(R.string.field_longitude)));
 
         } catch (JSONException e) {
             e.printStackTrace();

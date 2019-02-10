@@ -14,6 +14,7 @@ import java.util.List;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.Bus;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.BusStop;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.Route;
+import ithaca_transit.android.cornellappdev.com.ithaca_transit.R;
 
 public class JSONUtilities {
 
@@ -21,8 +22,8 @@ public class JSONUtilities {
         List<BusStop> busStopsList = new ArrayList<>();
 
         try {
-            JSONObject parentJSON = Networking.getJSON("allstops");
-            JSONArray stops = parentJSON.getJSONArray("data");
+            JSONObject parentJSON = Networking.getJSON(mainContext.getString(R.string.get_method_allstops));
+            JSONArray stops = parentJSON.getJSONArray(mainContext.getString(R.string.field_data));
 
             for (int i = 0; i < stops.length(); i++) {
                 JSONObject obj = stops.getJSONObject(i);
@@ -37,18 +38,41 @@ public class JSONUtilities {
         return busStopsList;
     }
 
-
-    public static List<Route> getRoutes(LatLng coords, LatLng end, int time, Context mainContext) {
+    public static List<Route> getRoutes(LatLng start, LatLng end, int time, boolean arriveBy,
+                                        String destinationName, Context mainContext) {
         List<Route> routesList = new ArrayList<>();
 
         try {
-            JSONObject parentJSON = Networking.getJSON("route");
-            JSONArray stops = parentJSON.getJSONArray("data");
+            String append = String.format(mainContext.getString(R.string.query_route),
+                    start.toString(), end.toString(), time, arriveBy, destinationName);
+            JSONObject parentJSON = Networking.getJSON(append);
+            JSONArray routes = parentJSON.getJSONArray(mainContext.getString(R.string.field_data));
 
 
+            for (int i = 0; i < routes.length(); i++) {
+                JSONObject obj = routes.getJSONObject(i);
+                Route route;
+                route = Route.fromJSON(obj);
+                routesList.add(route);
+            }
+            
         } catch (JSONException e) {
             e.printStackTrace();
         }
         return routesList;
+    }
+
+    public static int getDelay(int stopID, int tripID, Context mainContext) {
+        int delay = 0;
+        try {
+            String append = String.format(mainContext.getString(R.string.query_delay),
+                    stopID, tripID);
+            JSONObject parentJSON = Networking.getJSON(mainContext.getString(R.string.field_delay));
+            delay = parentJSON.getInt((mainContext.getString(R.string.field_data)));
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return delay;
     }
 }

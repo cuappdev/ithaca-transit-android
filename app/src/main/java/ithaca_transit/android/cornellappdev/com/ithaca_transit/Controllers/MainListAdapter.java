@@ -31,7 +31,6 @@ public final class MainListAdapter extends Adapter {
     @Nullable
     public ViewHolder onCreateViewHolder(@NotNull ViewGroup parent, int viewType) {
         int layoutId = R.layout.card_item_maps;
-        System.out.println("context" + this.mContext);
 
         View view = LayoutInflater.from(this.mContext).inflate(layoutId, parent, false);
         ViewHolder viewHolder = (ViewHolder)(new MainListAdapter.TextAdapterViewHolder(view));
@@ -53,9 +52,6 @@ public final class MainListAdapter extends Adapter {
 
     public MainListAdapter(@NotNull Context mContext, @NotNull MainListAdapter.ListAdapterOnClickHandler mListAdapterOnClickHandler, @NotNull Place[] mPlaceList) {
         super();
-        Intrinsics.checkParameterIsNotNull(mContext, "mContext");
-        Intrinsics.checkParameterIsNotNull(mListAdapterOnClickHandler, "mListAdapterOnClickHandler");
-        Intrinsics.checkParameterIsNotNull(mPlaceList, "mPlaceList");
         this.mContext = mContext;
         this.mListAdapterOnClickHandler = mListAdapterOnClickHandler;
         this.mPlaceList = mPlaceList;
@@ -92,10 +88,7 @@ public final class MainListAdapter extends Adapter {
 
         public TextAdapterViewHolder(@NotNull View itemView) {
             super(itemView);
-            Intrinsics.checkParameterIsNotNull(itemView, "itemView");
-            View var10001 = itemView.findViewById(2131230855);
-            Intrinsics.checkExpressionValueIsNotNull(var10001, "itemView.findViewById(R.id.place_name)");
-            this.placeName = (TextView)var10001;
+            this.placeName = (TextView) itemView.findViewById(R.id.place_name);
             itemView.setOnClickListener((OnClickListener)this);
         }
     }
