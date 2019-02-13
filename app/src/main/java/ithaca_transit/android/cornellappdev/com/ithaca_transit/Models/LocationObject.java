@@ -1,57 +1,47 @@
 package ithaca_transit.android.cornellappdev.com.ithaca_transit.Models;
 
 import com.google.android.gms.maps.model.LatLng;
-import kotlin.jvm.internal.Intrinsics;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public final class LocationObject {
-    @Nullable
-    private String id;
-    @Nullable
-    private String name;
-    @Nullable
-    private Double latitude;
-    @Nullable
-    private Double longitude;
+    public static final double BLANK_COORD = 0.0D;
 
-    @Nullable
+    private String id;
+    private Double latitude;
+    private Double longitude;
+    private String name;
+
     public final String getId() {
         return this.id;
     }
 
-    public final void setId(@Nullable String var1) {
-        this.id = var1;
+    public final void setId(String id) {
+        this.id = id;
     }
 
-    @Nullable
     public final String getName() {
         return this.name;
     }
 
-    public final void setName(@Nullable String var1) {
-        this.name = var1;
+    public final void setName(String name) {
+        this.name = name;
     }
 
-    @Nullable
     public final Double getLatitude() {
         return this.latitude;
     }
 
-    public final void setLatitude(@Nullable Double var1) {
+    public final void setLatitude(Double var1) {
         this.latitude = var1;
     }
 
-    @Nullable
     public final Double getLongitude() {
         return this.longitude;
     }
 
-    public final void setLongitude(@Nullable Double var1) {
+    public final void setLongitude(Double var1) {
         this.longitude = var1;
     }
 
-    @NotNull
     public final LatLng coordinates() {
         return new LatLng(latitude, longitude);
     }
@@ -65,14 +55,18 @@ public final class LocationObject {
     }
 
     public LocationObject() {
-        this("", "", 0.0D, 0.0D);
+        this("", "", BLANK_COORD, BLANK_COORD);
     }
 
-    public LocationObject(@NotNull String name) {
-        this(name, "", 0.0D, 0.0D);
+    public LocationObject(String name) {
+        this(name, "", BLANK_COORD, BLANK_COORD);
     }
 
-    public LocationObject(@NotNull String name, double latitude, double longitude) {
+    public LocationObject(Double latitude, Double longitude) {
+        this("", "", latitude, longitude);
+    }
+
+    public LocationObject(String name, double latitude, double longitude) {
         this(name, "", latitude, longitude);
     }
 }

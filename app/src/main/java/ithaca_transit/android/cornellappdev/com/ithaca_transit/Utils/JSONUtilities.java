@@ -23,7 +23,7 @@ public class JSONUtilities {
 
         try {
             JSONObject parentJSON = Networking.getJSON(mainContext.getString(R.string.get_method_allstops));
-            JSONArray stops = parentJSON.getJSONArray("data");
+            JSONArray stops = parentJSON.getJSONArray(mainContext.getString(R.string.field_data));
 
             for (int i = 0; i < stops.length(); i++) {
                 JSONObject obj = stops.getJSONObject(i);
@@ -43,10 +43,10 @@ public class JSONUtilities {
         List<Route> routesList = new ArrayList<>();
 
         try {
-            String append = String.format("route?&start=%s&end=%s&time=%s&arriveBy=%s&destinationName=%s",
+            String append = String.format(mainContext.getString(R.string.query_route),
                     start.toString(), end.toString(), time, arriveBy, destinationName);
             JSONObject parentJSON = Networking.getJSON(append);
-            JSONArray routes = parentJSON.getJSONArray("data");
+            JSONArray routes = parentJSON.getJSONArray(mainContext.getString(R.string.field_data));
 
 
             for (int i = 0; i < routes.length(); i++) {
@@ -62,13 +62,13 @@ public class JSONUtilities {
         return routesList;
     }
 
-
     public static int getDelay(int stopID, int tripID, Context mainContext) {
-        int delay;
-
+        int delay = 0;
         try {
+            String append = String.format(mainContext.getString(R.string.query_delay),
+                    stopID, tripID);
             JSONObject parentJSON = Networking.getJSON(mainContext.getString(R.string.delay));
-            JSONArray stops = parentJSON.getJSONArray("data");
+            delay = parentJSON.getInt((mainContext.getString(R.string.field_data)));
 
         } catch (JSONException e) {
             e.printStackTrace();

@@ -79,7 +79,6 @@ public final class MapsActivity extends AppCompatActivity implements OnMapReadyC
             mController.setDynamicRecyclerView(this);
             mSearchView = this.findViewById(R.id.tb_toolbarsearch);
             mController.mSearchView = mSearchView;
-
         }
     }
 

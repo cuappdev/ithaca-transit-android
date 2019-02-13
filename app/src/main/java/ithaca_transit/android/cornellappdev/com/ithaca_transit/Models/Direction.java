@@ -8,6 +8,10 @@ import kotlin.jvm.internal.Intrinsics;
 import org.jetbrains.annotations.NotNull;
 
 public final class Direction {
+
+    private static final LocationObject BLANK_LOCATION = new LocationObject();
+    private static final Date BLANK_TIME = new Date();
+
     private Integer delay;
     private LocationObject endLocation;
     private Date endTime;
@@ -21,10 +25,7 @@ public final class Direction {
     private Double travelDistance;
     private String[] tripIdentifiers;
     private DirectionType type;
-    @NotNull
-    private static final LocationObject blankLocation = new LocationObject();
-    @NotNull
-    private static final Date blankTime = new Date();
+
 
     @NotNull
     public final String locationDescription() {
@@ -40,7 +41,6 @@ public final class Direction {
                     return "at " + this.name + ". Stay on bus";
             }
         }
-
         return "";
     }
 
@@ -62,8 +62,8 @@ public final class Direction {
     }
 
     public Direction(@NotNull String name) {
-        this(0, blankLocation, blankTime, name, new LatLng[0], 0, blankLocation,
-                blankTime, false, new LocationObject[0], 0.0D,
+        this(0, BLANK_LOCATION, BLANK_TIME, name, new LatLng[0], 0, BLANK_LOCATION,
+                BLANK_TIME, false, new LocationObject[0], 0.0D,
                 new String[0], DirectionType.ARRIVE);
     }
 

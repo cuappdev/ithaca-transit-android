@@ -2,17 +2,24 @@ package ithaca_transit.android.cornellappdev.com.ithaca_transit.Models;
 
 import com.google.android.gms.maps.model.LatLng;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+
+import ithaca_transit.android.cornellappdev.com.ithaca_transit.R;
 
 public class Route {
 
     private Date arrivalTime;
     private Date departureTime;
     private Direction[] directions;
+    private LocationObject endLocation;
 
     // Used to center the camera on the selected route
     private Double maxLatBound;
@@ -22,11 +29,10 @@ public class Route {
 
     private int numTransfers;
 
-    private LocationObject endLocation;
-    private LocationObject startLocation;
-
     // To be drawn on the map, is an ordered list of paths from start to end
     private LatLng[] pathsList;
+    private LocationObject startLocation;
+
 
 
     public Date getArrivalTime() {
@@ -125,10 +131,33 @@ public class Route {
         return route;
     }
 
-    private void parseJSONObject(JSONObject routeJSON) {
+    private void parseJSONObject(JSONObject route) {
         try {
-            arrivalTime = routeJSON.get("arrivalTime");
+            // Getting arrival time
+            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZZZZ");
+            arrivalTime = dateFormat.parse(route.getString(.getString(R.string.field_arrival_time)));
+            departureTime = dateFormat.parse(route.getString(.getString(R.string.field_departure_time)));
 
+            // Getting start and end coords of route
+            JSONArray startCoordsArray= route.getJSONArray(.getString(R.string.field_start_coords));
+            Double startLat = startCoordsArray.getDouble(0);
+            Double startLong = startCoordsArray.getDouble(1);
+            startLocation = new LocationObject(startLat, startLong);
+
+            JSONArray endCoordsArray= route.getJSONArray(.getString(R.string.field_end_coords));
+            Double endLat = endCoordsArray.getDouble(0);
+            Double endLong = endCoordsArray.getDouble(1);
+            endLocation = new LocationObject(endLat, endLong);
+
+            // Getting bounds for camera
+            JSONArray boundsArray= route.getJSONArray(.getString(R.string.field_bounding_box));
+            maxLatBound = boundsArray.getDouble(0);
+            maxLongBound = boundsArray.getDouble(1);
+            minLatBound = boundsArray.getDouble(2);
+            minLongBound = boundsArray.getDouble(3);
+
+            // Getting number of transfers
+            numTransfers = route.getDouble(.getString(R.string.field_number_of_transfers));
 
         } catch (JSONException e) {
             e.printStackTrace();
