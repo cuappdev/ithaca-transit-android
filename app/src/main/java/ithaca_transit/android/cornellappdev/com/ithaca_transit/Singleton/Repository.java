@@ -1,18 +1,23 @@
 package ithaca_transit.android.cornellappdev.com.ithaca_transit.Singleton;
 
+import android.content.Context;
+
 import java.util.List;
+
 
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.Route;
 
-class Repo {
-    private static final Repo ourInstance = new Repo();
+public class Repository {
+    private static final Repository ourInstance = new Repository();
+
+    private Context context;
 
     private List<Route> routesList;
 
-    private Repo() {
+    private Repository() {
     }
 
-    public static Repo getInstance() {
+    public static Repository getInstance() {
         return ourInstance;
     }
 
@@ -22,5 +27,13 @@ class Repo {
 
     public void setRoutesList(List<Route> routesList) {
         this.routesList = routesList;
+    }
+
+    public Context getContext() {
+        return context;
+    }
+
+    public void setContext(Context context) {
+        this.context = context;
     }
 }

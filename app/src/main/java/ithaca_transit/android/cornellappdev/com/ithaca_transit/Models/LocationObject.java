@@ -62,6 +62,10 @@ public final class LocationObject {
         this(name, "", BLANK_COORD, BLANK_COORD);
     }
 
+    public LocationObject(String name, String id) {
+        this(name, id, BLANK_COORD, BLANK_COORD);
+    }
+
     public LocationObject(Double latitude, Double longitude) {
         this("", "", latitude, longitude);
     }

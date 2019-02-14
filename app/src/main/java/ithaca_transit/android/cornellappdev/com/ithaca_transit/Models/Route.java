@@ -13,6 +13,7 @@ import java.util.Date;
 import java.util.List;
 
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.R;
+import ithaca_transit.android.cornellappdev.com.ithaca_transit.Singleton.Repository;
 
 public class Route {
 
@@ -32,7 +33,6 @@ public class Route {
     // To be drawn on the map, is an ordered list of paths from start to end
     private LatLng[] pathsList;
     private LocationObject startLocation;
-
 
 
     public Date getArrivalTime() {
@@ -135,31 +135,53 @@ public class Route {
         try {
             // Getting arrival time
             DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZZZZ");
-            arrivalTime = dateFormat.parse(route.getString(.getString(R.string.field_arrival_time)));
-            departureTime = dateFormat.parse(route.getString(.getString(R.string.field_departure_time)));
+            arrivalTime = dateFormat.parse(route.getString(Repository.getInstance().getContext()
+                    .getString(R.string.field_arrival_time)));
+            departureTime = dateFormat.parse(route.getString(Repository.getInstance().getContext()
+                    .getString(R.string.field_departure_time)));
 
             // Getting start and end coords of route
-            JSONArray startCoordsArray= route.getJSONArray(.getString(R.string.field_start_coords));
-            Double startLat = startCoordsArray.getDouble(0);
-            Double startLong = startCoordsArray.getDouble(1);
+            JSONObject startCoordsObj = route.getJSONObject(Repository.getInstance().getContext()
+                    .getString(R.string.field_start_coords));
+            Double startLat = startCoordsObj.getDouble(Repository.getInstance().getContext()
+                    .getString(R.string.field_latitude));
+            Double startLong = startCoordsObj.getDouble(Repository.getInstance().getContext()
+                    .getString(R.string.field_longitude));
             startLocation = new LocationObject(startLat, startLong);
 
-            JSONArray endCoordsArray= route.getJSONArray(.getString(R.string.field_end_coords));
-            Double endLat = endCoordsArray.getDouble(0);
-            Double endLong = endCoordsArray.getDouble(1);
+            JSONObject endCoordsObj = route.getJSONObject(Repository.getInstance().getContext()
+                    .getString(R.string.field_end_coords));
+            Double endLat = startCoordsObj.getDouble(Repository.getInstance().getContext()
+                    .getString(R.string.field_latitude));
+            Double endLong = startCoordsObj.getDouble(Repository.getInstance().getContext()
+                    .getString(R.string.field_longitude));
             endLocation = new LocationObject(endLat, endLong);
 
             // Getting bounds for camera
-            JSONArray boundsArray= route.getJSONArray(.getString(R.string.field_bounding_box));
+            JSONArray boundsArray = route.getJSONArray(Repository.getInstance().getContext()
+                    .getString(R.string.field_bounding_box));
             maxLatBound = boundsArray.getDouble(0);
             maxLongBound = boundsArray.getDouble(1);
             minLatBound = boundsArray.getDouble(2);
             minLongBound = boundsArray.getDouble(3);
 
             // Getting number of transfers
-            numTransfers = route.getDouble(.getString(R.string.field_number_of_transfers));
+            numTransfers = route.getInt(Repository.getInstance().getContext()
+                    .getString(R.string.field_number_of_transfers));
+
+            // Getting directions
+            JSONArray arrayDirections = route.getJSONArray(Repository.getInstance().getContext()
+                    .getString(R.string.field_directions));
+            for (int i = 0; i < arrayDirections.length(); i++) {
+                JSONObject obj = arrayDirections.getJSONObject(i);
+                Direction direction;
+                direction = Direction.fromJSON(obj);
+                directions[i] = direction;
+            }
 
         } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
             e.printStackTrace();
         }
 

@@ -67,7 +67,7 @@ public class JSONUtilities {
         try {
             String append = String.format(mainContext.getString(R.string.query_delay),
                     stopID, tripID);
-            JSONObject parentJSON = Networking.getJSON(mainContext.getString(R.string.delay));
+            JSONObject parentJSON = Networking.getJSON(mainContext.getString(R.string.field_delay));
             delay = parentJSON.getInt((mainContext.getString(R.string.field_data)));
 
         } catch (JSONException e) {

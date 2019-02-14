@@ -17,43 +17,27 @@ import org.jetbrains.annotations.NotNull;
 
 
 public final class MapsController implements MainListAdapter.ListAdapterOnClickHandler {
-    @NotNull
     public RecyclerView mRecView;
-    @NotNull
     public SearchView mSearchView;
     private MainListAdapter listAdapter;
     private FragmentManager mManager;
-    @NotNull
     private static final Place place1 = new Place("To Goldwin Smith - Ithaca Commons");
-    @NotNull
     private static final Place place2 = new Place("To Duffield - The Johnson Museum");
-    @NotNull
     private static final Place place3 = new Place("To The Lux - Gates Hall");
-    @NotNull
     private static final Place[] placeList;
-
-    @NotNull
-    public final SearchView getMSearchView() {
-        SearchView var10000 = this.mSearchView;
-        if (this.mSearchView == null) {
-            Intrinsics.throwUninitializedPropertyAccessException("mSearchView");
-        }
-
-        return var10000;
-    }
 
     public final void setDynamicRecyclerView(@NotNull Context context) {
         mRecView.setHasFixedSize(true);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(context, 0, false);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
         mRecView.setLayoutManager((LayoutManager)layoutManager);
         listAdapter = new MainListAdapter(context, (MainListAdapter.ListAdapterOnClickHandler)this, placeList);
         mRecView.setAdapter(listAdapter);
-        mRecView.setVisibility(View.GONE);
+        mRecView.setVisibility(View.VISIBLE);
         listAdapter.notifyDataSetChanged();
     }
 
     public void onClick(int position, @NotNull Place[] list) {
-         OptionsFragment optionsFragment = new OptionsFragment();
+        OptionsFragment optionsFragment = new OptionsFragment();
         FragmentTransaction fragmentTransaction = this.mManager.beginTransaction();
         fragmentTransaction.replace(R.id.container, optionsFragment);
         fragmentTransaction.addToBackStack((String)null);

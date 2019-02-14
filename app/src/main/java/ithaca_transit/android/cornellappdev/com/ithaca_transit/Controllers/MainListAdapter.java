@@ -31,7 +31,6 @@ public final class MainListAdapter extends Adapter {
     @Nullable
     public ViewHolder onCreateViewHolder(@NotNull ViewGroup parent, int viewType) {
         int layoutId = R.layout.card_item_maps;
-        System.out.println("context" + this.mContext);
 
         View view = LayoutInflater.from(this.mContext).inflate(layoutId, parent, false);
         ViewHolder viewHolder = (ViewHolder)(new MainListAdapter.TextAdapterViewHolder(view));
