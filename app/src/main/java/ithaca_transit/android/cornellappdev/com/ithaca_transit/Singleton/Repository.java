@@ -11,7 +11,6 @@ public class Repository {
     private static final Repository ourInstance = new Repository();
 
     private Context context;
-
     private List<Route> routesList;
 
     public static Repository getInstance() {

@@ -2,7 +2,6 @@ package ithaca_transit.android.cornellappdev.com.ithaca_transit.Models;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.R;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Singleton.Repository;
 
@@ -54,6 +53,5 @@ public class BusStop {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
     }
 }

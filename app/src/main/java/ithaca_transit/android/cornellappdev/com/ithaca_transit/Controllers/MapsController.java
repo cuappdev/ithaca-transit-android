@@ -5,14 +5,12 @@ import android.app.FragmentTransaction;
 import android.content.Context;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.RecyclerView.Adapter;
 import android.support.v7.widget.RecyclerView.LayoutManager;
 import android.view.View;
 import android.widget.SearchView;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.OptionsFragment;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.Place;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.R;
-import kotlin.jvm.internal.Intrinsics;
 import org.jetbrains.annotations.NotNull;
 
 
@@ -25,6 +23,7 @@ public final class MapsController implements MainListAdapter.ListAdapterOnClickH
     private static final Place place2 = new Place("To Duffield - The Johnson Museum");
     private static final Place place3 = new Place("To The Lux - Gates Hall");
     private static final Place[] placeList = new Place[]{place1, place2, place3};;
+
 
     public final void setDynamicRecyclerView(@NotNull Context context) {
         mRecView.setHasFixedSize(true);
@@ -48,5 +47,4 @@ public final class MapsController implements MainListAdapter.ListAdapterOnClickH
         super();
         this.mManager = manager;
     }
-
 }
