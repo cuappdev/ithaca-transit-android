@@ -178,13 +178,10 @@ public class Route {
                 direction = Direction.fromJSON(obj);
                 directions[i] = direction;
             }
-
         } catch (JSONException e) {
             e.printStackTrace();
         } catch (ParseException e) {
             e.printStackTrace();
         }
-
     }
-
 }

@@ -24,7 +24,7 @@ public final class MapsController implements MainListAdapter.ListAdapterOnClickH
     private static final Place place1 = new Place("To Goldwin Smith - Ithaca Commons");
     private static final Place place2 = new Place("To Duffield - The Johnson Museum");
     private static final Place place3 = new Place("To The Lux - Gates Hall");
-    private static final Place[] placeList;
+    private static final Place[] placeList = new Place[]{place1, place2, place3};;
 
     public final void setDynamicRecyclerView(@NotNull Context context) {
         mRecView.setHasFixedSize(true);
@@ -47,10 +47,6 @@ public final class MapsController implements MainListAdapter.ListAdapterOnClickH
     public MapsController(@NotNull FragmentManager manager) {
         super();
         this.mManager = manager;
-    }
-
-    static {
-        placeList = new Place[]{place1, place2, place3};
     }
 
 }

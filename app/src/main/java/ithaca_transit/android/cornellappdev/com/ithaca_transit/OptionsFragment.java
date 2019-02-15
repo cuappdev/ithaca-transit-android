@@ -8,8 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.widget.TextView;
-import ithaca_transit.android.cornellappdev.com.ithaca_transit.R.id;
-import java.util.HashMap;
 
 import kotlin.jvm.internal.Intrinsics;
 import org.jetbrains.annotations.NotNull;
@@ -19,7 +17,6 @@ import org.jetbrains.annotations.Nullable;
 public final class OptionsFragment extends Fragment {
     @NotNull
     public TextView allRoutesText;
-
 
     @NotNull
     public final TextView getAllRoutesText() {

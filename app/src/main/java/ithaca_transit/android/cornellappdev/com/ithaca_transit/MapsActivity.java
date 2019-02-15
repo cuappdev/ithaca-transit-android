@@ -60,7 +60,6 @@ public final class MapsActivity extends AppCompatActivity implements OnMapReadyC
             public final void onMapLongClick(LatLng latLng) {
                 String snippet = String.format(Locale.getDefault(),
                         "Lat: %1$.5f, Long: %2$.5f", latLng.latitude, latLng.longitude);
-                ;
                 map.addMarker((new MarkerOptions()).position(latLng)
                         .title(MapsActivity.this.getString(R.string.app_name)).snippet(snippet));
             }
@@ -98,10 +97,8 @@ public final class MapsActivity extends AppCompatActivity implements OnMapReadyC
                         LatLng currentLatLng = new LatLng(location.getLatitude(), location.getLongitude());
                         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 14.0F));
                     }
-
                 }
             }));
         }
     }
-
 }

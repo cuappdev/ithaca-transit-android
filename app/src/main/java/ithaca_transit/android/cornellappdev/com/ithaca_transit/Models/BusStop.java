@@ -1,7 +1,5 @@
 package ithaca_transit.android.cornellappdev.com.ithaca_transit.Models;
 
-import android.content.Context;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -12,10 +10,6 @@ public class BusStop {
     private Double latitude;
     private Double longitude;
     private String stopName;
-
-    public BusStop() {
-
-    }
 
     public String getStopName() {
         return stopName;

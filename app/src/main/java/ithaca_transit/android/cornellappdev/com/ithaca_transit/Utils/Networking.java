@@ -35,8 +35,7 @@ public final class Networking {
 
             String json = buffer.toString();
             return new JSONObject(json);
-
-        }catch (IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
             return null;
         } catch (JSONException e) {

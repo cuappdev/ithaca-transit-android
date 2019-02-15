@@ -14,9 +14,6 @@ public class Repository {
 
     private List<Route> routesList;
 
-    private Repository() {
-    }
-
     public static Repository getInstance() {
         return ourInstance;
     }
