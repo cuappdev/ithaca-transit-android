@@ -53,9 +53,4 @@
         android:text="@string/all_routes"
         android:id="@+id/allRoutes"
         />
-
-
-
-
-
 </RelativeLayout>

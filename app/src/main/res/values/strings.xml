@@ -10,7 +10,7 @@
     <string name="field_distance">distance</string>
     <string name="field_end_coords">endCoords</string>
     <string name="field_end_time">endTime</string>
-    <string name="field_id">name</string>
+    <string name="field_id">id</string>
     <string name="field_latitude">lat</string>
     <string name="field_longitude">long</string>
     <string name="field_name">name</string>

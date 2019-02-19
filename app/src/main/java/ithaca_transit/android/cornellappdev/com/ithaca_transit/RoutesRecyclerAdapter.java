@@ -14,6 +14,8 @@ import org.jetbrains.annotations.NotNull;
 
 
 public final class RoutesRecyclerAdapter extends RecyclerView.Adapter<RoutesRecyclerAdapter.ViewHolder> {
+
+    // Hardcoded placeholders
     private final String[] durations = new String[]{"8:30 - 8:45", "8:50 - 9:10", "9:10 - 9:30"};
     private final String[] descriptions = new String[]{"via Campus Road", "Via University Ave", "via West Ave"};
 

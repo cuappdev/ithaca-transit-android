@@ -1,12 +1,24 @@
 package ithaca_transit.android.cornellappdev.com.ithaca_transit.Models;
 
-public final class Place {
+public final class Place extends LocationObject{
     private String detail;
     private String detailKey;
     private String name;
     private String nameKey;
     private String placeID;
     private String placeIDKey;
+
+    public Place(String name) {
+        super();
+        this.name = name;
+    }
+
+    public Place(String name, String detail, String placeID) {
+        super();
+        this.detail = detail;
+        this.name = name;
+        this.placeID = placeID;
+    }
 
     public final String getDetail() {
         return this.detail;
@@ -42,17 +54,5 @@ public final class Place {
 
     public final String getPlaceIDKey() {
         return this.placeIDKey;
-    }
-
-    public Place(String name) {
-        super();
-        this.name = name;
-    }
-
-    public Place(String name, String detail, String placeID) {
-        super();
-        this.detail = detail;
-        this.name = name;
-        this.placeID = placeID;
     }
 }

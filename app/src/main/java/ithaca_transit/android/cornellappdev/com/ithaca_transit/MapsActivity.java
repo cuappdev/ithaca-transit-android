@@ -6,7 +6,6 @@ import android.content.Context;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.widget.SearchView;
@@ -22,18 +21,17 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 
-import ithaca_transit.android.cornellappdev.com.ithaca_transit.Controllers.MapsController;
+import ithaca_transit.android.cornellappdev.com.ithaca_transit.Presenters.MapsPresenter;
 
 import java.util.Locale;
 
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Singleton.Repository;
-import kotlin.TypeCastException;
 
 
 public final class MapsActivity extends AppCompatActivity implements OnMapReadyCallback {
     private FusedLocationProviderClient fusedLocationClient;
     private Location lastLocation;
-    public MapsController mController;
+    public MapsPresenter mController;
     private GoogleMap mMap;
     private RecyclerView mRecView;
     private SearchView mSearchView;
@@ -44,7 +42,7 @@ public final class MapsActivity extends AppCompatActivity implements OnMapReadyC
         fusedLocationClient = LocationServices.getFusedLocationProviderClient((Activity) this);
         FragmentManager manager = this.getFragmentManager();
         Repository.getInstance().setContext(this);
-        mController = new MapsController(manager);
+        mController = new MapsPresenter(manager);
 
         SupportMapFragment mapFragment = (SupportMapFragment) this.getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync((OnMapReadyCallback) this);
@@ -75,6 +73,7 @@ public final class MapsActivity extends AppCompatActivity implements OnMapReadyC
         mMap = googleMap;
         setMapLongClick(mMap);
         setUpMap();
+        Repository.getInstance().setMap(mMap);
     }
 
     private final void setUpMap() {
@@ -85,8 +84,6 @@ public final class MapsActivity extends AppCompatActivity implements OnMapReadyC
             mMap.setMyLocationEnabled(true);
             mMap.getUiSettings().setMyLocationButtonEnabled(false);
             fusedLocationClient.getLastLocation().addOnSuccessListener((Activity) this, (OnSuccessListener) (new OnSuccessListener() {
-                // $FF: synthetic method
-                // $FF: bridge method
                 public void onSuccess(Object var1) {
                     this.onSuccess((Location) var1);
                 }
