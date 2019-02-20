@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="2dp"
+    >
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/routeDetailsCV"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardBackgroundColor="@color/white"
+        app:cardCornerRadius="1dp"
+        app:cardElevation="1dp"
+        app:cardPreventCornerOverlap="true"
+        app:cardUseCompatPadding="true">
+
+        <RelativeLayout
+            android:id="@+id/rlayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:id="@+id/duration"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentLeft="true"
+                android:text=""
+                android:textSize="16sp"
+                android:layout_marginTop="8dp"
+                android:layout_marginLeft="8dp"
+                android:textColor="@color/black"
+                />
+
+            <TextView
+                android:id="@+id/route_description"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/duration"
+                android:layout_marginLeft="8dp"
+                android:paddingRight="48dp"
+                android:text=""
+                android:textSize="14sp"
+                android:textStyle="normal"
+                android:textColor="@color/routeDetails"/>
+            <ListView
+                android:id="@+id/directions"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:layout_marginLeft="60dp"
+                android:layout_marginTop="8dp"
+                android:layout_below="@id/route_description"
+                android:background="@android:color/transparent"
+                android:cacheColorHint="@android:color/transparent"
+                android:divider="@color/white"
+                android:dividerHeight="0dp"
+                android:paddingLeft="2dp" >
+            </ListView>
+        </RelativeLayout>
+    </android.support.v7.widget.CardView>
+</LinearLayout>
