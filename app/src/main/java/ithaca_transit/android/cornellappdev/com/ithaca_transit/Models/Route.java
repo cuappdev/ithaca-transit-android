@@ -30,8 +30,6 @@ public class Route {
 
     private int numTransfers;
 
-    // To be drawn on the map, is an ordered list of paths from start to end
-    private LatLng[] pathsList;
     private LocationObject startLocation;
 
 
@@ -114,15 +112,6 @@ public class Route {
     public void setStartLocation(LocationObject startLocation) {
         this.startLocation = startLocation;
     }
-
-    public LatLng[] getPathsList() {
-        return pathsList;
-    }
-
-    public void setPathsList(LatLng[] pathsList) {
-        this.pathsList = pathsList;
-    }
-
 
     public static Route fromJSON(JSONObject routeJSON)
             throws JSONException {

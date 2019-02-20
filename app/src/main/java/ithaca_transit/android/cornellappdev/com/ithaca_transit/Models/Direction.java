@@ -139,14 +139,29 @@ public final class Direction {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-
     }
 
+    public DirectionType getType() {
+        return type;
+    }
+
+    public void setType(DirectionType type) {
+        this.type = type;
+    }
+
+    public LatLng[] getPath() {
+        return path;
+    }
+
+    public void setPath(LatLng[] path) {
+        this.path = path;
+    }
+
+    public enum DirectionType {
+        ARRIVE,
+        DEPART,
+        TRANSFER,
+        WALK;
+    }
 }
 
-enum DirectionType {
-    ARRIVE,
-    DEPART,
-    TRANSFER,
-    WALK;
-}
