@@ -14,9 +14,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:name=".Utils.App"
         android:theme="@style/Theme.Design.NoActionBar">
-
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
