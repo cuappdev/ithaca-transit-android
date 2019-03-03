@@ -15,10 +15,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 
-public final class MainListAdapter extends Adapter {
+public final class FavoritesListAdapter extends Adapter {
     private String mQuery;
     private Context mContext;
-    private final MainListAdapter.ListAdapterOnClickHandler mListAdapterOnClickHandler;
+    private final FavoritesListAdapter.ListAdapterOnClickHandler mListAdapterOnClickHandler;
     private Place[] mPlaceList;
 
     public final void setList(@NotNull Place[] list, @NotNull String query) {
@@ -32,7 +32,7 @@ public final class MainListAdapter extends Adapter {
         int layoutId = R.layout.card_item_maps;
 
         View view = LayoutInflater.from(this.mContext).inflate(layoutId, parent, false);
-        ViewHolder viewHolder = (ViewHolder)(new MainListAdapter.TextAdapterViewHolder(view));
+        ViewHolder viewHolder = (ViewHolder)(new FavoritesListAdapter.TextAdapterViewHolder(view));
         return viewHolder;
     }
 
@@ -42,14 +42,14 @@ public final class MainListAdapter extends Adapter {
 
     public void onBindViewHolder(@Nullable ViewHolder holder, int position) {
         if (holder == null) {
-            throw new TypeCastException("null cannot be cast to non-null type com.cornellappdev.android.eatery.MainListAdapter.TextAdapterViewHolder");
+            throw new TypeCastException("null cannot be cast to non-null type com.cornellappdev.android.eatery.FavoritesFavoritesListAdapter.TextAdapterViewHolder");
         } else {
-            MainListAdapter.TextAdapterViewHolder holder2 = (MainListAdapter.TextAdapterViewHolder)holder;
+            FavoritesListAdapter.TextAdapterViewHolder holder2 = (FavoritesListAdapter.TextAdapterViewHolder)holder;
             holder2.getPlaceName().setText((CharSequence)this.mPlaceList[position].getName());
         }
     }
 
-    public MainListAdapter(@NotNull Context mContext, @NotNull MainListAdapter.ListAdapterOnClickHandler mListAdapterOnClickHandler, @NotNull Place[] mPlaceList) {
+    public FavoritesListAdapter(@NotNull Context mContext, @NotNull FavoritesListAdapter.ListAdapterOnClickHandler mListAdapterOnClickHandler, @NotNull Place[] mPlaceList) {
         super();
         this.mContext = mContext;
         this.mListAdapterOnClickHandler = mListAdapterOnClickHandler;
@@ -72,7 +72,7 @@ public final class MainListAdapter extends Adapter {
 
         public void onClick(@NotNull View v) {
             int adapterPosition = this.getAdapterPosition();
-            MainListAdapter.this.mListAdapterOnClickHandler.onClick(adapterPosition, MainListAdapter.this.mPlaceList);
+            FavoritesListAdapter.this.mListAdapterOnClickHandler.onClick(adapterPosition, FavoritesListAdapter.this.mPlaceList);
         }
 
         public TextAdapterViewHolder(@NotNull View itemView) {

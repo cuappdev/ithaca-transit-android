@@ -21,9 +21,14 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 
+import com.appdev.futurenovajava.APIResponse;
+import com.appdev.futurenovajava.Endpoint;
+import com.appdev.futurenovajava.FutureNovaRequest;
+
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Presenters.MapsPresenter;
 
 import java.util.Locale;
+import java.util.Optional;
 
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Singleton.Repository;
 
@@ -37,6 +42,7 @@ public final class MapsActivity extends AppCompatActivity implements OnMapReadyC
     private SearchView mSearchView;
 
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
         fusedLocationClient = LocationServices.getFusedLocationProviderClient((Activity) this);

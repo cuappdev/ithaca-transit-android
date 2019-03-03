@@ -32,7 +32,7 @@ import java.util.HashMap;
 import java.util.List;
 
 
-public final class MapsPresenter implements MainListAdapter.ListAdapterOnClickHandler, GoogleMap.OnPolylineClickListener {
+public final class MapsPresenter implements FavoritesListAdapter.ListAdapterOnClickHandler, GoogleMap.OnPolylineClickListener {
     public static final PatternItem DOT = new Dot();
     public static final List<PatternItem> PATTERN_DOT_LIST = Arrays.asList(DOT);
 
@@ -44,7 +44,7 @@ public final class MapsPresenter implements MainListAdapter.ListAdapterOnClickHa
 
     public RecyclerView mRecView;
     public SearchView mSearchView;
-    private MainListAdapter listAdapter;
+    private FavoritesListAdapter listAdapter;
     private FragmentManager mManager;
 
     // Maps a polyline to the route it is a component of
@@ -63,7 +63,7 @@ public final class MapsPresenter implements MainListAdapter.ListAdapterOnClickHa
         mRecView.setHasFixedSize(true);
         LinearLayoutManager layoutManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
         mRecView.setLayoutManager((LayoutManager) layoutManager);
-        listAdapter = new MainListAdapter(context, (MainListAdapter.ListAdapterOnClickHandler) this, placeList);
+        listAdapter = new FavoritesListAdapter(context, (FavoritesListAdapter.ListAdapterOnClickHandler) this, placeList);
         mRecView.setAdapter(listAdapter);
         mRecView.setVisibility(View.VISIBLE);
         listAdapter.notifyDataSetChanged();
