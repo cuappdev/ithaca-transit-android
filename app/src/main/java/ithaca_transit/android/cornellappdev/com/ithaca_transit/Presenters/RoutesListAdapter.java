@@ -5,16 +5,20 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.Direction;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.Route;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.R;
 
@@ -70,34 +74,15 @@ public class RoutesListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         ListAdapterViewHolder holder2 = (ListAdapterViewHolder) input_holder;
         //holder2.duration = routeModel.getArrivalTime()
 
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(routeModel.getArrivalTime());
-        int arrivalHour = calendar.get(Calendar.HOUR_OF_DAY);
-        int arrivalMintues = calendar.get(Calendar.MINUTE);
-
-        calendar.setTime(routeModel.getDepartureTime());
-        int departureHour = calendar.get(Calendar.HOUR_OF_DAY);
-        int departureMinutes = calendar.get(Calendar.MINUTE);
+        holder2.duration.setText(routeModel.getDuration());
+        holder2.route_description.setText(routeModel.getDescription());
 
 
-        String arrivalAppend;
-        String departureAppend;
+        //if direction is walking from start to end, do this
+        //if bus then walking, do this
 
-        if(arrivalHour > 11){
-            arrivalAppend = "PM";
-        }
-        else{
-            arrivalAppend = "AM";
-        }
 
-        if(departureHour > 11){
-            departureAppend = "PM";
-        }
-        else{
-            departureAppend = "AM";
-        }
-        holder2.duration.setText(arrivalHour + ":" + arrivalMintues + arrivalAppend + "-" +
-                departureHour + departureAppend +":" + departureMinutes);
+        //holder2.directions.setAdapter();
 
     }
 
@@ -126,4 +111,5 @@ public class RoutesListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             mListAdapterOnClickHandler.onClick(adapterPosition, mRoutesList);
         }
     }
+
 }

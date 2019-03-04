@@ -9,18 +9,23 @@ import org.json.JSONObject;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.StringJoiner;
 
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.R;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Singleton.Repository;
+
+import static java.time.LocalDate.now;
 
 public class Route {
 
     private Date arrivalTime;
     private Date departureTime;
     private Direction[] directions;
-    private LocationObject endLocation;
+    private Place endLocation;
 
     // Used to center the camera on the selected route
     private Double maxLatBound;
@@ -30,7 +35,7 @@ public class Route {
 
     private int numTransfers;
 
-    private LocationObject startLocation;
+    private Place startLocation;
 
 
     public Date getArrivalTime() {
@@ -172,6 +177,87 @@ public class Route {
         } catch (ParseException e) {
             e.printStackTrace();
         }
+    }
+
+    // Determine if a route only contains walk directions
+    public boolean isWalkOnlyRoute(){
+        boolean walkOnlyRoute = true;
+        int count = 0;
+        while(walkOnlyRoute){
+            if(directions[count].getType().equals(Direction.DirectionType.DEPART)){
+                walkOnlyRoute = false;
+            }
+            count++;
+        }
+        return walkOnlyRoute;
+    }
+
+
+    public String getDescription(){
+        String description = "";
+
+        if(isWalkOnlyRoute()){
+            String append = " , ";
+            boolean firstItem = true;
+            for(Direction direction: directions){
+                if(firstItem){
+                    description = direction.getName();
+                    firstItem = false;
+                }
+                description = description + append + direction.getName();
+            }
+        }
+        else{
+            description = "Board";
+            Calendar calendar = Calendar.getInstance();
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ssz");
+            Date now = new Date(System.currentTimeMillis());
+            calendar.setTime(now);
+            Date currentDate = calendar.getTime();
+
+            if(departureTime.getDay() - currentDate.getDay() > 1){
+                description = description + " on " + currentDate.getMonth() + "/" + departureTime.getDay();
+            }
+            else if(departureTime.getHours() - currentDate.getHours() > 1){
+                description = description + " in " + (currentDate.getHours() - departureTime.getHours());
+            }
+            else{
+                description = description + " in " + (departureTime.getMinutes() - currentDate.getMinutes());
+            }
+        }
+
+        return description;
+    }
+
+    public String getDuration(){
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(arrivalTime);
+        int arrivalHour = calendar.get(Calendar.HOUR_OF_DAY);
+        int arrivalMintues = calendar.get(Calendar.MINUTE);
+
+        calendar.setTime(departureTime);
+        int departureHour = calendar.get(Calendar.HOUR_OF_DAY);
+        int departureMinutes = calendar.get(Calendar.MINUTE);
+
+        String arrivalAppend;
+        String departureAppend;
+
+        if(arrivalHour > 11){
+            arrivalAppend = "PM";
+        }
+        else{
+            arrivalAppend = "AM";
+        }
+
+        if(departureHour > 11){
+            departureAppend = "PM";
+        }
+        else{
+            departureAppend = "AM";
+        }
+
+        return arrivalHour + ":" + arrivalMintues + arrivalAppend + "-" +
+                departureHour + departureAppend +":" + departureMinutes;
     }
 }
 

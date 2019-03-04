@@ -163,5 +163,9 @@ public final class Direction {
         TRANSFER,
         WALK;
     }
+
+    public String getName() {
+        return name;
+    }
 }
 
