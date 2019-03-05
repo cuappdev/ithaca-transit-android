@@ -6,6 +6,13 @@ public class BoundingBox {
     private Double maxLong;
     private Double minLong;
 
+    public BoundingBox(Double maxLat, Double minLat, Double maxLong, Double minLong) {
+        this.maxLat = maxLat;
+        this.minLat = minLat;
+        this.maxLong = maxLong;
+        this.minLong = minLong;
+    }
+
     public Double getMaxLat() {
         return maxLat;
     }

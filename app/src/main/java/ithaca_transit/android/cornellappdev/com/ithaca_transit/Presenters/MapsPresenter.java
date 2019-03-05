@@ -11,7 +11,9 @@ import android.support.v7.widget.RecyclerView.LayoutManager;
 import android.view.View;
 import android.widget.SearchView;
 
+import com.appdev.futurenovajava.APIResponse;
 import com.appdev.futurenovajava.Endpoint;
+import com.appdev.futurenovajava.FutureNovaRequest;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.Dot;
 import com.google.android.gms.maps.model.LatLng;
@@ -24,6 +26,8 @@ import ithaca_transit.android.cornellappdev.com.ithaca_transit.Adapters.RoutesLi
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Enums.DirectionType;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.ExtendedFragment;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.MapsActivity;
+import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.Bus;
+import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.BusStop;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.Coordinate;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.Direction;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.Favorite;
@@ -44,6 +48,7 @@ import java.util.List;
 public final class MapsPresenter implements FavoritesListAdapter.ListAdapterOnClickHandler, GoogleMap.OnPolylineClickListener {
     public static final PatternItem DOT = new Dot();
     public static final List<PatternItem> PATTERN_DOT_LIST = Arrays.asList(DOT);
+    private static final Repository REPOSITORY = Repository.ourInstance;
 
     // Hardcoded data for favorites
     private static final Place goldwin = new Place(42.4491,-76.4835, "Goldwin");
@@ -62,7 +67,6 @@ public final class MapsPresenter implements FavoritesListAdapter.ListAdapterOnCl
     public RecyclerView mRecView;
     public SearchView mSearchView;
 
-
     // Maps a polyline to its parent route
     private HashMap<Polyline, Route> polylineMap = new HashMap<Polyline, Route>();;
 
@@ -74,6 +78,7 @@ public final class MapsPresenter implements FavoritesListAdapter.ListAdapterOnCl
         mContext = context;
         mManager = manager;
         mConfig = config;
+
     }
 
 
@@ -82,7 +87,7 @@ public final class MapsPresenter implements FavoritesListAdapter.ListAdapterOnCl
         LinearLayoutManager layoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false);
         mRecView.setLayoutManager((LayoutManager) layoutManager);
         favoriteListAdapter = new FavoritesListAdapter(mContext, (FavoritesListAdapter.ListAdapterOnClickHandler) this,
-                favoriteList, mConfig);
+                favoriteList, mConfig, REPOSITORY);
         mRecView.setAdapter(favoriteListAdapter);
         mRecView.setVisibility(View.VISIBLE);
         favoriteListAdapter.notifyDataSetChanged();
@@ -97,19 +102,24 @@ public final class MapsPresenter implements FavoritesListAdapter.ListAdapterOnCl
         fragmentTransaction.commit();
         mManager.executePendingTransactions();
 
+        System.out.println("after"+favoriteListAdapter.getmAllRoutesToFavorites());
+
         // Selecting Route given from favorite
-        Repository.ourInstance.setSelectedRoute(favoriteListAdapter.getOptimalRoutes()[position]);
-        if(favoriteListAdapter.getOptimalRoutes()[position] == null){
+        REPOSITORY.setSelectedRoute(favoriteListAdapter.getOptimalRoutes()[position]);
+        if(favoriteListAdapter.getOptimalRoutes() == null){
             System.out.println("null value at list");
         }
-        drawSelectedRoute();
 
+        System.out.println("SiZe DoeSn'T" + favoriteListAdapter.getOptimalRoutes().length);
+
+        REPOSITORY.setRoutesList(favoriteListAdapter.getmAllRoutesToFavorites().get(position));
+        drawSelectedRoute();
 
         // Setting up Extended Fragment
         RecyclerView recyclerView = ((MapsActivity)mContext).findViewById(R.id.routes);
         recyclerView.setLayoutManager((new LinearLayoutManager(mContext, 1, false)));
         routeOptionsListAdapter = new RoutesListAdapter(mContext, this,
-                Repository.ourInstance.getRoutesList().length, Repository.ourInstance.getRoutesList());
+                REPOSITORY.getRoutesList().length, REPOSITORY.getRoutesList());
         recyclerView.setAdapter(routeOptionsListAdapter);
 
     }
@@ -117,13 +127,13 @@ public final class MapsPresenter implements FavoritesListAdapter.ListAdapterOnCl
     public void removeAllRoutes() {
         // Remove all lines from map when new route gets selected
         polylineMap.clear();
-        Repository.ourInstance.getMap().clear();
+        REPOSITORY.getMap().clear();
     }
 
     // Removes bus route currently displayed on screen
     // Called when a user selects a route to display from route options
     public void removeSelectdRoute() {
-        Route previousRoute = Repository.ourInstance.getSelectedRoute();
+        Route previousRoute = REPOSITORY.getSelectedRoute();
         List<Polyline> polylines = routeMap.get(previousRoute);
 
         for(Polyline polyline:polylines){
@@ -134,19 +144,19 @@ public final class MapsPresenter implements FavoritesListAdapter.ListAdapterOnCl
 
 
     public void drawSelectedRoute() {
-        Route route = Repository.ourInstance.getSelectedRoute();
+        Route route = REPOSITORY.getSelectedRoute();
         PolylineOptions polylineOptions = new PolylineOptions();
         polylineOptions.color(Color.BLUE);
         polylineOptions.clickable(true);
 
-        if(Repository.ourInstance.getSelectedRoute() == null){
-            System.out.println("null");
+        if(REPOSITORY.getSelectedRoute() == null){
+            System.out.println("null selected");
         }
         else{
-            System.out.println(Repository.ourInstance.getSelectedRoute());
+            System.out.println(REPOSITORY.getSelectedRoute());
         }
 
-        List<Direction> directionList = Arrays.asList(Repository.ourInstance.getSelectedRoute().getDirections());
+        List<Direction> directionList = Arrays.asList(REPOSITORY.getSelectedRoute().getDirections());
         ArrayList<Polyline> polylineList = new ArrayList<Polyline>();
 
         for (Direction direction : directionList) {
@@ -164,15 +174,15 @@ public final class MapsPresenter implements FavoritesListAdapter.ListAdapterOnCl
             }
 
             // Drawing sub-polyline on map
-            Polyline polyline = Repository.ourInstance.getMap().addPolyline(polylineOptions);
+            Polyline polyline = REPOSITORY.getMap().addPolyline(polylineOptions);
             polylineList.add(polyline);
             polylineMap.put(polyline, route);
         }
     }
 
     public void drawWalkRoute() {
-        int idxLast =  Repository.ourInstance.getRoutesList().length;
-        Route route = Repository.ourInstance.getRoutesList()[idxLast];
+        int idxLast =  REPOSITORY.getRoutesList().length;
+        Route route = REPOSITORY.getRoutesList()[idxLast];
 
         PolylineOptions polylineOptions = new PolylineOptions();
         polylineOptions.pattern(PATTERN_DOT_LIST);
@@ -189,7 +199,7 @@ public final class MapsPresenter implements FavoritesListAdapter.ListAdapterOnCl
         }
 
         // Drawing route on map
-        Polyline polyline = Repository.ourInstance.getMap().addPolyline(polylineOptions);
+        Polyline polyline = REPOSITORY.getMap().addPolyline(polylineOptions);
         polylineMap.put(polyline, route);
         routeMap.put(route, Collections.singletonList(polyline));
 
@@ -198,14 +208,14 @@ public final class MapsPresenter implements FavoritesListAdapter.ListAdapterOnCl
     @Override
     public void onPolylineClick(Polyline polyline) {
         // Change color of previously selected route
-        Route previousRoute = Repository.ourInstance.getSelectedRoute();
+        Route previousRoute = REPOSITORY.getSelectedRoute();
         for(Polyline sub_polyline: routeMap.get(previousRoute)){
             sub_polyline.setColor(Color.GRAY);
         }
 
         // Update value, color of selected route
         Route newRoute = polylineMap.get(polyline);
-        Repository.ourInstance.setSelectedRoute(newRoute);
+        REPOSITORY.setSelectedRoute(newRoute);
 
         for(Polyline sub_polyline: routeMap.get(newRoute)){
             sub_polyline.setColor(Color.BLUE);
@@ -213,7 +223,7 @@ public final class MapsPresenter implements FavoritesListAdapter.ListAdapterOnCl
     }
 
     public void onRouteClick(int adapterPosition, Route[] routeArrayList){
-        Repository.ourInstance.setSelectedRoute(routeArrayList[adapterPosition]);
+        REPOSITORY.setSelectedRoute(routeArrayList[adapterPosition]);
         drawSelectedRoute();
         drawWalkRoute();
     }

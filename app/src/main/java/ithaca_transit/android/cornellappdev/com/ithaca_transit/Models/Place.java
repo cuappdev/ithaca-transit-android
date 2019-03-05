@@ -55,8 +55,12 @@ public final class Place {
         return placeID;
 
     }
-
     public String getType() {
         return type;
+    }
+
+    @Override
+    public String toString() {
+        return latitude + "," + longitude;
     }
 }

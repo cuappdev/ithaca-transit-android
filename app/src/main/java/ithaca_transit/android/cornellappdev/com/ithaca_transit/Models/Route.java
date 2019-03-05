@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.StringJoiner;
+import java.util.TimeZone;
 
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Enums.DirectionType;
 
@@ -84,8 +85,9 @@ public class Route {
 
     public String getDuration(){
         Calendar calendar = Calendar.getInstance();
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZZZZ");
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
         try {
+            calendar.setTimeZone(TimeZone.getTimeZone("America/NewYork"));
             calendar.setTime(format.parse(arrivalTime));
             int arrivalHour = calendar.get(Calendar.HOUR_OF_DAY);
             int arrivalMintues = calendar.get(Calendar.MINUTE);
@@ -99,6 +101,8 @@ public class Route {
 
             if(arrivalHour > 11){
                 arrivalAppend = "PM";
+                arrivalHour = arrivalHour - 12;
+
             }
             else{
                 arrivalAppend = "AM";
@@ -106,13 +110,24 @@ public class Route {
 
             if(departureHour > 11){
                 departureAppend = "PM";
+                departureHour = departureHour - 12;
             }
             else{
                 departureAppend = "AM";
             }
 
-            return arrivalHour + ":" + arrivalMintues + arrivalAppend + "-" +
-                    departureHour + departureAppend +":" + departureMinutes;
+            String departureZero = "";
+            if(departureMinutes < 10){
+                departureZero = "0";
+            }
+
+            String arrivalZero = "";
+            if(arrivalMintues < 10){
+                arrivalZero = "0";
+            }
+
+            return departureHour + ":" + departureZero + departureMinutes + " " + departureAppend + "--"
+                + arrivalHour + ":" + arrivalZero + arrivalMintues + " "  + arrivalAppend;
         } catch (ParseException e) {
             e.printStackTrace();
         }

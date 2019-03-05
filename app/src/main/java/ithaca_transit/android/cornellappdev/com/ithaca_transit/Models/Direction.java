@@ -12,18 +12,17 @@ public final class Direction {
     private static final LocationObject BLANK_LOCATION = new LocationObject();
     private static final Date BLANK_TIME = new Date();
 
-    private Integer delay;
+    private int delay;
     private Double distance;
     private Coordinate endLocation;
     private Date endTime;
     private String name;
     private Coordinate[] path;
-    private Integer routeNumber;
+    private int routeNumber;
     private Coordinate startLocation;
     private Date startTime;
     private Boolean stayOnBusForTransfer;
     private Place[] stops;
-    private Double travelDistance;
     private String[] tripIdentifiers;
     private String type;
 
@@ -90,10 +89,6 @@ public final class Direction {
 
     public Place[] getStops() {
         return stops;
-    }
-
-    public Double getTravelDistance() {
-        return travelDistance;
     }
 
     public String[] getTripIdentifiers() {
