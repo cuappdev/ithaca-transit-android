@@ -10,16 +10,12 @@ import java.util.List;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.Route;
 
 public class Repository {
-    private static final Repository ourInstance = new Repository();
+    public static final Repository ourInstance = new Repository();
 
     private Context context;
     private GoogleMap map;
     private Route selectedRoute;
     private Route[] routesList;
-
-    public static Repository getInstance() {
-        return ourInstance;
-    }
 
     public Route[] getRoutesList() {
         return routesList;

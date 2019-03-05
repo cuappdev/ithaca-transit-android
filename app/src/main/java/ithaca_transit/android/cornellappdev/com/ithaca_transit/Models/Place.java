@@ -2,6 +2,7 @@ package ithaca_transit.android.cornellappdev.com.ithaca_transit.Models;
 
 import com.google.gson.annotations.SerializedName;
 
+
 public final class Place {
     private String detail;
 
@@ -14,11 +15,13 @@ public final class Place {
     private String placeID;
     private String type;
 
+
     public Place(String detail, Double latitude, Double longitude, String name, String placeID, String type) {
+        this.type = type;
+        this.name = name;
         this.detail = detail;
         this.latitude = latitude;
         this.longitude = longitude;
-        this.name = name;
         this.placeID = placeID;
         this.type = type;
     }
@@ -27,6 +30,9 @@ public final class Place {
         this.latitude = latitude;
         this.longitude = longitude;
         this.name = name;
+    }
+    public Place(String detail) {
+        this.detail = detail;
     }
 
     public String getDetail() {

@@ -1,6 +1,8 @@
 package ithaca_transit.android.cornellappdev.com.ithaca_transit.Utils;
 
 import android.content.Context;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 
 import com.google.android.gms.maps.model.LatLng;
 
@@ -9,10 +11,13 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.Bus;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.BusStop;
+import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.LocationObject;
+import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.Place;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.Route;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.R;
 
@@ -45,7 +50,7 @@ public class JSONUtilities {
         try {
             String append = String.format(mainContext.getString(R.string.query_delay),
                     stopID, tripID);
-            JSONObject parentJSON = Networking.getJSON(mainContext.getString(R.string.field_delay));
+            JSONObject parentJSON = Networking.getJSON(append);
             delay = parentJSON.getInt((mainContext.getString(R.string.field_data)));
 
         } catch (JSONException e) {
@@ -53,4 +58,5 @@ public class JSONUtilities {
         }
         return delay;
     }
+  
 }
