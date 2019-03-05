@@ -32,12 +32,18 @@ import com.appdev.futurenovajava.APIResponse;
 import com.appdev.futurenovajava.Endpoint;
 import com.appdev.futurenovajava.FutureNovaRequest;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.LocationObject;
+import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.Place;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Presenters.MapsPresenter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Optional;
 
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Singleton.Repository;
@@ -58,7 +64,6 @@ public final class MapsActivity extends AppCompatActivity implements OnMapReadyC
     private FloatingSearchView mSearchView;
 
     protected void onCreate(Bundle savedInstanceState) {
-
         //Set once and then done
         Endpoint.Config config = new Endpoint.Config();
         config.scheme = Optional.of("https");
@@ -97,7 +102,6 @@ public final class MapsActivity extends AppCompatActivity implements OnMapReadyC
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-
             final RequestBody requestBody = RequestBody.create(MediaType.get("application/json; charset=utf-8"), searchJSON.toString());
 
             Endpoint searchEndpoint = new Endpoint()

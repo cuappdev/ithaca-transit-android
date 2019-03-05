@@ -30,7 +30,6 @@ public final class Place{
         this.latitude = latitude;
         this.longitude = longitude;
         this.placeID = placeID;
-        this.type = type;
     }
 
     public Place(String detail) {
