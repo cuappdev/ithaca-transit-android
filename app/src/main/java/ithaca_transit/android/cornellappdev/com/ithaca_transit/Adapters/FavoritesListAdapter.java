@@ -9,23 +9,40 @@ import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.widget.TextView;
 
+import com.appdev.futurenovajava.Endpoint;
+
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.Favorite;
-import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.Place;
+import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.Route;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.R;
+import ithaca_transit.android.cornellappdev.com.ithaca_transit.Singleton.Repository;
+import ithaca_transit.android.cornellappdev.com.ithaca_transit.Utils.FutureUtilities;
 import kotlin.TypeCastException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 
 public final class FavoritesListAdapter extends Adapter {
-    private String mQuery;
+    private Endpoint.Config mConfig;
     private Context mContext;
-    private final FavoritesListAdapter.ListAdapterOnClickHandler mListAdapterOnClickHandler;
     private Favorite[] mFavList;
+    private final FavoritesListAdapter.ListAdapterOnClickHandler mListAdapterOnClickHandler;
+    private Route[] mOptimalRoutes;
+
+
+    public FavoritesListAdapter(@NotNull Context context, @NotNull FavoritesListAdapter.ListAdapterOnClickHandler listAdapterOnClickHandler,
+                                @NotNull Favorite[] favorites, Endpoint.Config config) {
+        super();
+        mConfig = config;
+        mContext = context;
+        mFavList = favorites;
+        mListAdapterOnClickHandler = listAdapterOnClickHandler;
+        mOptimalRoutes = new Route[favorites.length];
+    }
+
 
     public final void setList(@NotNull Favorite[] list, @NotNull String query) {
-        mQuery = query;
         mFavList = list;
+        mOptimalRoutes = new Route[list.length];
         notifyDataSetChanged();
     }
 
@@ -49,17 +66,16 @@ public final class FavoritesListAdapter extends Adapter {
             FavoritesListAdapter.TextAdapterViewHolder holder2 = (FavoritesListAdapter.TextAdapterViewHolder)holder;
             holder2.getFavoriteName().setText(mFavList[position].getStartPlace().getName() + "--" +
                     mFavList[position].getEndPlace().getName());
+
+            // Grabbing route associated with favorite
+            Route[] routesList = FutureUtilities.getRoute(mConfig, mFavList[position].getStartPlace(),
+                    mFavList[position].getEndPlace());
+            Route optimalRoute = routesList[0];
+            Repository.ourInstance.setRoutesList(routesList);
+
+            mOptimalRoutes[position] = optimalRoute;
         }
     }
-
-    public FavoritesListAdapter(@NotNull Context mContext, @NotNull FavoritesListAdapter.ListAdapterOnClickHandler mListAdapterOnClickHandler,
-                                @NotNull Favorite[] mPlaceList) {
-        super();
-        this.mContext = mContext;
-        this.mListAdapterOnClickHandler = mListAdapterOnClickHandler;
-        this.mFavList = mPlaceList;
-    }
-
 
     public interface ListAdapterOnClickHandler {
         void onFavoriteClick(int var1, @NotNull Favorite[] var2);
@@ -85,5 +101,9 @@ public final class FavoritesListAdapter extends Adapter {
             this.favoriteName = (TextView) itemView.findViewById(R.id.place_name);
             itemView.setOnClickListener((OnClickListener)this);
         }
+    }
+
+    public Route[] getOptimalRoutes() {
+        return mOptimalRoutes;
     }
 }

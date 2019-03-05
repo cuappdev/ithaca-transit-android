@@ -22,33 +22,33 @@ public final class Direction {
     private Coordinate startLocation;
     private Date startTime;
     private Boolean stayOnBusForTransfer;
-    private LocationObject[] stops;
+    private Place[] stops;
     private Double travelDistance;
     private String[] tripIdentifiers;
-    private DirectionType type;
+    private String type;
 
     @NotNull
     public final String locationDescription() {
         if (type != null) {
             switch (type) {
-                case WALK:
+                case "walk":
                     return "Walk to " + this.name;
-                case ARRIVE:
+                case "arrive":
                     return "Get off at " + this.name;
-                case DEPART:
+                case "depart":
                     return "at " + this.name;
-                case TRANSFER:
+                case "transfer":
                     return "at " + this.name + ". Stay on bus";
             }
         }
         return "";
     }
 
-    public DirectionType getType() {
+    public String getType() {
         return type;
     }
 
-    public void setType(DirectionType type) {
+    public void setType(String type) {
         this.type = type;
     }
 
@@ -88,7 +88,7 @@ public final class Direction {
         return stayOnBusForTransfer;
     }
 
-    public LocationObject[] getStops() {
+    public Place[] getStops() {
         return stops;
     }
 

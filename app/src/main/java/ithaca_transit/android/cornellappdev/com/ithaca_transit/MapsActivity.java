@@ -7,16 +7,11 @@ import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.os.Parcel;
-import android.os.Parcelable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextWatcher;
-import android.widget.SearchView;
 
 import com.arlib.floatingsearchview.FloatingSearchView;
-import com.arlib.floatingsearchview.suggestions.model.SearchSuggestion;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -27,22 +22,13 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.appdev.futurenovajava.APIResponse;
 import com.appdev.futurenovajava.Endpoint;
 import com.appdev.futurenovajava.FutureNovaRequest;
 
-import com.appdev.futurenovajava.APIResponse;
-import com.appdev.futurenovajava.Endpoint;
-import com.appdev.futurenovajava.FutureNovaRequest;
-
-<<<<<<< HEAD
-=======
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.LocationObject;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.Place;
->>>>>>> master
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Presenters.MapsPresenter;
 
 import java.util.ArrayList;
@@ -51,15 +37,11 @@ import java.util.List;
 import java.util.Locale;
 
 import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import java8.util.Optional;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Singleton.Repository;
-import ithaca_transit.android.cornellappdev.com.ithaca_transit.Utils.JSONUtilities;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Utils.LocationAutocomplete;
 
-import okhttp3.FormBody;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
 
@@ -78,7 +60,7 @@ public final class MapsActivity extends AppCompatActivity implements OnMapReadyC
     protected void onCreate(Bundle savedInstanceState) {
 
         Endpoint.Config config = new Endpoint.Config();
-        config.scheme = Optional.of("https");
+        config.scheme = Optional.of("http");
         config.host = Optional.of("transit-backend.cornellappdev.com");
         config.commonPath = Optional.of("/api/v1");
         Endpoint.config = config;
@@ -88,7 +70,7 @@ public final class MapsActivity extends AppCompatActivity implements OnMapReadyC
         fusedLocationClient = LocationServices.getFusedLocationProviderClient((Activity) this);
         FragmentManager manager = this.getFragmentManager();
         Repository.ourInstance.setContext(this);
-        mController = new MapsPresenter(manager, this);
+        mController = new MapsPresenter(manager, this, config);
 
         SupportMapFragment mapFragment = (SupportMapFragment) this.getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync((OnMapReadyCallback) this);
@@ -186,7 +168,7 @@ public final class MapsActivity extends AppCompatActivity implements OnMapReadyC
                 public final void onSuccess(Location location) {
                     if (location != null) {
                         MapsActivity.this.lastLocation = location;
-                        LatLng currentLatLng = new LatLng(location.getLatitude(), location.getLongitude());
+                        LatLng currentLatLng = new LatLng(42.4446, -76.4823);
                         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 14.0F));
                     }
                 }

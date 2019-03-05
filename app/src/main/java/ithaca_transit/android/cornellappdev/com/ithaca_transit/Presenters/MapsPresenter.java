@@ -11,6 +11,7 @@ import android.support.v7.widget.RecyclerView.LayoutManager;
 import android.view.View;
 import android.widget.SearchView;
 
+import com.appdev.futurenovajava.Endpoint;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.Dot;
 import com.google.android.gms.maps.model.LatLng;
@@ -45,21 +46,22 @@ public final class MapsPresenter implements FavoritesListAdapter.ListAdapterOnCl
     public static final List<PatternItem> PATTERN_DOT_LIST = Arrays.asList(DOT);
 
     // Hardcoded data for favorites
-    private static final Place goldwin = new Place(42.4491,76.4835, "Goldwin");
-    private static final Place duffield = new Place(42.4446, 76.4823, "Duffield");
-    private static final Place dickson = new Place(42.4547, 76.4794, "Clara Dickson");
+    private static final Place goldwin = new Place(42.4491,-76.4835, "Goldwin");
+    private static final Place duffield = new Place(42.4446, -76.4823, "Duffield");
+    private static final Place dickson = new Place(42.4547, -76.4794, "Clara Dickson");
     private static final Favorite favorite1 = new Favorite(goldwin, duffield);
     private static final Favorite favorite2 = new Favorite(dickson, duffield);
     private static final Favorite favorite3 = new Favorite(duffield, dickson);
     private static final Favorite[] favoriteList = new Favorite[]{favorite1, favorite2, favorite3};
-
-    private Context mContext;
-    public RecyclerView mRecView;
-    public SearchView mSearchView;
     private FavoritesListAdapter favoriteListAdapter;
     private RoutesListAdapter routeOptionsListAdapter;
 
+    private Endpoint.Config mConfig;
+    private Context mContext;
     private FragmentManager mManager;
+    public RecyclerView mRecView;
+    public SearchView mSearchView;
+
 
     // Maps a polyline to its parent route
     private HashMap<Polyline, Route> polylineMap = new HashMap<Polyline, Route>();;
@@ -67,10 +69,11 @@ public final class MapsPresenter implements FavoritesListAdapter.ListAdapterOnCl
     // Maps a route to all polylines that represent its path
     private HashMap<Route, List<Polyline>> routeMap = new HashMap<Route, List<Polyline>>();
 
-    public MapsPresenter(@NotNull FragmentManager manager, Context context) {
+    public MapsPresenter(@NotNull FragmentManager manager, Context context, Endpoint.Config config) {
         super();
         mContext = context;
         mManager = manager;
+        mConfig = config;
     }
 
 
@@ -78,7 +81,8 @@ public final class MapsPresenter implements FavoritesListAdapter.ListAdapterOnCl
         mRecView.setHasFixedSize(true);
         LinearLayoutManager layoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false);
         mRecView.setLayoutManager((LayoutManager) layoutManager);
-        favoriteListAdapter = new FavoritesListAdapter(mContext, (FavoritesListAdapter.ListAdapterOnClickHandler) this, favoriteList);
+        favoriteListAdapter = new FavoritesListAdapter(mContext, (FavoritesListAdapter.ListAdapterOnClickHandler) this,
+                favoriteList, mConfig);
         mRecView.setAdapter(favoriteListAdapter);
         mRecView.setVisibility(View.VISIBLE);
         favoriteListAdapter.notifyDataSetChanged();
@@ -93,11 +97,21 @@ public final class MapsPresenter implements FavoritesListAdapter.ListAdapterOnCl
         fragmentTransaction.commit();
         mManager.executePendingTransactions();
 
+        // Selecting Route given from favorite
+        Repository.ourInstance.setSelectedRoute(favoriteListAdapter.getOptimalRoutes()[position]);
+        if(favoriteListAdapter.getOptimalRoutes()[position] == null){
+            System.out.println("null value at list");
+        }
+        drawSelectedRoute();
+
+
+        // Setting up Extended Fragment
         RecyclerView recyclerView = ((MapsActivity)mContext).findViewById(R.id.routes);
         recyclerView.setLayoutManager((new LinearLayoutManager(mContext, 1, false)));
         routeOptionsListAdapter = new RoutesListAdapter(mContext, this,
                 Repository.ourInstance.getRoutesList().length, Repository.ourInstance.getRoutesList());
         recyclerView.setAdapter(routeOptionsListAdapter);
+
     }
 
     public void removeAllRoutes() {
@@ -125,11 +139,18 @@ public final class MapsPresenter implements FavoritesListAdapter.ListAdapterOnCl
         polylineOptions.color(Color.BLUE);
         polylineOptions.clickable(true);
 
+        if(Repository.ourInstance.getSelectedRoute() == null){
+            System.out.println("null");
+        }
+        else{
+            System.out.println(Repository.ourInstance.getSelectedRoute());
+        }
+
         List<Direction> directionList = Arrays.asList(Repository.ourInstance.getSelectedRoute().getDirections());
         ArrayList<Polyline> polylineList = new ArrayList<Polyline>();
 
         for (Direction direction : directionList) {
-            if (direction.getType() == DirectionType.WALK) {
+            if (direction.getType().equals("walk")) {
                 //Make all elements into Dots
                 polylineOptions.pattern(PATTERN_DOT_LIST);
             }

@@ -1,31 +1,32 @@
 package ithaca_transit.android.cornellappdev.com.ithaca_transit.Models;
 
+import com.google.gson.annotations.SerializedName;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.R;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Singleton.Repository;
 
-public class BusStop extends LocationObject{
+public class BusStop{
 
-    public static BusStop fromJSON(JSONObject busStopJSON)
-            throws JSONException {
-        BusStop model = new BusStop();
-        model.parseJSONObject(busStopJSON);
-        return model;
+    private String name;
+
+    @SerializedName("lat")
+    private double latitude;
+
+    @SerializedName("long")
+    private double longitude;
+
+    public String getName() {
+        return this.name;
     }
 
-    private void parseJSONObject(JSONObject busStop) {
-        try {
-            super.setName(busStop.getString(Repository.getInstance().getContext()
-                    .getString(R.string.field_name)));
-            super.setLatitude(Double.parseDouble(busStop.getString(Repository.getInstance().getContext()
-                    .getString(R.string.field_latitude))));
-            super.setLongitude(Double.parseDouble(busStop.getString(Repository.getInstance().getContext()
-                    .getString(R.string.field_longitude))));
+    public double getLatitude() {
+        return this.latitude;
+    }
 
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+    public double getLongitude() {
+        return this.longitude;
     }
 }

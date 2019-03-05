@@ -10,6 +10,11 @@ public class Coordinate {
     @SerializedName("long")
     private Double longitude;
 
+    public Coordinate(Double latitude, Double longitude) {
+        this.latitude = latitude;
+        this.longitude = longitude;
+    }
+
     public Double getLatitude() {
         return latitude;
     }
