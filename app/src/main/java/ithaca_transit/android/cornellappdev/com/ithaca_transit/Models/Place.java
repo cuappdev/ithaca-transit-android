@@ -10,7 +10,7 @@ import java.util.Optional;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.R;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Singleton.Repository;
 
-public final class Place{
+public final class Place {
     private String detail;
 
     @SerializedName("lat")
@@ -56,6 +56,7 @@ public final class Place{
         return placeID;
 
     }
+
     public String getType() {
         return type;
     }

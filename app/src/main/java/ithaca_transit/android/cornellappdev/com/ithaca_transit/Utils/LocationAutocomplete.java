@@ -19,8 +19,8 @@ public class LocationAutocomplete implements SearchSuggestion {
         }
     };
 
-    Place data;
-    String desc;
+    private Place data;
+    private String desc;
 
     public LocationAutocomplete(Place data){
         this.data = data;

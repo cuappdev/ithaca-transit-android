@@ -5,11 +5,14 @@ import android.app.FragmentManager;
 import android.content.Context;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextWatcher;
 import android.widget.SearchView;
 
 import com.arlib.floatingsearchview.FloatingSearchView;
@@ -44,7 +47,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Optional;
+import java.util.Timer;
+import java.util.TimerTask;
+
+import java8.util.Optional;
 
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Singleton.Repository;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Utils.JSONUtilities;
@@ -63,8 +69,10 @@ public final class MapsActivity extends AppCompatActivity implements OnMapReadyC
     private RecyclerView mRecView;
     private FloatingSearchView mSearchView;
 
+    private Handler handler = new Handler(Looper.getMainLooper() /*UI thread*/);
+    private Runnable workRunnable;
+
     protected void onCreate(Bundle savedInstanceState) {
-        //Set once and then done
         Endpoint.Config config = new Endpoint.Config();
         config.scheme = Optional.of("https");
         config.host = Optional.of("transit-backend.cornellappdev.com");
@@ -87,43 +95,51 @@ public final class MapsActivity extends AppCompatActivity implements OnMapReadyC
         setUpSearch();
     }
 
-    private void setUpSearch(){
+    private void setUpSearch() {
         mSearchView = (FloatingSearchView) findViewById(R.id.search_view);
         mSearchView.setOnQueryChangeListener(new FloatingSearchView.OnQueryChangeListener() {
             @Override
             public void onSearchTextChanged(String oldQuery, String newQuery) {
-            Map<String, String> map = new HashMap<String, String>();
-
-            map.put("Content-Type", "application/json");
-
-            JSONObject searchJSON = new JSONObject();
-            try {
-                searchJSON.put("query", newQuery);
-            } catch (JSONException e) {
-                e.printStackTrace();
+                handler.removeCallbacks(workRunnable);
+                workRunnable = () -> autoCompleteRequest(newQuery);
+                handler.postDelayed(workRunnable, 250 /*delay*/);
             }
-            final RequestBody requestBody = RequestBody.create(MediaType.get("application/json; charset=utf-8"), searchJSON.toString());
+        });
+    }
 
-            Endpoint searchEndpoint = new Endpoint()
-                    .path("search")
-                    .body(Optional.of(requestBody))
-                    .headers(map)
-                    .method(Endpoint.Method.POST);
+    private void autoCompleteRequest(String query) {
+        Map<String, String> map = new HashMap<String, String>();
 
-            FutureNovaRequest.make(Place[].class, searchEndpoint).thenAccept(response -> {
-                Place[] searchResults = response.getData();
+        map.put("Content-Type", "application/json");
 
-                final List<LocationAutocomplete> wrappedResults = new ArrayList<>();
-                if(searchResults != null)
-                    for(Place p : searchResults)
-                        wrappedResults.add(new LocationAutocomplete(p));
-                mSearchView.post(new Runnable() {
-                    public void run() {
-                        mSearchView.swapSuggestions(wrappedResults);
-                    }
-                });
+        JSONObject searchJSON = new JSONObject();
+        try {
+            searchJSON.put("query", query);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        final RequestBody requestBody = 
+            RequestBody.create(MediaType.get("application/json; charset=utf-8"), searchJSON.toString());
+
+        Endpoint searchEndpoint = new Endpoint()
+                .path("search")
+                .body(Optional.of(requestBody))
+                .headers(map)
+                .method(Endpoint.Method.POST);
+
+        FutureNovaRequest.make(Place[].class, searchEndpoint).thenAccept(response -> {
+            Place[] searchResults = response.getData();
+
+            final List<LocationAutocomplete> wrappedResults = new ArrayList<>();
+            if (searchResults != null)
+                for (Place p : searchResults)
+                    wrappedResults.add(new LocationAutocomplete(p));
+            mSearchView.post(new Runnable() {
+                public void run() {
+                    mSearchView.swapSuggestions(wrappedResults);
+                }
             });
-            }
         });
     }
 

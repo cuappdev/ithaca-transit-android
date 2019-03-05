@@ -25,7 +25,7 @@ public final class Networking {
     private static final String BASE_URL = "http://transit-backend.cornellappdev.com/api/v1/";
 
     // Returns JSON from GET request
-    public static JSONObject getJSON(String append){
+    public static JSONObject getJSON(String append) {
         try {
             URL url = new URL(BASE_URL + append);
             BufferedReader reader = null;
@@ -56,18 +56,17 @@ public final class Networking {
         }
     }
 
-     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-     public static JSONObject postJSON(String append, HashMap<String, String> params){
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    public static JSONObject postJSON(String append, HashMap<String, String> params) {
         try {
 
             // Preparing post data
             boolean firstItem = true;
             String args = "";
-            for(HashMap.Entry<String, String> entry : params.entrySet()){
-                if(!firstItem){
+            for (HashMap.Entry<String, String> entry : params.entrySet()) {
+                if (!firstItem) {
                     args = args + "&";
-                }
-                else{
+                } else {
                     firstItem = false;
                 }
                 args = args + URLEncoder.encode(entry.getKey(), "UTF-8") +
@@ -87,7 +86,7 @@ public final class Networking {
             connection.connect();
 
             // Sending post data
-            try(OutputStream outputStream = connection.getOutputStream()){
+            try (OutputStream outputStream = connection.getOutputStream()) {
                 outputStream.write(paramBytes);
             }
 
