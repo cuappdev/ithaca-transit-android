@@ -11,6 +11,7 @@ public class LocationObject {
 
     public LocationObject(String name, String id, double latitude, double longitude) {
         super();
+
         this.name = name;
         this.latitude = latitude;
         this.longitude = longitude;

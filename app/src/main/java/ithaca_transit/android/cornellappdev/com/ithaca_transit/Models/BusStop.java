@@ -27,6 +27,5 @@ public class BusStop extends LocationObject{
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
     }
 }

@@ -33,10 +33,6 @@ public class Route {
     // To be drawn on the map, is an ordered list of paths from start to end
     private LatLng[] pathsList;
     private LocationObject startLocation;
-<<<<<<< HEAD
-=======
-
->>>>>>> def599d... Parsing JSON for model data
 
     public Date getArrivalTime() {
         return arrivalTime;
