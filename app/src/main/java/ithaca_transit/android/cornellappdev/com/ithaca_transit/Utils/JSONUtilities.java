@@ -38,29 +38,7 @@ public class JSONUtilities {
         return busStopsList;
     }
 
-    public static List<Route> getRoutes(LatLng start, LatLng end, int time, boolean arriveBy,
-                                        String destinationName, Context mainContext) {
-        List<Route> routesList = new ArrayList<>();
 
-        try {
-            String append = String.format(mainContext.getString(R.string.query_route),
-                    start.toString(), end.toString(), time, arriveBy, destinationName);
-            JSONObject parentJSON = Networking.getJSON(append);
-            JSONArray routes = parentJSON.getJSONArray(mainContext.getString(R.string.field_data));
-
-
-            for (int i = 0; i < routes.length(); i++) {
-                JSONObject obj = routes.getJSONObject(i);
-                Route route;
-                route = Route.fromJSON(obj);
-                routesList.add(route);
-            }
-            
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return routesList;
-    }
 
     public static int getDelay(int stopID, int tripID, Context mainContext) {
         int delay = 0;

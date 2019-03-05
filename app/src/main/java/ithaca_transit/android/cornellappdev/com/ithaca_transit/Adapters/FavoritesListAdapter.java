@@ -8,6 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.widget.TextView;
+
+import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.Favorite;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.Place;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.R;
 import kotlin.TypeCastException;
@@ -19,11 +21,11 @@ public final class FavoritesListAdapter extends Adapter {
     private String mQuery;
     private Context mContext;
     private final FavoritesListAdapter.ListAdapterOnClickHandler mListAdapterOnClickHandler;
-    private Place[] mPlaceList;
+    private Favorite[] mFavList;
 
-    public final void setList(@NotNull Place[] list, @NotNull String query) {
+    public final void setList(@NotNull Favorite[] list, @NotNull String query) {
         mQuery = query;
-        mPlaceList = list;
+        mFavList = list;
         notifyDataSetChanged();
     }
 
@@ -37,7 +39,7 @@ public final class FavoritesListAdapter extends Adapter {
     }
 
     public int getItemCount() {
-        return this.mPlaceList.length;
+        return this.mFavList.length;
     }
 
     public void onBindViewHolder(@Nullable ViewHolder holder, int position) {
@@ -45,39 +47,42 @@ public final class FavoritesListAdapter extends Adapter {
             throw new TypeCastException("null cannot be cast to non-null type com.cornellappdev.android.eatery.FavoritesFavoritesListAdapter.TextAdapterViewHolder");
         } else {
             FavoritesListAdapter.TextAdapterViewHolder holder2 = (FavoritesListAdapter.TextAdapterViewHolder)holder;
-            holder2.getPlaceName().setText((CharSequence)this.mPlaceList[position].getName());
+            holder2.getFavoriteName().setText(mFavList[position].getStartPlace().getName() + "--" +
+                    mFavList[position].getEndPlace().getName());
         }
     }
 
-    public FavoritesListAdapter(@NotNull Context mContext, @NotNull FavoritesListAdapter.ListAdapterOnClickHandler mListAdapterOnClickHandler, @NotNull Place[] mPlaceList) {
+    public FavoritesListAdapter(@NotNull Context mContext, @NotNull FavoritesListAdapter.ListAdapterOnClickHandler mListAdapterOnClickHandler,
+                                @NotNull Favorite[] mPlaceList) {
         super();
         this.mContext = mContext;
         this.mListAdapterOnClickHandler = mListAdapterOnClickHandler;
-        this.mPlaceList = mPlaceList;
+        this.mFavList = mPlaceList;
     }
 
 
     public interface ListAdapterOnClickHandler {
-        void onClick(int var1, @NotNull Place[] var2);
+        void onFavoriteClick(int var1, @NotNull Favorite[] var2);
     }
 
     public final class TextAdapterViewHolder extends ViewHolder implements OnClickListener {
         @NotNull
-        private TextView placeName;
+        private TextView favoriteName;
 
         @NotNull
-        public final TextView getPlaceName() {
-            return this.placeName;
+        public final TextView getFavoriteName() {
+            return this.favoriteName;
         }
 
         public void onClick(@NotNull View v) {
             int adapterPosition = this.getAdapterPosition();
-            FavoritesListAdapter.this.mListAdapterOnClickHandler.onClick(adapterPosition, FavoritesListAdapter.this.mPlaceList);
+            FavoritesListAdapter.this.mListAdapterOnClickHandler.onFavoriteClick(adapterPosition,
+                    FavoritesListAdapter.this.mFavList);
         }
 
         public TextAdapterViewHolder(@NotNull View itemView) {
             super(itemView);
-            this.placeName = (TextView) itemView.findViewById(R.id.place_name);
+            this.favoriteName = (TextView) itemView.findViewById(R.id.place_name);
             itemView.setOnClickListener((OnClickListener)this);
         }
     }

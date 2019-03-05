@@ -24,6 +24,7 @@ import ithaca_transit.android.cornellappdev.com.ithaca_transit.ExtendedFragment;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.MapsActivity;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.Coordinate;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.Direction;
+import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.Favorite;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.Route;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.Place;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.R;
@@ -42,11 +43,14 @@ public final class MapsPresenter implements FavoritesListAdapter.ListAdapterOnCl
     public static final PatternItem DOT = new Dot();
     public static final List<PatternItem> PATTERN_DOT_LIST = Arrays.asList(DOT);
 
-    // Hardcoded places for favorites
-    private static final Place place1 = new Place("To Goldwin Smith - Ithaca Commons");
-    private static final Place place2 = new Place("To Duffield - The Johnson Museum");
-    private static final Place place3 = new Place("To The Lux - Gates Hall");
-    private static final Place[] placeList = new Place[]{place1, place2, place3};
+    // Hardcoded data for favorites
+    private static final Place goldwin = new Place(42.4491,76.4835, "Goldwin");
+    private static final Place duffield = new Place(42.4446, 76.4823, "Duffield");
+    private static final Place dickson = new Place(42.4547, 76.4794, "Clara Dickson");
+    private static final Favorite favorite1 = new Favorite(goldwin, duffield);
+    private static final Favorite favorite2 = new Favorite(dickson, duffield);
+    private static final Favorite favorite3 = new Favorite(duffield, dickson);
+    private static final Favorite[] favoriteList = new Favorite[]{favorite1, favorite2, favorite3};
 
     private Context mContext;
     public RecyclerView mRecView;
@@ -56,12 +60,11 @@ public final class MapsPresenter implements FavoritesListAdapter.ListAdapterOnCl
 
     private FragmentManager mManager;
 
-    // Maps a polyline to the route it is a component of
+    // Maps a polyline to its parent route
     private HashMap<Polyline, Route> polylineMap = new HashMap<Polyline, Route>();;
 
-    // Maps a route to all polylines that represents its path
+    // Maps a route to all polylines that represent its path
     private HashMap<Route, List<Polyline>> routeMap = new HashMap<Route, List<Polyline>>();
-
 
     public MapsPresenter(@NotNull FragmentManager manager, Context context) {
         super();
@@ -73,21 +76,23 @@ public final class MapsPresenter implements FavoritesListAdapter.ListAdapterOnCl
         mRecView.setHasFixedSize(true);
         LinearLayoutManager layoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false);
         mRecView.setLayoutManager((LayoutManager) layoutManager);
-        favoriteListAdapter = new FavoritesListAdapter(mContext, (FavoritesListAdapter.ListAdapterOnClickHandler) this, placeList);
+        favoriteListAdapter = new FavoritesListAdapter(mContext, (FavoritesListAdapter.ListAdapterOnClickHandler) this, favoriteList);
         mRecView.setAdapter(favoriteListAdapter);
         mRecView.setVisibility(View.VISIBLE);
         favoriteListAdapter.notifyDataSetChanged();
+        
     }
 
-    public void onClick(int position, @NotNull Place[] list) {
+    public void onFavoriteClick(int position, @NotNull Favorite[] list) {
         ExtendedFragment optionsFragment = new ExtendedFragment();
         FragmentTransaction fragmentTransaction = this.mManager.beginTransaction();
         fragmentTransaction.replace(R.id.container, optionsFragment);
         fragmentTransaction.addToBackStack((String) null);
         fragmentTransaction.commit();
+        mManager.executePendingTransactions();
 
         RecyclerView recyclerView = ((MapsActivity)mContext).findViewById(R.id.routes);
-        recyclerView.setLayoutManager((RecyclerView.LayoutManager)(new LinearLayoutManager(mContext, 1, false)));
+        recyclerView.setLayoutManager((new LinearLayoutManager(mContext, 1, false)));
         routeOptionsListAdapter = new RoutesListAdapter(mContext, this,
                 Repository.getInstance().getRoutesList().length, Repository.getInstance().getRoutesList());
         recyclerView.setAdapter(routeOptionsListAdapter);
