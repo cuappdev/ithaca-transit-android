@@ -59,7 +59,6 @@ public final class MapsActivity extends AppCompatActivity implements OnMapReadyC
 
     protected void onCreate(Bundle savedInstanceState) {
 
-
         //Set once and then done
         Endpoint.Config config = new Endpoint.Config();
         config.scheme = Optional.of("https");
