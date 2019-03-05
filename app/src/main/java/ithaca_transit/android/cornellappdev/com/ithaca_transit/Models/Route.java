@@ -38,7 +38,6 @@ public class Route {
 
 >>>>>>> def599d... Parsing JSON for model data
 
-
     public Date getArrivalTime() {
         return arrivalTime;
     }

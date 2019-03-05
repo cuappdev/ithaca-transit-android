@@ -12,12 +12,11 @@ public class Repository {
 
     private Context context;
 
+<<<<<<< HEAD
     private List<Route> routesList;
-
-    public static Repository getInstance() {
-        return ourInstance;
+=======
+    private Repository() {
     }
-
     public List<Route> getRoutesList() {
         return routesList;
     }
