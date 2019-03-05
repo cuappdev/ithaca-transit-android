@@ -1,4 +1,4 @@
-package ithaca_transit.android.cornellappdev.com.ithaca_transit.Presenters;
+package ithaca_transit.android.cornellappdev.com.ithaca_transit.Adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView.Adapter;

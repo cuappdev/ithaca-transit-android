@@ -42,53 +42,6 @@ public final class OptionsFragment extends Fragment {
         return view;
     }
 
-    public void setRouteCard(View view){
-        Route route = Repository.getInstance().getSelectedRoute();
-        TextView duration = view.findViewById(R.id.duration);
-
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(route.getArrivalTime());
-        int arrivalHour = calendar.get(Calendar.HOUR_OF_DAY);
-        int arrivalMintues = calendar.get(Calendar.MINUTE);
-
-        calendar.setTime(route.getDepartureTime());
-        int departureHour = calendar.get(Calendar.HOUR_OF_DAY);
-        int departureMinutes = calendar.get(Calendar.MINUTE);
-
-
-        String arrivalAppend;
-        String departureAppend;
-
-        if(arrivalHour > 11){
-            arrivalAppend = "PM";
-        }
-        else{
-            arrivalAppend = "AM";
-        }
-
-        if(departureHour > 11){
-            arrivalAppend = "PM";
-        }
-        else{
-            arrivalAppend = "AM";
-        }
-
-        duration.setText(arrivalHour + ":" + arrivalMintues + "-" + departureHour + ":" + departureMinutes);
-
-        // Boarding time for routes starting with bus, walk description for routes starting with
-        // walk path
-        TextView routeDescription = view.findViewById(R.id.duration);
-
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ssz");
-        Date currentDate = new Date(System.currentTimeMillis());
-        calendar.setTime(currentDate);
-
-        // if more than 24 hours, put day
-        // if less than 24 hours but less than hour, put number of hours
-        routeDescription.setText();
-
-
-    }
 
     @NotNull
     public final TextView getAllRoutesText() {

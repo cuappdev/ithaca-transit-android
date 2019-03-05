@@ -15,17 +15,17 @@ public class Repository {
     private Context context;
     private GoogleMap map;
     private Route selectedRoute;
-    private List<Route> routesList;
+    private Route[] routesList;
 
     public static Repository getInstance() {
         return ourInstance;
     }
 
-    public List<Route> getRoutesList() {
+    public Route[] getRoutesList() {
         return routesList;
     }
 
-    public void setRoutesList(List<Route> routesList) {
+    public void setRoutesList(Route[] routesList) {
         this.routesList = routesList;
     }
 

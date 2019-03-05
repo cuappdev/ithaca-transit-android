@@ -48,13 +48,13 @@ public final class MapsActivity extends AppCompatActivity implements OnMapReadyC
         fusedLocationClient = LocationServices.getFusedLocationProviderClient((Activity) this);
         FragmentManager manager = this.getFragmentManager();
         Repository.getInstance().setContext(this);
-        mController = new MapsPresenter(manager);
+        mController = new MapsPresenter(manager, this);
 
         SupportMapFragment mapFragment = (SupportMapFragment) this.getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync((OnMapReadyCallback) this);
         RecyclerView mRecView = this.findViewById(R.id.recycler_view_maps);
         mController.mRecView = mRecView;
-        mController.setDynamicRecyclerView(this);
+        mController.setDynamicRecyclerView();
         mSearchView = this.findViewById(R.id.tb_toolbarsearch);
         mController.mSearchView = mSearchView;
     }

@@ -1,52 +1,38 @@
-package ithaca_transit.android.cornellappdev.com.ithaca_transit.Presenters;
+package ithaca_transit.android.cornellappdev.com.ithaca_transit.Adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import org.jetbrains.annotations.NotNull;
 
-import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.Direction;
+import java.util.ArrayList;
+
+import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.Place;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.Route;
+import ithaca_transit.android.cornellappdev.com.ithaca_transit.Presenters.MapsPresenter;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.R;
 
 public class RoutesListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private final Context mContext;
-    private final ListAdapterOnClickHandler mListAdapterOnClickHandler;
     private int mCount;
-    private String mQuery;
-    private ArrayList<Route> mRoutesList;
+    private final MapsPresenter mMapsPresenter;
+    private Route[] mRoutesList;
+    
 
-
-    public interface ListAdapterOnClickHandler {
-        void onClick(int position, ArrayList<Route> list);
-    }
-
-    RoutesListAdapter(
-            Context context,
-            ListAdapterOnClickHandler clickHandler,
-            int count,
-            ArrayList<Route> list) {
+   public RoutesListAdapter( Context context, MapsPresenter clickHandler,
+            int count, Route[] list) {
         mContext = context;
-        mListAdapterOnClickHandler = clickHandler;
+        mMapsPresenter = clickHandler;
         mCount = count;
         mRoutesList = list;
     }
 
-    void setList(ArrayList<Route> list, int count, String query) {
-        mQuery = query;
+    public void setList(Route[] list, int count, String query) {
         mCount = count;
         mRoutesList = list;
         notifyDataSetChanged();
@@ -69,7 +55,7 @@ public class RoutesListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder input_holder, int position) {
-        final Route routeModel = mRoutesList.get(position);
+        final Route routeModel = mRoutesList[position];
 
         ListAdapterViewHolder holder2 = (ListAdapterViewHolder) input_holder;
         //holder2.duration = routeModel.getArrivalTime()
@@ -91,6 +77,9 @@ public class RoutesListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         return mCount;
     }
 
+    public interface ListAdapterOnClickHandler {
+        void onRouteClick(int position, @NotNull Route[] routesList);
+    }
 
     class ListAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         TextView duration;
@@ -108,7 +97,7 @@ public class RoutesListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         @Override
         public void onClick(View v) {
             int adapterPosition = getAdapterPosition();
-            mListAdapterOnClickHandler.onClick(adapterPosition, mRoutesList);
+            mMapsPresenter.onRouteClick(adapterPosition, mRoutesList);
         }
     }
 
