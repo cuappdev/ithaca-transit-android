@@ -1,9 +1,35 @@
 <resources>
+    <string name="all_routes">See all route options</string>
     <string name="app_name">ithaca-transit</string>
+    <string name="field_arrival_time">arrivalTime</string>
+    <string name="field_bounding_box">boundingBox</string>
+    <string name="field_data">data</string>
+    <string name="field_delay">delay</string>
+    <string name="field_departure_time">departureTime</string>
+    <string name="field_directions">directions</string>
+    <string name="field_distance">distance</string>
+    <string name="field_end_coords">endCoords</string>
+    <string name="field_end_time">endTime</string>
+    <string name="field_id">name</string>
+    <string name="field_latitude">lat</string>
+    <string name="field_longitude">long</string>
+    <string name="field_name">name</string>
+    <string name="field_number_of_transfers">numberOfTransfers</string>
+    <string name="field_path">path</string>
+    <string name="field_route_number">routeNumber</string>
+    <string name="field_start_coords">startCoords</string>
+    <string name="field_start_time">startTime</string>
+    <string name="field_stay_on_bus">stayOnBusForTransfer</string>
+    <string name="field_stops">stops</string>
+    <string name="field_trip_identifiers">tripIdentifiers</string>
+    <string name="field_type">type</string>
+    <string name="get_method_allstops">allstops</string>
+    <string name="query_delay"><![CDATA[delay?&stopID=%d&tripID=%d]]></string>
+    <string name="query_route"><![CDATA[route?&start=%s&end=%s&time=%s&arriveBy=%s&destinationName=%s]]></string>
+    <string name="search_hint">Where to?</string>
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
     <string name="title_activity_maps">Map</string>
-    <string name="search_hint">Where to?</string>
-    <string name="all_routes">See all route options</string>
 </resources>
+
