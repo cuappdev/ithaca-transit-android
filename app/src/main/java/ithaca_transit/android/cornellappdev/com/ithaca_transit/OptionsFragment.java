@@ -23,11 +23,6 @@ public final class OptionsFragment extends Fragment {
         return allRoutesText;
     }
 
-    public final void setAllRoutesText(@NotNull TextView var1) {
-        Intrinsics.checkParameterIsNotNull(var1, "<set-?>");
-        this.allRoutesText = var1;
-    }
-
     @Nullable
     public View onCreateView(@Nullable LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 

@@ -2,6 +2,8 @@ package ithaca_transit.android.cornellappdev.com.ithaca_transit.Singleton;
 
 import android.content.Context;
 
+import com.google.android.gms.maps.GoogleMap;
+
 import java.util.List;
 
 
@@ -12,9 +14,7 @@ public class Repository {
 
     private Context context;
 
-<<<<<<< HEAD
     private List<Route> routesList;
-=======
     private Repository() {
     }
     public List<Route> getRoutesList() {
@@ -32,4 +32,21 @@ public class Repository {
     public void setContext(Context context) {
         this.context = context;
     }
+
+    public GoogleMap getMap() {
+        return map;
+    }
+
+    public void setMap(GoogleMap map) {
+        this.map = map;
+    }
+
+    public Route getSelectedRoute() {
+        return selectedRoute;
+    }
+
+    public void setSelectedRoute(Route selectedRoute) {
+        this.selectedRoute = selectedRoute;
+    }
+
 }

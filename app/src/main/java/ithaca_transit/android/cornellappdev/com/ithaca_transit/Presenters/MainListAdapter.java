@@ -1,4 +1,4 @@
-package ithaca_transit.android.cornellappdev.com.ithaca_transit.Controllers;
+package ithaca_transit.android.cornellappdev.com.ithaca_transit.Presenters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView.Adapter;
@@ -11,7 +11,6 @@ import android.widget.TextView;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.Place;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.R;
 import kotlin.TypeCastException;
-import kotlin.jvm.internal.Intrinsics;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -57,10 +56,6 @@ public final class MainListAdapter extends Adapter {
         this.mPlaceList = mPlaceList;
     }
 
-    // $FF: synthetic method
-    public static final void access$setMPlaceList$p(MainListAdapter $this, @NotNull Place[] var1) {
-        $this.mPlaceList = var1;
-    }
 
     public interface ListAdapterOnClickHandler {
         void onClick(int var1, @NotNull Place[] var2);
@@ -75,13 +70,7 @@ public final class MainListAdapter extends Adapter {
             return this.placeName;
         }
 
-        public final void setPlaceName(@NotNull TextView var1) {
-            Intrinsics.checkParameterIsNotNull(var1, "<set-?>");
-            this.placeName = var1;
-        }
-
         public void onClick(@NotNull View v) {
-            Intrinsics.checkParameterIsNotNull(v, "v");
             int adapterPosition = this.getAdapterPosition();
             MainListAdapter.this.mListAdapterOnClickHandler.onClick(adapterPosition, MainListAdapter.this.mPlaceList);
         }

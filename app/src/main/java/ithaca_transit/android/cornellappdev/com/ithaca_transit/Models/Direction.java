@@ -53,40 +53,6 @@ public final class Direction {
         return "";
     }
 
-    public Direction() {
-    }
-
-    public Direction(int delay, LocationObject endLocation, Date endTime, String name, LatLng[] path,
-                     int routeNumber, LocationObject startLocation, Date startTime, boolean stayOnBusForTransfer,
-                     LocationObject[] stops, double travelDistance, String[] tripIdentifiers, DirectionType type) {
-        this.delay = delay;
-        this.endLocation = endLocation;
-        this.endTime = endTime;
-        this.name = name;
-        this.path = path;
-        this.routeNumber = routeNumber;
-        this.startLocation = startLocation;
-        this.startTime = startTime;
-        this.stayOnBusForTransfer = stayOnBusForTransfer;
-        this.stops = stops;
-        this.travelDistance = travelDistance;
-        this.tripIdentifiers = tripIdentifiers;
-        this.type = type;
-    }
-
-    public Direction(@NotNull String name) {
-        this(0, BLANK_LOCATION, BLANK_TIME, name, new LatLng[0], 0, BLANK_LOCATION,
-                BLANK_TIME, false, new LocationObject[0], 0.0D,
-                new String[0], DirectionType.ARRIVE);
-    }
-
-    public enum DirectionType {
-        ARRIVE,
-        DEPART,
-        TRANSFER,
-        WALK;
-    }
-
     public static Direction fromJSON(JSONObject directionJSON)
             throws JSONException {
         Direction direction = new Direction();
@@ -157,8 +123,8 @@ public final class Direction {
             }
 
             JSONArray arrayStops = direction.getJSONArray(Repository.getInstance().getContext()
-                    .getString(R.string.field_path));
-            for (int i = 0; i < arrayPath.length(); i++) {
+                    .getString(R.string.field_stops));
+            for (int i = 0; i < arrayStops.length(); i++) {
                 JSONObject object = arrayStops.getJSONObject(i);
 
                 String name = object.getString(Repository.getInstance().getContext()
@@ -178,4 +144,9 @@ public final class Direction {
 
 }
 
-
+enum DirectionType {
+    ARRIVE,
+    DEPART,
+    TRANSFER,
+    WALK;
+}

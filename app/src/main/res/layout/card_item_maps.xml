@@ -26,7 +26,7 @@
                 android:layout_marginLeft="55dp"
                 android:layout_marginTop="12dp"
                 android:fontFamily="sans-serif"
-                android:text="To Ithaca Commons - Seneca St"
+                android:text=""
                 android:textColor="@color/textBlack"
                 android:textSize="14sp"
                 android:textStyle="bold" />
@@ -38,7 +38,7 @@
                 android:layout_marginLeft="12dp"
                 android:layout_marginTop="49dp"
                 android:fontFamily="sans-serif"
-                android:text="Board in 4 minutes"
+                android:text=""
                 android:textColor="@color/green"
                 android:textSize="12sp"
                 android:textStyle="bold" />
@@ -49,12 +49,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif"
-                android:text="10:30 PM at Uris Hall"
+                android:text=""
                 android:layout_marginLeft="12dp"
                 android:textColor="@color/textBlack"
                 android:textSize="12sp"
                 android:textStyle="normal" />
-
 
             <ImageView
                 android:src="@drawable/ic_next"
@@ -74,10 +73,7 @@
                 android:layout_marginTop="0dp">
 
                 <include layout="@layout/bus_number"></include>
-
             </RelativeLayout>
-
         </RelativeLayout>
     </android.support.v7.widget.CardView>
-
 </LinearLayout>

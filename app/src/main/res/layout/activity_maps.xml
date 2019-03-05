@@ -16,7 +16,6 @@
             tools:context=".MapsActivity">
 
             <include layout = "@layout/activity_toolbar_search"/>
-
         </fragment>
 
     <android.support.v7.widget.RecyclerView
@@ -25,7 +24,6 @@
         android:orientation="horizontal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
-
     </android.support.v7.widget.RecyclerView>
 
     <FrameLayout
@@ -33,8 +31,6 @@
         android:id="@+id/container"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
-
     </FrameLayout>
-
 </RelativeLayout>
 

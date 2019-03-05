@@ -59,10 +59,10 @@ public final class Bus {
         this.tripID = tripID;
         this.vehicleID = vehicleID;
     }
+}
 
-    public enum BusDataType {
-        invalidData,
-        noData,
-        validData;
-    }
+enum BusDataType {
+    invalidData,
+    noData,
+    validData;
 }
