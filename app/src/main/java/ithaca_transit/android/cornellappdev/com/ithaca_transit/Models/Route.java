@@ -34,7 +34,6 @@ public class Route {
     private LatLng[] pathsList;
     private LocationObject startLocation;
 
-
     public Date getArrivalTime() {
         return arrivalTime;
     }
@@ -185,4 +184,3 @@ public class Route {
         }
     }
 }
-

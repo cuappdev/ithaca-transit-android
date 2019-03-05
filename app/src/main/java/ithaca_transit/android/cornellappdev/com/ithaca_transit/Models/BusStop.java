@@ -2,19 +2,11 @@ package ithaca_transit.android.cornellappdev.com.ithaca_transit.Models;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.R;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Singleton.Repository;
 
 public class BusStop extends LocationObject{
-    private String stopName;
-
-    public String getStopName() {
-        return stopName;
-    }
-
-    public void setStopName(String stopName) {
-        this.stopName = stopName;
-    }
 
     public static BusStop fromJSON(JSONObject busStopJSON)
             throws JSONException {
@@ -25,8 +17,8 @@ public class BusStop extends LocationObject{
 
     private void parseJSONObject(JSONObject busStop) {
         try {
-            stopName = busStop.getString(Repository.getInstance().getContext()
-                    .getString(R.string.field_name));
+            super.setName(busStop.getString(Repository.getInstance().getContext()
+                    .getString(R.string.field_name)));
             super.setLatitude(Double.parseDouble(busStop.getString(Repository.getInstance().getContext()
                     .getString(R.string.field_latitude))));
             super.setLongitude(Double.parseDouble(busStop.getString(Repository.getInstance().getContext()

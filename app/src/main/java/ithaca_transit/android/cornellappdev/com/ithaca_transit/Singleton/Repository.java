@@ -13,12 +13,9 @@ public class Repository {
     private static final Repository ourInstance = new Repository();
 
     private Context context;
-    private GoogleMap map;
-    private Route selectedRoute;
-    private List<Route> routesList;
 
-    public static Repository getInstance() {
-        return ourInstance;
+    private List<Route> routesList;
+    private Repository() {
     }
 
     public List<Route> getRoutesList() {

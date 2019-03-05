@@ -1,58 +1,63 @@
 package ithaca_transit.android.cornellappdev.com.ithaca_transit.Models;
 
-public final class Place extends LocationObject{
+import com.google.gson.annotations.SerializedName;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.Optional;
+
+import ithaca_transit.android.cornellappdev.com.ithaca_transit.R;
+import ithaca_transit.android.cornellappdev.com.ithaca_transit.Singleton.Repository;
+
+public final class Place {
     private String detail;
-    private String detailKey;
+
+    @SerializedName("lat")
+    private Double latitude;
+
+    @SerializedName("long")
+    private Double longitude;
     private String name;
-    private String nameKey;
     private String placeID;
-    private String placeIDKey;
+    private String type;
 
-    public Place(String name) {
-        super();
+    public Place(String detail, Double latitude, Double longitude, String name, String placeID, String type) {
+
+        this.type = type;
         this.name = name;
-    }
-
-    public Place(String name, String detail, String placeID) {
-        super();
         this.detail = detail;
-        this.name = name;
+        this.latitude = latitude;
+        this.longitude = longitude;
         this.placeID = placeID;
     }
 
-    public final String getDetail() {
-        return this.detail;
+    public Place(String detail) {
+        this.detail = detail;
     }
 
-    public final void setDetail(String var1) {
-        this.detail = var1;
+    public String getDetail() {
+        return detail;
     }
 
-    public final String getName() {
-        return this.name;
+    public Double getLatitude() {
+        return latitude;
     }
 
-    public final void setName(String var1) {
-        this.name = var1;
+    public Double getLongitude() {
+        return longitude;
     }
 
-    public final String getPlaceID() {
-        return this.placeID;
+    public String getName() {
+        return name;
     }
 
-    public final void setPlaceID( String var1) {
-        this.placeID = var1;
+    public String getPlaceID() {
+        return placeID;
+
     }
 
-    public final String getDetailKey() {
-        return this.detailKey;
-    }
-
-    public final String getNameKey() {
-        return this.nameKey;
-    }
-
-    public final String getPlaceIDKey() {
-        return this.placeIDKey;
+    public String getType() {
+        return type;
     }
 }

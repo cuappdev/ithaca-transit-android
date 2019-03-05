@@ -5,14 +5,13 @@ import com.google.android.gms.maps.model.LatLng;
 public class LocationObject {
     public static final double BLANK_COORD = 0.0D;
 
-    private String id;
     private Double latitude;
     private Double longitude;
     private String name;
 
     public LocationObject(String name, String id, double latitude, double longitude) {
         super();
-        this.id = id;
+
         this.name = name;
         this.latitude = latitude;
         this.longitude = longitude;
@@ -32,14 +31,6 @@ public class LocationObject {
 
     public LocationObject(String name, double latitude, double longitude) {
         this(name, "", latitude, longitude);
-    }
-
-    public String getId() {
-        return this.id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 
     public String getName() {

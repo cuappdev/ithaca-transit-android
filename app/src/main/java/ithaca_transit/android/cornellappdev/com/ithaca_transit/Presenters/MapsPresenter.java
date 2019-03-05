@@ -1,4 +1,4 @@
-package ithaca_transit.android.cornellappdev.com.ithaca_transit.Presenters;
+package ithaca_transit.android.cornellappdev.com.ithaca_transit.Controllers;
 
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
@@ -6,6 +6,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.RecyclerView.Adapter;
 import android.support.v7.widget.RecyclerView.LayoutManager;
 import android.view.View;
 import android.widget.SearchView;
@@ -18,8 +19,7 @@ import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.Route;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.OptionsFragment;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.Place;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.R;
-import ithaca_transit.android.cornellappdev.com.ithaca_transit.Singleton.Repository;
-
+import kotlin.jvm.internal.Intrinsics;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
@@ -37,11 +37,6 @@ public final class MapsPresenter implements MainListAdapter.ListAdapterOnClickHa
     private static final Place place2 = new Place("To Duffield - The Johnson Museum");
     private static final Place place3 = new Place("To The Lux - Gates Hall");
     private static final Place[] placeList = new Place[]{place1, place2, place3};
-
-    public MapsPresenter(@NotNull FragmentManager manager) {
-        super();
-        this.mManager = manager;
-    }
 
     public final void setDynamicRecyclerView(@NotNull Context context) {
         mRecView.setHasFixedSize(true);
