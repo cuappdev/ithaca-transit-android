@@ -7,6 +7,17 @@
     tools:context=".MapsActivity"
     android:id="@+id/slideView">
 
+    <RelativeLayout
+        android:id="@+id/fab"
+        android:layout_width="60dp"
+        android:layout_height="8dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="8dp"
+        android:layout_toEndOf="@+id/allRoutes"
+        android:background="@drawable/fab"></RelativeLayout>
+
     <TextView
         android:id="@+id/optionsText"
         android:layout_width="wrap_content"

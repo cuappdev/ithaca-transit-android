@@ -77,7 +77,7 @@ public final class MapsActivity extends AppCompatActivity implements OnMapReadyC
         RecyclerView mRecView = this.findViewById(R.id.recycler_view_maps);
         mController.mRecView = mRecView;
 
-        mController.setDynamicRecyclerView(this);
+        mController.setDynamicRecyclerView();
 
         setUpSearch();
     }
@@ -150,7 +150,7 @@ public final class MapsActivity extends AppCompatActivity implements OnMapReadyC
         mMap = googleMap;
         setMapLongClick(mMap);
         setUpMap();
-        Repository.ourInstance.setMap(mMap);
+        mController.setmMap(mMap);
     }
 
     private final void setUpMap() {

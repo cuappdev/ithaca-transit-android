@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.google.android.gms.maps.GoogleMap;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -15,13 +16,13 @@ public class Repository {
     private Context context;
     private GoogleMap map;
     private Route selectedRoute;
-    private Route[] routesList;
+    private ArrayList<Route> routesList;
 
-    public Route[] getRoutesList() {
+    public ArrayList<Route> getRoutesList() {
         return routesList;
     }
 
-    public void setRoutesList(Route[] routesList) {
+    public void setRoutesList(ArrayList<Route> routesList) {
         this.routesList = routesList;
     }
 

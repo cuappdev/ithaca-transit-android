@@ -21,22 +21,30 @@ public class Route {
     private int numberOfTransfers;
     private Coordinate startCoords;
 
-    public Direction[] getDirections() {
-        return directions;
-    }
 
     // Determine if a route only contains walk directions
     public boolean isWalkOnlyRoute(){
         boolean walkOnlyRoute = true;
         int count = 0;
 
-        while(walkOnlyRoute){
+        while(walkOnlyRoute && count < directions.length){
             if(directions[count].getType().equals(DirectionType.DEPART)){
                 walkOnlyRoute = false;
             }
             count++;
         }
         return walkOnlyRoute;
+    }
+
+    public BoundingBox getBoundingBox() {
+        return boundingBox;
+    }
+    public Direction[] getDirections() {
+        return directions;
+    }
+
+    public Coordinate getStartCoords() {
+        return startCoords;
     }
 
     public String getDescription(){
@@ -133,4 +141,6 @@ public class Route {
         }
        return "No description available";
     }
+
+
 }

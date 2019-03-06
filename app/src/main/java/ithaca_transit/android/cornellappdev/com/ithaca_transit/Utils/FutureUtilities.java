@@ -44,16 +44,13 @@ public class FutureUtilities {
 
         Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("\"America/NewYork\""));
         int secondsEpoch = (int) (calendar.getTimeInMillis()/1000L);
-        System.out.println("TIME:   "  + String.valueOf(secondsEpoch));
         mapString.put("time", String.valueOf(secondsEpoch));
 
-        final Route[][] routes = new Route[1][1];
         Endpoint searchEndpoint = new Endpoint()
                 .queryItems(mapString)
                 .path("route")
                 .method(Endpoint.Method.GET);
 
-      //  System.out.print("About to look at routes list");
         FutureNovaRequest.make(Route[].class, searchEndpoint).thenAccept(response -> {
             Route[] routeList = response.getData();
 

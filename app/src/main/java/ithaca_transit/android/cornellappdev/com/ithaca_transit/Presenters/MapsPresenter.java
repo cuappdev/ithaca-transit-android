@@ -8,24 +8,30 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.Adapter;
 import android.support.v7.widget.RecyclerView.LayoutManager;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.SearchView;
 
 import com.appdev.futurenovajava.APIResponse;
 import com.appdev.futurenovajava.Endpoint;
 import com.appdev.futurenovajava.FutureNovaRequest;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.Dot;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.PatternItem;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.mancj.slideup.SlideUp;
+import com.mancj.slideup.SlideUpBuilder;
 
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Adapters.FavoritesListAdapter;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Adapters.RoutesListAdapter;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Enums.DirectionType;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.ExtendedFragment;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.MapsActivity;
+import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.BoundingBox;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.Bus;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.BusStop;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.Coordinate;
@@ -64,6 +70,7 @@ public final class MapsPresenter implements FavoritesListAdapter.ListAdapterOnCl
     private Endpoint.Config mConfig;
     private Context mContext;
     private FragmentManager mManager;
+    private GoogleMap mMap;
     public RecyclerView mRecView;
     public SearchView mSearchView;
 
@@ -82,7 +89,7 @@ public final class MapsPresenter implements FavoritesListAdapter.ListAdapterOnCl
     }
 
 
-    public final void setDynamicRecyclerView(@NotNull Context context) {
+    public final void setDynamicRecyclerView() {
         mRecView.setHasFixedSize(true);
         LinearLayoutManager layoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false);
         mRecView.setLayoutManager((LayoutManager) layoutManager);
@@ -95,39 +102,19 @@ public final class MapsPresenter implements FavoritesListAdapter.ListAdapterOnCl
     }
 
     public void onFavoriteClick(int position, @NotNull Favorite[] list) {
-        ExtendedFragment optionsFragment = new ExtendedFragment();
-        FragmentTransaction fragmentTransaction = this.mManager.beginTransaction();
-        fragmentTransaction.replace(R.id.container, optionsFragment);
-        fragmentTransaction.addToBackStack((String) null);
-        fragmentTransaction.commit();
-        mManager.executePendingTransactions();
-
-        System.out.println("after"+favoriteListAdapter.getmAllRoutesToFavorites());
 
         // Selecting Route given from favorite
         REPOSITORY.setSelectedRoute(favoriteListAdapter.getOptimalRoutes()[position]);
-        if(favoriteListAdapter.getOptimalRoutes() == null){
-            System.out.println("null value at list");
-        }
-
-        System.out.println("SiZe DoeSn'T" + favoriteListAdapter.getOptimalRoutes().length);
-
         REPOSITORY.setRoutesList(favoriteListAdapter.getmAllRoutesToFavorites().get(position));
         drawSelectedRoute();
-
-        // Setting up Extended Fragment
-        RecyclerView recyclerView = ((MapsActivity)mContext).findViewById(R.id.routes);
-        recyclerView.setLayoutManager((new LinearLayoutManager(mContext, 1, false)));
-        routeOptionsListAdapter = new RoutesListAdapter(mContext, this,
-                REPOSITORY.getRoutesList().length, REPOSITORY.getRoutesList());
-        recyclerView.setAdapter(routeOptionsListAdapter);
-
+        drawWalkRoute();
+        makeExtendedOptionsFragment();
     }
 
     public void removeAllRoutes() {
         // Remove all lines from map when new route gets selected
         polylineMap.clear();
-        REPOSITORY.getMap().clear();
+        mMap.clear();
     }
 
     // Removes bus route currently displayed on screen
@@ -144,25 +131,20 @@ public final class MapsPresenter implements FavoritesListAdapter.ListAdapterOnCl
 
 
     public void drawSelectedRoute() {
+        removeAllRoutes();
+
         Route route = REPOSITORY.getSelectedRoute();
         PolylineOptions polylineOptions = new PolylineOptions();
         polylineOptions.color(Color.BLUE);
         polylineOptions.clickable(true);
-
-        if(REPOSITORY.getSelectedRoute() == null){
-            System.out.println("null selected");
-        }
-        else{
-            System.out.println(REPOSITORY.getSelectedRoute());
-        }
 
         List<Direction> directionList = Arrays.asList(REPOSITORY.getSelectedRoute().getDirections());
         ArrayList<Polyline> polylineList = new ArrayList<Polyline>();
 
         for (Direction direction : directionList) {
             if (direction.getType().equals("walk")) {
-                //Make all elements into Dots
                 polylineOptions.pattern(PATTERN_DOT_LIST);
+                polylineOptions.width(30f);
             }
             else{
                 polylineOptions.pattern(null);
@@ -174,22 +156,25 @@ public final class MapsPresenter implements FavoritesListAdapter.ListAdapterOnCl
             }
 
             // Drawing sub-polyline on map
-            Polyline polyline = REPOSITORY.getMap().addPolyline(polylineOptions);
+            Polyline polyline = mMap.addPolyline(polylineOptions);
             polylineList.add(polyline);
             polylineMap.put(polyline, route);
         }
+
+        LatLng startLatLng = new LatLng(route.getStartCoords().getLatitude(), route.getStartCoords().getLongitude());
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(startLatLng, 15.0F));
     }
 
     public void drawWalkRoute() {
-        int idxLast =  REPOSITORY.getRoutesList().length;
-        Route route = REPOSITORY.getRoutesList()[idxLast];
+        int idxLast =  REPOSITORY.getRoutesList().size();
+        Route route = REPOSITORY.getRoutesList().get(idxLast - 1);
 
         PolylineOptions polylineOptions = new PolylineOptions();
         polylineOptions.pattern(PATTERN_DOT_LIST);
         polylineOptions.color(Color.GRAY);
         polylineOptions.clickable(true);
+        polylineOptions.width(30f);
 
-        // Walk route is always last element in routes list
         Direction[] directionList = route.getDirections();
         for (Direction direction : directionList) {
             for(Coordinate coordinate : direction.getPath()){
@@ -199,7 +184,7 @@ public final class MapsPresenter implements FavoritesListAdapter.ListAdapterOnCl
         }
 
         // Drawing route on map
-        Polyline polyline = REPOSITORY.getMap().addPolyline(polylineOptions);
+        Polyline polyline = mMap.addPolyline(polylineOptions);
         polylineMap.put(polyline, route);
         routeMap.put(route, Collections.singletonList(polyline));
 
@@ -222,9 +207,32 @@ public final class MapsPresenter implements FavoritesListAdapter.ListAdapterOnCl
         }
     }
 
-    public void onRouteClick(int adapterPosition, Route[] routeArrayList){
-        REPOSITORY.setSelectedRoute(routeArrayList[adapterPosition]);
+    public void onRouteClick(int adapterPosition, ArrayList<Route> routeArrayList){
+        REPOSITORY.setSelectedRoute(routeArrayList.get(adapterPosition));
         drawSelectedRoute();
         drawWalkRoute();
+    }
+
+    public void makeExtendedOptionsFragment(){
+
+        ExtendedFragment optionsFragment = new ExtendedFragment();
+        FragmentTransaction fragmentTransaction = this.mManager.beginTransaction();
+        fragmentTransaction.add(R.id.container, optionsFragment);
+        fragmentTransaction.addToBackStack((String) null);
+        fragmentTransaction.commit();
+        mManager.executePendingTransactions();
+
+        // Setting up Extended Fragment recycler view
+        RecyclerView recyclerView = ((MapsActivity)mContext).findViewById(R.id.routes);
+        recyclerView.setLayoutManager((new LinearLayoutManager(mContext, 1, false)));
+        routeOptionsListAdapter = new RoutesListAdapter(mContext, this,
+                REPOSITORY.getRoutesList().size(), REPOSITORY.getRoutesList());
+        recyclerView.setAdapter(routeOptionsListAdapter);
+
+
+    }
+
+    public void setmMap(GoogleMap mMap) {
+        this.mMap = mMap;
     }
 }

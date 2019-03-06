@@ -21,18 +21,18 @@ public class RoutesListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     private final Context mContext;
     private int mCount;
     private final MapsPresenter mMapsPresenter;
-    private Route[] mRoutesList;
+    private ArrayList<Route> mRoutesList;
     
 
-   public RoutesListAdapter( Context context, MapsPresenter clickHandler,
-            int count, Route[] list) {
+   public RoutesListAdapter(Context context, MapsPresenter clickHandler,
+                            int count, ArrayList<Route> list) {
         mContext = context;
         mMapsPresenter = clickHandler;
         mCount = count;
         mRoutesList = list;
     }
 
-    public void setList(Route[] list, int count, String query) {
+    public void setList(ArrayList<Route> list, int count, String query) {
         mCount = count;
         mRoutesList = list;
         notifyDataSetChanged();
@@ -55,7 +55,7 @@ public class RoutesListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder input_holder, int position) {
-        final Route routeModel = mRoutesList[position];
+        final Route routeModel = mRoutesList.get(position);
 
         ListAdapterViewHolder holder2 = (ListAdapterViewHolder) input_holder;
         //holder2.duration = routeModel.getArrivalTime()

@@ -24,6 +24,7 @@ import kotlin.TypeCastException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -33,7 +34,7 @@ import java.util.TimeZone;
 public final class FavoritesListAdapter extends Adapter {
 
     // stores all routes for favorite at the position represented by the key
-    private HashMap<Integer, Route[]> mAllRoutesToFavorites;
+    private HashMap<Integer, ArrayList<Route>> mAllRoutesToFavorites = new HashMap<Integer, ArrayList<Route>>();
 
     private Endpoint.Config mConfig;
     private Context mContext;
@@ -83,11 +84,6 @@ public final class FavoritesListAdapter extends Adapter {
             holder2.getFavoriteName().setText(mFavList[position].getStartPlace().getName() + "--" +
                     mFavList[position].getEndPlace().getName());
 
-
-            // Grabbing route associated with favorite
-//            mAllRoutesToFavorites = FutureUtilities.getRoute(mConfig, mFavList[position].getStartPlace(),
-//                    mFavList[position].getEndPlace(), mAllRoutesToFavorites, position);
-
             Map<String, String> mapString = new HashMap<String, String>();
             mapString.put("start", mFavList[position].getStartPlace().toString());
             mapString.put("end", mFavList[position].getEndPlace().toString());
@@ -103,17 +99,14 @@ public final class FavoritesListAdapter extends Adapter {
                     .path("route")
                     .method(Endpoint.Method.GET);
 
-            System.out.print("About to look at routes list");
             FutureNovaRequest.make(Route[].class, searchEndpoint).thenAccept((APIResponse<Route[]> response) -> {
 
+                ArrayList<Route> routes = new ArrayList<Route>();
                 for(Route r:  response.getData()){
-                    System.out.println("Broadcasr");
-
-                    System.out.println("Duration " + r.getDuration());
+                    routes.add(r);
                 }
-                mAllRoutesToFavorites.put(position, response.getData());
-                mOptimalRoutes[position] = response.getData()[0];
-
+                mAllRoutesToFavorites.put(position, routes);
+                mOptimalRoutes[position] = routes.get(0);
             });
         }
     }
@@ -148,7 +141,7 @@ public final class FavoritesListAdapter extends Adapter {
         return mOptimalRoutes;
     }
 
-    public HashMap<Integer, Route[]> getmAllRoutesToFavorites() {
+    public HashMap<Integer, ArrayList<Route>> getmAllRoutesToFavorites() {
         return mAllRoutesToFavorites;
     }
 }

@@ -21,7 +21,7 @@
             android:layout_marginStart="15dp"
             android:layout_marginTop="8dp"
             android:layout_toEndOf="@+id/allRoutes"
-            android:background="@drawable/fob"></RelativeLayout>
+            android:background="@drawable/fab"></RelativeLayout>
 
         <TextView
             android:id="@+id/optionsText"
