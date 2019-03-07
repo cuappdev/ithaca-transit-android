@@ -69,7 +69,7 @@ public final class MapsActivity extends AppCompatActivity implements OnMapReadyC
         setContentView(R.layout.activity_maps);
         fusedLocationClient = LocationServices.getFusedLocationProviderClient((Activity) this);
         FragmentManager manager = this.getFragmentManager();
-        Repository.ourInstance.setContext(this);
+        Repository.getInstance().setContext(this);
         mController = new MapsPresenter(manager, this, config);
 
         SupportMapFragment mapFragment = (SupportMapFragment) this.getSupportFragmentManager().findFragmentById(R.id.map);
@@ -168,7 +168,7 @@ public final class MapsActivity extends AppCompatActivity implements OnMapReadyC
                 public final void onSuccess(Location location) {
                     if (location != null) {
                         MapsActivity.this.lastLocation = location;
-                        LatLng currentLatLng = new LatLng(42.4446, -76.4823);
+                        LatLng currentLatLng = new LatLng(location.getLatitude(), location.getLongitude());
                         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 14.0F));
                     }
                 }

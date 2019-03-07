@@ -20,7 +20,6 @@ import ithaca_transit.android.cornellappdev.com.ithaca_transit.R;
 
 public class FutureUtilities {
 
-
     public static int getDelay(int stopID, int tripID, Context mainContext) {
         int delay = 0;
         try {

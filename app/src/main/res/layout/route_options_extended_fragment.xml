@@ -50,10 +50,50 @@
         android:layout_below="@id/optionsText"
         android:clipToPadding="false"
         android:nestedScrollingEnabled="false"
-        android:onClick="filterClick"
         android:background="@color/lightGray"
         android:layout_marginTop="16dp"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
          />
+
+    <!--<TextView-->
+        <!--android:layout_below="@id/routes"-->
+        <!--android:id="@+id/tv_nearby_stops"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="By nearby sttops"/>-->
+
+    <!--<android.support.v7.widget.RecyclerView-->
+        <!--android:id="@+id/nearby_stops_routes"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_below="@id/tv_nearby_stops"-->
+        <!--android:clipToPadding="false"-->
+        <!--android:nestedScrollingEnabled="false"-->
+        <!--android:background="@color/lightGray"-->
+        <!--android:layout_marginTop="16dp"-->
+        <!--android:layout_marginLeft="16dp"-->
+        <!--android:layout_marginRight="16dp"-->
+        <!--/>-->
+
+    <!--<TextView-->
+        <!--android:layout_below="@+id/nearby_stops_routes"-->
+        <!--android:id="@+id/tv_walking"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="By Walking"/>-->
+
+    <!--<ListView-->
+        <!--android:id="@+id/walking_route"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_below="@id/tv_walking"-->
+        <!--android:clipToPadding="false"-->
+        <!--android:nestedScrollingEnabled="false"-->
+        <!--android:background="@color/lightGray"-->
+        <!--android:layout_marginTop="16dp"-->
+        <!--android:layout_marginLeft="16dp"-->
+        <!--android:layout_marginRight="16dp"-->
+        <!--/>-->
+
 </RelativeLayout>

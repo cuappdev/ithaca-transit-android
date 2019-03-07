@@ -19,10 +19,9 @@ import ithaca_transit.android.cornellappdev.com.ithaca_transit.R;
 
 public class RoutesListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private final Context mContext;
-    private int mCount;
     private final MapsPresenter mMapsPresenter;
+    private int mCount;
     private ArrayList<Route> mRoutesList;
-    
 
    public RoutesListAdapter(Context context, MapsPresenter clickHandler,
                             int count, ArrayList<Route> list) {
@@ -58,18 +57,9 @@ public class RoutesListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         final Route routeModel = mRoutesList.get(position);
 
         ListAdapterViewHolder holder2 = (ListAdapterViewHolder) input_holder;
-        //holder2.duration = routeModel.getArrivalTime()
 
         holder2.duration.setText(routeModel.getDuration());
         holder2.route_description.setText(routeModel.getDescription());
-
-
-        //if direction is walking from start to end, do this
-        //if bus then walking, do this
-
-
-        //holder2.directions.setAdapter();
-
     }
 
     @Override
@@ -81,10 +71,10 @@ public class RoutesListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         void onRouteClick(int position, @NotNull Route[] routesList);
     }
 
-    class ListAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        TextView duration;
-        TextView route_description;
-        ListView directions;
+    private class ListAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        private TextView duration;
+        private TextView route_description;
+        private ListView directions;
 
         ListAdapterViewHolder(View itemView) {
             super(itemView);

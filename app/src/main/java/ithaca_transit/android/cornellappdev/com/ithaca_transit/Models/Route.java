@@ -28,7 +28,7 @@ public class Route {
         int count = 0;
 
         while(walkOnlyRoute && count < directions.length){
-            if(directions[count].getType().equals(DirectionType.DEPART)){
+            if(directions[count].getType().equals("depart")){
                 walkOnlyRoute = false;
             }
             count++;
@@ -42,7 +42,6 @@ public class Route {
     public Direction[] getDirections() {
         return directions;
     }
-
     public Coordinate getStartCoords() {
         return startCoords;
     }
@@ -50,7 +49,7 @@ public class Route {
     public String getDescription(){
         String description = "";
 
-        if(isWalkOnlyRoute()){
+        if (isWalkOnlyRoute()) {
             String append = " , ";
             boolean firstItem = true;
             for(Direction direction: directions){
@@ -61,10 +60,10 @@ public class Route {
                 description = description + append + direction.getName();
             }
         }
-        else{
+        else {
             description = "Board";
             Calendar calendar = Calendar.getInstance();
-            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZZZZ");
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
             Date now = new Date(System.currentTimeMillis());
             calendar.setTime(now);
             Date currentDate = calendar.getTime();
@@ -72,20 +71,19 @@ public class Route {
             try {
                 Date departureDate = format.parse(departureTime);
 
-                if(departureDate.getDay() - currentDate.getDay() > 1){
+                if (departureDate.getDay() - currentDate.getDay() > 1) {
                     description = description + " on " + currentDate.getMonth() + "/" + departureDate.getDay();
                 }
-                else if(departureDate.getHours() - currentDate.getHours() > 1){
-                    description = description + " in " + (currentDate.getHours() - departureDate.getHours());
+                else if (departureDate.getHours() - currentDate.getHours() > 1) {
+                    description = description + " in " + (departureDate.getHours() - currentDate.getHours()) + " hours";
                 }
                 else{
-                    description = description + " in " + (departureDate.getMinutes() - currentDate.getMinutes());
+                    description = description + " in " + (departureDate.getMinutes() - currentDate.getMinutes()) + " minutes";
                 }
 
             } catch (ParseException e) {
                 e.printStackTrace();
             }
-
         }
 
         return description;
@@ -107,35 +105,43 @@ public class Route {
             String arrivalAppend;
             String departureAppend;
 
-            if(arrivalHour > 11){
+            if (arrivalHour > 11) {
                 arrivalAppend = "PM";
                 arrivalHour = arrivalHour - 12;
 
             }
-            else{
+            else {
                 arrivalAppend = "AM";
+                if (arrivalHour == 0) {
+                    arrivalHour = 12;
+                }
             }
 
-            if(departureHour > 11){
+            if (departureHour > 11) {
                 departureAppend = "PM";
                 departureHour = departureHour - 12;
             }
-            else{
+            else {
                 departureAppend = "AM";
+                if (departureHour == 0) {
+                    departureHour = 12;
+                }
             }
 
             String departureZero = "";
-            if(departureMinutes < 10){
+            if (departureMinutes < 10) {
                 departureZero = "0";
             }
 
             String arrivalZero = "";
-            if(arrivalMintues < 10){
+            if (arrivalMintues < 10) {
                 arrivalZero = "0";
             }
 
-            return departureHour + ":" + departureZero + departureMinutes + " " + departureAppend + "--"
-                + arrivalHour + ":" + arrivalZero + arrivalMintues + " "  + arrivalAppend;
+            String duration = String.format("%s:%s%s %s--%s:%s%s %s", departureHour, departureZero,
+                    departureMinutes, departureAppend, arrivalHour, arrivalZero, arrivalMintues, arrivalAppend);
+
+            return duration;
         } catch (ParseException e) {
             e.printStackTrace();
         }

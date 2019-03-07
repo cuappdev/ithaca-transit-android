@@ -43,19 +43,16 @@ public final class FavoritesListAdapter extends Adapter {
 
     // stores most optimal route for favorite
     private Route[] mOptimalRoutes;
-    private static Repository REPOSITORY;
 
     public FavoritesListAdapter(@NotNull Context context, @NotNull ListAdapterOnClickHandler listAdapterOnClickHandler,
-                                @NotNull Favorite[] favorites, Endpoint.Config config, Repository repository) {
+                                @NotNull Favorite[] favorites, Endpoint.Config config) {
         super();
         mConfig = config;
         mContext = context;
         mFavList = favorites;
         mListAdapterOnClickHandler = listAdapterOnClickHandler;
         mOptimalRoutes = new Route[favorites.length];
-        REPOSITORY = repository;
     }
-
 
     public final void setList(@NotNull Favorite[] list, @NotNull String query) {
         mFavList = list;
