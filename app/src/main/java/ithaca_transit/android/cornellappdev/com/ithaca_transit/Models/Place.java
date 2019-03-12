@@ -15,7 +15,6 @@ public final class Place {
     private String placeID;
     private String type;
 
-
     public Place(String detail, Double latitude, Double longitude, String name, String placeID, String type) {
         this.type = type;
         this.name = name;

@@ -4,12 +4,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.StringJoiner;
 import java.util.TimeZone;
-
-import ithaca_transit.android.cornellappdev.com.ithaca_transit.Enums.DirectionType;
-
-import static java.time.LocalDate.now;
 
 public class Route {
 
@@ -21,14 +16,13 @@ public class Route {
     private int numberOfTransfers;
     private Coordinate startCoords;
 
-
     // Determine if a route only contains walk directions
-    public boolean isWalkOnlyRoute(){
+    public boolean isWalkOnlyRoute() {
         boolean walkOnlyRoute = true;
         int count = 0;
 
-        while(walkOnlyRoute && count < directions.length){
-            if(directions[count].getType().equals("depart")){
+        while (walkOnlyRoute && count < directions.length) {
+            if (directions[count].getType().equals("depart")) {
                 walkOnlyRoute = false;
             }
             count++;
@@ -39,28 +33,29 @@ public class Route {
     public BoundingBox getBoundingBox() {
         return boundingBox;
     }
+
     public Direction[] getDirections() {
         return directions;
     }
+
     public Coordinate getStartCoords() {
         return startCoords;
     }
 
-    public String getDescription(){
+    public String getDescription() {
         String description = "";
 
         if (isWalkOnlyRoute()) {
             String append = " , ";
             boolean firstItem = true;
-            for(Direction direction: directions){
-                if(firstItem){
+            for (Direction direction : directions) {
+                if (firstItem) {
                     description = direction.getName();
                     firstItem = false;
                 }
                 description = description + append + direction.getName();
             }
-        }
-        else {
+        } else {
             description = "Board";
             Calendar calendar = Calendar.getInstance();
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
@@ -72,13 +67,14 @@ public class Route {
                 Date departureDate = format.parse(departureTime);
 
                 if (departureDate.getDay() - currentDate.getDay() > 1) {
-                    description = description + " on " + currentDate.getMonth() + "/" + departureDate.getDay();
-                }
-                else if (departureDate.getHours() - currentDate.getHours() > 1) {
-                    description = description + " in " + (departureDate.getHours() - currentDate.getHours()) + " hours";
-                }
-                else{
-                    description = description + " in " + (departureDate.getMinutes() - currentDate.getMinutes()) + " minutes";
+                    description = description + " on " + currentDate.getMonth() + "/"
+                            + departureDate.getDay();
+                } else if (departureDate.getHours() - currentDate.getHours() > 1) {
+                    description = description + " in " + (departureDate.getHours()
+                            - currentDate.getHours()) + " hours";
+                } else {
+                    description = description + " in " + (departureDate.getMinutes()
+                            - currentDate.getMinutes()) + " minutes";
                 }
 
             } catch (ParseException e) {
@@ -89,7 +85,7 @@ public class Route {
         return description;
     }
 
-    public String getDuration(){
+    public String getDuration() {
         Calendar calendar = Calendar.getInstance();
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
         try {
@@ -109,8 +105,7 @@ public class Route {
                 arrivalAppend = "PM";
                 arrivalHour = arrivalHour - 12;
 
-            }
-            else {
+            } else {
                 arrivalAppend = "AM";
                 if (arrivalHour == 0) {
                     arrivalHour = 12;
@@ -120,8 +115,7 @@ public class Route {
             if (departureHour > 11) {
                 departureAppend = "PM";
                 departureHour = departureHour - 12;
-            }
-            else {
+            } else {
                 departureAppend = "AM";
                 if (departureHour == 0) {
                     departureHour = 12;
@@ -139,13 +133,14 @@ public class Route {
             }
 
             String duration = String.format("%s:%s%s %s--%s:%s%s %s", departureHour, departureZero,
-                    departureMinutes, departureAppend, arrivalHour, arrivalZero, arrivalMintues, arrivalAppend);
+                    departureMinutes, departureAppend, arrivalHour, arrivalZero, arrivalMintues,
+                    arrivalAppend);
 
             return duration;
         } catch (ParseException e) {
             e.printStackTrace();
         }
-       return "No description available";
+        return "No description available";
     }
 
 

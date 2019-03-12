@@ -87,7 +87,6 @@ public final class MapsPresenter implements FavoritesListAdapter.ListAdapterOnCl
 
     }
 
-
     public final void setDynamicRecyclerView() {
         mRecView.setHasFixedSize(true);
         LinearLayoutManager layoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false);
@@ -128,7 +127,6 @@ public final class MapsPresenter implements FavoritesListAdapter.ListAdapterOnCl
         }
         routeMap.remove(previousRoute);
     }
-
 
     public void drawSelectedRoute() {
         removeAllRoutes();
@@ -228,8 +226,6 @@ public final class MapsPresenter implements FavoritesListAdapter.ListAdapterOnCl
         routeOptionsListAdapter = new RoutesListAdapter(mContext, this,
                 Repository.getInstance().getRoutesList().size(), Repository.getInstance().getRoutesList());
         recyclerView.setAdapter(routeOptionsListAdapter);
-
-
     }
 
     public void setmMap(GoogleMap mMap) {

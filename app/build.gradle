@@ -48,7 +48,6 @@ dependencies {
 
     testImplementation 'junit:junit:4.12'
 
-
     // SlideUp library
     compile "com.github.mancj:SlideUp-Android:2.2.8"
 

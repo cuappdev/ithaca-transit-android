@@ -5,11 +5,8 @@ import java.util.Date;
 
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Enums.DirectionType;
 
-import org.jetbrains.annotations.NotNull;
-
 public final class Direction {
 
-    private static final LocationObject BLANK_LOCATION = new LocationObject();
     private static final Date BLANK_TIME = new Date();
 
     private int delay;
@@ -26,7 +23,6 @@ public final class Direction {
     private String[] tripIdentifiers;
     private String type;
 
-    @NotNull
     public final String locationDescription() {
         if (type != null) {
             switch (type) {
