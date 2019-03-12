@@ -8,49 +8,76 @@
     android:background="@color/routeBackground"
     android:elevation="5dp"
     >
-    <TextView
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:textColor="@color/black"
-    android:textSize="16sp"
-    android:layout_alignParentTop="true"
-    android:layout_alignParentLeft="true"
-    android:layout_marginTop="20dp"
-    android:layout_marginLeft="20dp"
-    android:text="Route Options"
-    android:id="@+id/optionsText"
-    />
 
-    <TextView
+    <RelativeLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@color/leaveNowGray"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginTop="20dp"
-        android:layout_margin="20dp"
-        android:text="Leave Now"
-        android:textSize="14sp"
-        android:id="@+id/chooseTime"
-        />
+        android:layout_height="wrap_content">
 
-    <include layout="@layout/route_card"
+        <RelativeLayout
+            android:layout_width="60dp"
+            android:layout_height="8dp"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="8dp"
+            android:layout_toEndOf="@+id/allRoutes"
+            android:background="@drawable/fab"></RelativeLayout>
+
+        <TextView
+            android:id="@+id/optionsText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="20dp"
+            android:text="Route Options"
+            android:textColor="@color/black"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/chooseTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:layout_margin="20dp"
+            android:layout_marginTop="20dp"
+            android:text="Leave Now"
+            android:textColor="@color/leaveNowGray"
+            android:textSize="14sp" />
+
+        <include
+            android:id="@+id/singleRoute"
+            layout="@layout/route_card"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/optionsText"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp" />
+
+        <TextView
+            android:id="@+id/allRoutes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/singleRoute"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="12dp"
+            android:text="@string/all_routes"
+            android:textColor="@color/leaveNowGray"
+            android:textSize="14sp" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:visibility="invisible"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/optionsText"
-        android:id="@+id/singleRoute"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"/>
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@color/leaveNowGray"
-        android:layout_below="@id/singleRoute"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="12dp"
-        android:textSize="14sp"
-        android:text="@string/all_routes"
-        android:id="@+id/allRoutes"
-        />
+        android:layout_height="wrap_content">
+        <include layout="@layout/route_options_extended_fragment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    </RelativeLayout>
+
+
 </RelativeLayout>

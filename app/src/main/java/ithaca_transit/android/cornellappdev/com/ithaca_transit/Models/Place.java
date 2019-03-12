@@ -2,13 +2,6 @@ package ithaca_transit.android.cornellappdev.com.ithaca_transit.Models;
 
 import com.google.gson.annotations.SerializedName;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.Optional;
-
-import ithaca_transit.android.cornellappdev.com.ithaca_transit.R;
-import ithaca_transit.android.cornellappdev.com.ithaca_transit.Singleton.Repository;
 
 public final class Place {
     private String detail;
@@ -23,15 +16,20 @@ public final class Place {
     private String type;
 
     public Place(String detail, Double latitude, Double longitude, String name, String placeID, String type) {
-
         this.type = type;
         this.name = name;
         this.detail = detail;
         this.latitude = latitude;
         this.longitude = longitude;
         this.placeID = placeID;
+        this.type = type;
     }
 
+    public Place(Double latitude, Double longitude, String name) {
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.name = name;
+    }
     public Place(String detail) {
         this.detail = detail;
     }
@@ -56,8 +54,12 @@ public final class Place {
         return placeID;
 
     }
-
     public String getType() {
         return type;
+    }
+
+    @Override
+    public String toString() {
+        return latitude + "," + longitude;
     }
 }

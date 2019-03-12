@@ -4,25 +4,30 @@ import android.content.Context;
 
 import com.google.android.gms.maps.GoogleMap;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.Route;
 
 public class Repository {
-    private static final Repository ourInstance = new Repository();
+
+    private static Repository sRepoInstance = new Repository();
 
     private Context context;
+    private GoogleMap map;
+    private Route selectedRoute;
+    private ArrayList<Route> routesList;
 
-    private List<Route> routesList;
-    private Repository() {
+    public static Repository getInstance() {
+        return sRepoInstance;
     }
 
-    public List<Route> getRoutesList() {
+    public ArrayList<Route> getRoutesList() {
         return routesList;
     }
 
-    public void setRoutesList(List<Route> routesList) {
+    public void setRoutesList(ArrayList<Route> routesList) {
         this.routesList = routesList;
     }
 

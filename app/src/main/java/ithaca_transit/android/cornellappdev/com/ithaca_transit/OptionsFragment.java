@@ -9,19 +9,21 @@ import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.widget.TextView;
 
+import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.Route;
+import ithaca_transit.android.cornellappdev.com.ithaca_transit.Singleton.Repository;
 import kotlin.jvm.internal.Intrinsics;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.util.Calendar;
+import java.util.Date;
 
 
 public final class OptionsFragment extends Fragment {
     @NotNull
     public TextView allRoutesText;
-
-    @NotNull
-    public final TextView getAllRoutesText() {
-        return allRoutesText;
-    }
 
     @Nullable
     public View onCreateView(@Nullable LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -36,7 +38,14 @@ public final class OptionsFragment extends Fragment {
                 fragmentTransaction.commit();
             }
         }));
+
         return view;
+    }
+
+
+    @NotNull
+    public final TextView getAllRoutesText() {
+        return allRoutesText;
     }
 
 }

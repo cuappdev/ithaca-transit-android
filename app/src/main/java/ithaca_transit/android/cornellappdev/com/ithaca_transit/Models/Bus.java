@@ -1,11 +1,11 @@
 package ithaca_transit.android.cornellappdev.com.ithaca_transit.Models;
 
 
-import com.google.android.gms.maps.model.Marker;
-
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Date;
+
+import ithaca_transit.android.cornellappdev.com.ithaca_transit.Enums.BusDataType;
 
 public final class Bus {
     private BusDataType dataType;
@@ -61,8 +61,3 @@ public final class Bus {
     }
 }
 
-enum BusDataType {
-    invalidData,
-    noData,
-    validData;
-}
