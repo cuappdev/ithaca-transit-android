@@ -3,51 +3,67 @@ package ithaca_transit.android.cornellappdev.com.ithaca_transit;
 import android.app.Activity;
 import android.app.FragmentManager;
 import android.content.Context;
+import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import com.appdev.futurenovajava.APIResponse;
+import com.appdev.futurenovajava.Endpoint;
+import com.appdev.futurenovajava.FutureNovaRequest;
 import com.arlib.floatingsearchview.FloatingSearchView;
+import com.arlib.floatingsearchview.suggestions.SearchSuggestionsAdapter;
+import com.arlib.floatingsearchview.suggestions.model.SearchSuggestion;
+import com.arlib.floatingsearchview.util.Util;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.GoogleMap.OnMapLongClickListener;
+import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.appdev.futurenovajava.Endpoint;
-import com.appdev.futurenovajava.FutureNovaRequest;
+import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.net.FetchPlaceRequest;
+import com.google.android.libraries.places.api.net.PlacesClient;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.Place;
-import ithaca_transit.android.cornellappdev.com.ithaca_transit.Presenters.MapsPresenter;
-
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-
 import java.util.Map;
+import java.util.TimeZone;
 
-import java8.util.Optional;
+import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.Place;
+import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.Route;
+import ithaca_transit.android.cornellappdev.com.ithaca_transit.Presenters.MapsPresenter;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Singleton.Repository;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Utils.LocationAutocomplete;
-
+import java8.util.Optional;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
 
 
 public final class MapsActivity extends AppCompatActivity implements OnMapReadyCallback {
     private FusedLocationProviderClient fusedLocationClient;
+    private PlacesClient placesClient;
     private Location lastLocation;
     public MapsPresenter mController;
     private GoogleMap mMap;
@@ -65,14 +81,19 @@ public final class MapsActivity extends AppCompatActivity implements OnMapReadyC
         config.commonPath = Optional.of("/api/v1");
         Endpoint.config = config;
 
+        //Initializes Google Places, Location Identifier, and the Google Maps Controller
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+        Places.initialize(getApplicationContext(),
+                getResources().getString(R.string.google_maps_key));
+        placesClient = Places.createClient(this);
         fusedLocationClient = LocationServices.getFusedLocationProviderClient((Activity) this);
         FragmentManager manager = this.getFragmentManager();
         Repository.getInstance().setContext(this);
         mController = new MapsPresenter(manager, this, config);
 
-        SupportMapFragment mapFragment = (SupportMapFragment) this.getSupportFragmentManager().findFragmentById(R.id.map);
+        SupportMapFragment mapFragment =
+                (SupportMapFragment) this.getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync((OnMapReadyCallback) this);
         RecyclerView mRecView = this.findViewById(R.id.recycler_view_maps);
         mController.mRecView = mRecView;
@@ -92,6 +113,117 @@ public final class MapsActivity extends AppCompatActivity implements OnMapReadyC
                 handler.postDelayed(workRunnable, 250 /*delay*/);
             }
         });
+
+        mSearchView.setOnBindSuggestionCallback(
+                new SearchSuggestionsAdapter.OnBindSuggestionCallback() {
+                    @Override
+                    public void onBindSuggestion(View suggestionView, ImageView leftIcon,
+                            TextView textView, SearchSuggestion item, int itemPosition) {
+                        LocationAutocomplete suggestion = (LocationAutocomplete) item;
+
+                        if (suggestion.getPlace().getPlaceID() == null) {
+                            leftIcon.setImageDrawable(ResourcesCompat.getDrawable(getResources(),
+                                    R.drawable.ic_bus_stop, null));
+                            textView.setTextColor(Color.parseColor("#111111"));
+                            textView.setTextSize(15f);
+                        } else {
+                            leftIcon.setImageDrawable(ResourcesCompat.getDrawable(getResources(),
+                                    R.drawable.ic_loc_stop, null));
+                            Util.setIconColor(leftIcon, Color.parseColor("#cacaca"));
+                            String text = "<font color='black'>" + suggestion.getPlace().getName()
+                                    + "</font>"
+                                    + "<br/>" + suggestion.getPlace().getDetail();
+                            textView.setText(Html.fromHtml(text), TextView.BufferType.SPANNABLE);
+                            textView.setTextSize(15f);
+                        }
+                    }
+
+                });
+
+        mSearchView.setOnSearchListener(new FloatingSearchView.OnSearchListener() {
+            @Override
+            public void onSuggestionClicked(SearchSuggestion searchSuggestion) {
+                final Place dest = ((LocationAutocomplete) searchSuggestion).getPlace();
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (dest.getPlaceID() == null) {
+                            launchRoute(MapsActivity.this.lastLocation.getLatitude() +
+                                            ", " + MapsActivity.this.lastLocation.getLongitude(),
+                                    dest.toString(), dest.getName());
+                        } else {
+                            FetchPlaceRequest request = FetchPlaceRequest.builder(dest.toString(),
+                                    Arrays.asList(
+                                            com.google.android.libraries.places.api.model.Place.Field.LAT_LNG)).build();
+
+                            placesClient.fetchPlace(request).addOnSuccessListener((response) -> {
+                                launchRoute(MapsActivity.this.lastLocation.getLatitude() +
+                                                ", " + MapsActivity.this.lastLocation.getLongitude(),
+                                        response.getPlace().getLatLng().latitude + ", "
+                                                + response.getPlace().getLatLng().longitude,
+                                        dest.getName());
+
+                            });
+                        }
+                    }
+                }).start();
+            }
+
+            @Override
+            public void onSearchAction(String currentQuery) {
+            }
+        });
+    }
+
+    //Retrieves Route info from backend, sends it to MapPresenter
+    private void launchRoute(String start, String end, String name) {
+        Map<String, String> mapString = new HashMap<String, String>();
+        mapString.put("start", start);
+        mapString.put("end", end);
+        mapString.put("arriveBy", String.valueOf(false));
+        mapString.put("destinationName", name);
+
+        Calendar calendar = Calendar.getInstance(
+                TimeZone.getTimeZone("\"America/NewYork\""));
+        int secondsEpoch = (int) (calendar.getTimeInMillis() / 1000L);
+        mapString.put("time", String.valueOf(secondsEpoch));
+
+        Endpoint searchEndpoint = new Endpoint()
+                .queryItems(mapString)
+                .path("route")
+                .method(Endpoint.Method.GET);
+
+        FutureNovaRequest.make(
+                Route[].class, searchEndpoint).thenAccept(
+                (APIResponse<Route[]> response) -> {
+
+                    ArrayList<Route> routes = new ArrayList<Route>();
+                    for (Route r : response.getData()) {
+                        routes.add(r);
+                    }
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (routes.size() > 0) {
+                                getController().drawRoutes(routes.get(0), routes);
+                                getSearchView().setSearchText(name);
+                                getSearchView().clearSearchFocus();
+                            } else {
+                                Toast.makeText(MapsActivity.this,
+                                        "Something went wrong, we can't provide a route.",
+                                        Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+                });
+    }
+
+    private MapsPresenter getController() {
+        return mController;
+    }
+
+    private FloatingSearchView getSearchView() {
+        return mSearchView;
     }
 
     private void autoCompleteRequest(String query) {
@@ -106,8 +238,9 @@ public final class MapsActivity extends AppCompatActivity implements OnMapReadyC
             e.printStackTrace();
         }
 
-        final RequestBody requestBody = 
-            RequestBody.create(MediaType.get("application/json; charset=utf-8"), searchJSON.toString());
+        final RequestBody requestBody =
+                RequestBody.create(MediaType.get("application/json; charset=utf-8"),
+                        searchJSON.toString());
 
         Endpoint searchEndpoint = new Endpoint()
                 .path("search")
@@ -119,9 +252,11 @@ public final class MapsActivity extends AppCompatActivity implements OnMapReadyC
             Place[] searchResults = response.getData();
 
             final List<LocationAutocomplete> wrappedResults = new ArrayList<>();
-            if (searchResults != null)
-                for (Place p : searchResults)
+            if (searchResults != null) {
+                for (Place p : searchResults) {
                     wrappedResults.add(new LocationAutocomplete(p));
+                }
+            }
             mSearchView.post(new Runnable() {
                 public void run() {
                     mSearchView.swapSuggestions(wrappedResults);
@@ -154,25 +289,29 @@ public final class MapsActivity extends AppCompatActivity implements OnMapReadyC
     }
 
     private final void setUpMap() {
-        if (ActivityCompat.checkSelfPermission((Context) this, "android.permission.ACCESS_FINE_LOCATION") != 0) {
-            ActivityCompat.requestPermissions((Activity) this, new String[]{"android.permission.ACCESS_FINE_LOCATION"}, 1);
+        if (ActivityCompat.checkSelfPermission((Context) this,
+                "android.permission.ACCESS_FINE_LOCATION") != 0) {
+            ActivityCompat.requestPermissions((Activity) this,
+                    new String[]{"android.permission.ACCESS_FINE_LOCATION"}, 1);
         } else {
-
             mMap.setMyLocationEnabled(true);
             mMap.getUiSettings().setMyLocationButtonEnabled(false);
-            fusedLocationClient.getLastLocation().addOnSuccessListener((Activity) this, (OnSuccessListener) (new OnSuccessListener() {
-                public void onSuccess(Object var1) {
-                    this.onSuccess((Location) var1);
-                }
+            fusedLocationClient.getLastLocation().addOnSuccessListener((Activity) this,
+                    (OnSuccessListener) (new OnSuccessListener() {
+                        public void onSuccess(Object var1) {
+                            this.onSuccess((Location) var1);
+                        }
 
-                public final void onSuccess(Location location) {
-                    if (location != null) {
-                        MapsActivity.this.lastLocation = location;
-                        LatLng currentLatLng = new LatLng(location.getLatitude(), location.getLongitude());
-                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 14.0F));
-                    }
-                }
-            }));
+                        public final void onSuccess(Location location) {
+                            if (location != null) {
+                                MapsActivity.this.lastLocation = location;
+                                LatLng currentLatLng = new LatLng(location.getLatitude(),
+                                        location.getLongitude());
+                                mMap.animateCamera(
+                                        CameraUpdateFactory.newLatLngZoom(currentLatLng, 14.0F));
+                            }
+                        }
+                    }));
         }
     }
 }

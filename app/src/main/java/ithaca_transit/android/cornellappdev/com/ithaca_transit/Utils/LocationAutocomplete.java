@@ -22,13 +22,17 @@ public class LocationAutocomplete implements SearchSuggestion {
     private Place data;
     private String desc;
 
-    public LocationAutocomplete(Place data){
+    public LocationAutocomplete(Place data) {
         this.data = data;
         desc = data.getName();
     }
 
-    public LocationAutocomplete(Parcel in){
+    public LocationAutocomplete(Parcel in) {
         this.desc = in.readString();
+    }
+
+    public Place getPlace() {
+        return data;
     }
 
     @Override
