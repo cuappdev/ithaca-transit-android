@@ -12,16 +12,21 @@ public final class Place {
     @SerializedName("long")
     private Double longitude;
     private String name;
-    private String placeID;
+    private String placeId;
     private String type;
 
-    public Place(String detail, Double latitude, Double longitude, String name, String placeID, String type) {
+    public Place(String detail,
+            Double latitude,
+            Double longitude,
+            String name,
+            String placeId,
+            String type) {
         this.type = type;
         this.name = name;
         this.detail = detail;
         this.latitude = latitude;
         this.longitude = longitude;
-        this.placeID = placeID;
+        this.placeId = placeId;
         this.type = type;
     }
 
@@ -30,6 +35,7 @@ public final class Place {
         this.longitude = longitude;
         this.name = name;
     }
+
     public Place(String detail) {
         this.detail = detail;
     }
@@ -51,15 +57,15 @@ public final class Place {
     }
 
     public String getPlaceID() {
-        return placeID;
-
+        return placeId;
     }
+
     public String getType() {
         return type;
     }
 
     @Override
     public String toString() {
-        return latitude + "," + longitude;
+        return (latitude != null) ? getLatitude() + "," + getLongitude() : getPlaceID();
     }
 }
