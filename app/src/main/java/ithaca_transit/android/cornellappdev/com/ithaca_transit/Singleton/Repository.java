@@ -5,10 +5,10 @@ import android.content.Context;
 import com.google.android.gms.maps.GoogleMap;
 
 import java.util.ArrayList;
-import java.util.List;
 
 
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.Route;
+import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.SectionedRoutes;
 
 public class Repository {
 
@@ -17,17 +17,17 @@ public class Repository {
     private Context context;
     private GoogleMap map;
     private Route selectedRoute;
-    private ArrayList<Route> routesList;
+    private SectionedRoutes routesList;
 
     public static Repository getInstance() {
         return sRepoInstance;
     }
 
-    public ArrayList<Route> getRoutesList() {
+    public SectionedRoutes getRoutesList() {
         return routesList;
     }
 
-    public void setRoutesList(ArrayList<Route> routesList) {
+    public void setRoutesList(SectionedRoutes routesList) {
         this.routesList = routesList;
     }
 

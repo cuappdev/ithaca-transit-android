@@ -10,38 +10,36 @@ import android.os.Looper;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 
+import com.appdev.futurenovajava.Endpoint;
+import com.appdev.futurenovajava.FutureNovaRequest;
 import com.arlib.floatingsearchview.FloatingSearchView;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.GoogleMap.OnMapLongClickListener;
+import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.appdev.futurenovajava.Endpoint;
-import com.appdev.futurenovajava.FutureNovaRequest;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.Place;
-import ithaca_transit.android.cornellappdev.com.ithaca_transit.Presenters.MapsPresenter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-
 import java.util.Map;
 
-import java8.util.Optional;
+import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.Place;
+import ithaca_transit.android.cornellappdev.com.ithaca_transit.Presenters.MapsPresenter;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Singleton.Repository;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Utils.LocationAutocomplete;
-
+import java8.util.Optional;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
 
@@ -57,24 +55,34 @@ public final class MapsActivity extends AppCompatActivity implements OnMapReadyC
     private Handler handler = new Handler(Looper.getMainLooper() /*UI thread*/);
     private Runnable workRunnable;
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        if (mRecView.getVisibility() == View.GONE) {
+            mRecView.setVisibility(View.VISIBLE);
+        }
+    }
+
     protected void onCreate(Bundle savedInstanceState) {
 
         Endpoint.Config config = new Endpoint.Config();
         config.scheme = Optional.of("http");
         config.host = Optional.of("transit-backend.cornellappdev.com");
-        config.commonPath = Optional.of("/api/v1");
+
+        // Versions may vary, so version type is not appended to common path
+        config.commonPath = Optional.of("/api/");
         Endpoint.config = config;
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
         fusedLocationClient = LocationServices.getFusedLocationProviderClient((Activity) this);
         FragmentManager manager = this.getFragmentManager();
-        Repository.getInstance().setContext(this);
         mController = new MapsPresenter(manager, this, config);
 
-        SupportMapFragment mapFragment = (SupportMapFragment) this.getSupportFragmentManager().findFragmentById(R.id.map);
+        SupportMapFragment mapFragment =
+                (SupportMapFragment) this.getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync((OnMapReadyCallback) this);
-        RecyclerView mRecView = this.findViewById(R.id.recycler_view_maps);
+        mRecView = this.findViewById(R.id.recycler_view_maps);
         mController.mRecView = mRecView;
 
         mController.setDynamicRecyclerView();
@@ -106,8 +114,9 @@ public final class MapsActivity extends AppCompatActivity implements OnMapReadyC
             e.printStackTrace();
         }
 
-        final RequestBody requestBody = 
-            RequestBody.create(MediaType.get("application/json; charset=utf-8"), searchJSON.toString());
+        final RequestBody requestBody =
+                RequestBody.create(MediaType.get("application/json; charset=utf-8"),
+                        searchJSON.toString());
 
         Endpoint searchEndpoint = new Endpoint()
                 .path("search")
@@ -119,9 +128,11 @@ public final class MapsActivity extends AppCompatActivity implements OnMapReadyC
             Place[] searchResults = response.getData();
 
             final List<LocationAutocomplete> wrappedResults = new ArrayList<>();
-            if (searchResults != null)
-                for (Place p : searchResults)
+            if (searchResults != null) {
+                for (Place p : searchResults) {
                     wrappedResults.add(new LocationAutocomplete(p));
+                }
+            }
             mSearchView.post(new Runnable() {
                 public void run() {
                     mSearchView.swapSuggestions(wrappedResults);
@@ -154,25 +165,30 @@ public final class MapsActivity extends AppCompatActivity implements OnMapReadyC
     }
 
     private final void setUpMap() {
-        if (ActivityCompat.checkSelfPermission((Context) this, "android.permission.ACCESS_FINE_LOCATION") != 0) {
-            ActivityCompat.requestPermissions((Activity) this, new String[]{"android.permission.ACCESS_FINE_LOCATION"}, 1);
+        if (ActivityCompat.checkSelfPermission((Context) this,
+                "android.permission.ACCESS_FINE_LOCATION") != 0) {
+            ActivityCompat.requestPermissions((Activity) this,
+                    new String[]{"android.permission.ACCESS_FINE_LOCATION"}, 1);
         } else {
 
             mMap.setMyLocationEnabled(true);
             mMap.getUiSettings().setMyLocationButtonEnabled(false);
-            fusedLocationClient.getLastLocation().addOnSuccessListener((Activity) this, (OnSuccessListener) (new OnSuccessListener() {
-                public void onSuccess(Object var1) {
-                    this.onSuccess((Location) var1);
-                }
+            fusedLocationClient.getLastLocation().addOnSuccessListener((Activity) this,
+                    (OnSuccessListener) (new OnSuccessListener() {
+                        public void onSuccess(Object var1) {
+                            this.onSuccess((Location) var1);
+                        }
 
-                public final void onSuccess(Location location) {
-                    if (location != null) {
-                        MapsActivity.this.lastLocation = location;
-                        LatLng currentLatLng = new LatLng(location.getLatitude(), location.getLongitude());
-                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 14.0F));
-                    }
-                }
-            }));
+                        public final void onSuccess(Location location) {
+                            if (location != null) {
+                                MapsActivity.this.lastLocation = location;
+                                LatLng currentLatLng = new LatLng(location.getLatitude(),
+                                        location.getLongitude());
+                                mMap.animateCamera(
+                                        CameraUpdateFactory.newLatLngZoom(currentLatLng, 14.0F));
+                            }
+                        }
+                    }));
         }
     }
 }

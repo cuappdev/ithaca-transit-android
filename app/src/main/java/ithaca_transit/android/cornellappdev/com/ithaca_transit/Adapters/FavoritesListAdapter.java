@@ -1,7 +1,6 @@
 package ithaca_transit.android.cornellappdev.com.ithaca_transit.Adapters;
 
 import android.content.Context;
-import android.os.health.SystemHealthManager;
 import android.support.v7.widget.RecyclerView.Adapter;
 import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.view.LayoutInflater;
@@ -14,15 +13,19 @@ import com.appdev.futurenovajava.APIResponse;
 import com.appdev.futurenovajava.Endpoint;
 import com.appdev.futurenovajava.FutureNovaRequest;
 
-import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.BusStop;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.Favorite;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.Route;
+import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.SectionedRoutes;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.R;
-import ithaca_transit.android.cornellappdev.com.ithaca_transit.Singleton.Repository;
-import ithaca_transit.android.cornellappdev.com.ithaca_transit.Utils.FutureUtilities;
+import java8.util.Optional;
 import kotlin.TypeCastException;
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -34,29 +37,28 @@ import java.util.TimeZone;
 public final class FavoritesListAdapter extends Adapter {
 
     // stores all routes for favorite at the position represented by the key
-    private HashMap<Integer, ArrayList<Route>> mAllRoutesToFavorites = new HashMap<Integer, ArrayList<Route>>();
+    private HashMap<Integer, SectionedRoutes>
+            mAllRoutesToFavorites = new HashMap<Integer, SectionedRoutes>();
 
-    private Endpoint.Config mConfig;
     private Context mContext;
-    private Favorite[] mFavList;
+    private ArrayList<Favorite> mFavList;
     private final FavoritesListAdapter.ListAdapterOnClickHandler mListAdapterOnClickHandler;
 
     // stores most optimal route for favorite
     private Route[] mOptimalRoutes;
 
     public FavoritesListAdapter(@NotNull Context context, @NotNull ListAdapterOnClickHandler listAdapterOnClickHandler,
-                                @NotNull Favorite[] favorites, Endpoint.Config config) {
+                                @NotNull ArrayList<Favorite> favorites) {
         super();
-        mConfig = config;
         mContext = context;
         mFavList = favorites;
         mListAdapterOnClickHandler = listAdapterOnClickHandler;
-        mOptimalRoutes = new Route[favorites.length];
+        mOptimalRoutes = new Route[favorites.size()];
     }
 
-    public final void setList(@NotNull Favorite[] list, @NotNull String query) {
+    public final void setList(@NotNull ArrayList<Favorite> list, @NotNull String query) {
         mFavList = list;
-        mOptimalRoutes = new Route[list.length];
+        mOptimalRoutes = new Route[list.size()];
         notifyDataSetChanged();
     }
 
@@ -70,7 +72,7 @@ public final class FavoritesListAdapter extends Adapter {
     }
 
     public int getItemCount() {
-        return this.mFavList.length;
+        return this.mFavList.size();
     }
 
     public void onBindViewHolder(@Nullable ViewHolder holder, int position) {
@@ -78,38 +80,51 @@ public final class FavoritesListAdapter extends Adapter {
             throw new TypeCastException("null cannot be cast to non-null type com.cornellappdev.android.eatery.FavoritesFavoritesListAdapter.TextAdapterViewHolder");
         } else {
             FavoritesListAdapter.TextAdapterViewHolder holder2 = (FavoritesListAdapter.TextAdapterViewHolder)holder;
-            holder2.getFavoriteName().setText(mFavList[position].getStartPlace().getName() + "--" +
-                    mFavList[position].getEndPlace().getName());
-
-            Map<String, String> mapString = new HashMap<String, String>();
-            mapString.put("start", mFavList[position].getStartPlace().toString());
-            mapString.put("end", mFavList[position].getEndPlace().toString());
-            mapString.put("arriveBy", String.valueOf(false));
-            mapString.put("destinationName", mFavList[position].getEndPlace().getName());
+            holder2.getFavoriteName().setText(mFavList.get(position).getStartPlace().getName() + "--" +
+                    mFavList.get(position).getEndPlace().getName());
 
             Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("\"America/NewYork\""));
             int secondsEpoch = (int) (calendar.getTimeInMillis()/1000L);
-            mapString.put("time", String.valueOf(secondsEpoch));
 
-            Endpoint searchEndpoint = new Endpoint()
-                    .queryItems(mapString)
-                    .path("route")
-                    .method(Endpoint.Method.GET);
+            // Getting the other route options
+            Map<String, String> map = new HashMap<String, String>();
+            map.put("Content-Type", "application/json");
+            JSONObject searchJSON = new JSONObject();
+            try {
+                searchJSON.put("start", mFavList.get(position).getStartPlace().toString());
+                searchJSON.put("end", mFavList.get(position).getEndPlace().toString());
+                searchJSON.put("destinationName", mFavList.get(position).getEndPlace().getName());
+                searchJSON.put("arriveBy", false);
+                searchJSON.put("time", secondsEpoch);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
 
-            FutureNovaRequest.make(Route[].class, searchEndpoint).thenAccept((APIResponse<Route[]> response) -> {
+            final RequestBody requestBody =
+                    RequestBody.create(MediaType.get("application/json; charset=utf-8"), searchJSON.toString());
 
-                ArrayList<Route> routes = new ArrayList<Route>();
-                for(Route r:  response.getData()){
-                    routes.add(r);
-                }
-                mAllRoutesToFavorites.put(position, routes);
-                mOptimalRoutes[position] = routes.get(0);
+            Endpoint searchEndpoint2 = new Endpoint()
+                    .path("v2/route")
+                    .body(Optional.of(requestBody))
+                    .headers(map)
+                    .method(Endpoint.Method.POST);
+
+            /*TODO: make sectionedroutes model, use that to get data
+              if fromstops is not empty, get first element, set mOptimalRoutes[position] to that route
+              else, get first element of boarding soon, set mOptimalRoutes to that
+              if that's empty, set optimal route to walk (or error message??) edge case though, can come back to it
+              else
+            */
+            FutureNovaRequest.make(SectionedRoutes.class, searchEndpoint2).thenAccept((APIResponse<SectionedRoutes> response) -> {
+                SectionedRoutes sectionedRoutes = response.getData();
+                mAllRoutesToFavorites.put(position, sectionedRoutes);
+                mOptimalRoutes[position] = sectionedRoutes.getOptRoute();
             });
         }
     }
 
     public interface ListAdapterOnClickHandler {
-        void onFavoriteClick(int var1, @NotNull Favorite[] var2);
+        void onFavoriteClick(int var1, @NotNull ArrayList<Favorite> var2);
     }
 
     public final class TextAdapterViewHolder extends ViewHolder implements OnClickListener {
@@ -138,7 +153,7 @@ public final class FavoritesListAdapter extends Adapter {
         return mOptimalRoutes;
     }
 
-    public HashMap<Integer, ArrayList<Route>> getmAllRoutesToFavorites() {
+    public HashMap<Integer, SectionedRoutes> getmAllRoutesToFavorites() {
         return mAllRoutesToFavorites;
     }
 }

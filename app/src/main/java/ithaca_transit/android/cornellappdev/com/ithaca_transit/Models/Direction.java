@@ -5,7 +5,7 @@ import java.util.Date;
 
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Enums.DirectionType;
 
-public final class Direction {
+public class Direction {
 
     private static final Date BLANK_TIME = new Date();
 
@@ -23,7 +23,7 @@ public final class Direction {
     private String[] tripIdentifiers;
     private String type;
 
-    public final String locationDescription() {
+    public String locationDescription() {
         if (type != null) {
             switch (type) {
                 case "walk":
