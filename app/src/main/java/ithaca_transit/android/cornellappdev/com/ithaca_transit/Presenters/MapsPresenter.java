@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.LayoutManager;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.SearchView;
 
@@ -18,6 +19,9 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.PatternItem;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.mancj.slideup.SlideUp;
+import com.mancj.slideup.SlideUpBuilder;
+import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -62,6 +66,7 @@ public final class MapsPresenter implements FavoritesListAdapter.ListAdapterOnCl
     private FragmentManager mManager;
     private GoogleMap mMap;
     public RecyclerView mRecView;
+    private View slideView;
     public SearchView mSearchView;
 
     // Maps a polyline to its parent route
@@ -258,7 +263,9 @@ public final class MapsPresenter implements FavoritesListAdapter.ListAdapterOnCl
         Repository.getInstance().setSelectedRoute(routeList[position]);
         drawSelectedRoute();
         drawWalkRoute();
-        //Draw detail view
+        slideView.setVisibility(View.GONE);
+
+        //TODO: Detail view gets created and inflated here
     }
 
     public void makeExtendedOptionsFragment() {
@@ -279,18 +286,13 @@ public final class MapsPresenter implements FavoritesListAdapter.ListAdapterOnCl
         optimalAsList[0] = Repository.getInstance().getRoutesList().getOptRoute();
         // creating routes list adapter for each section
         SectionAdapter optimalSection = new SectionAdapter(mContext, this,
-                1, optimalAsList, "optimal", null);
+                optimalAsList, "optimal", null);
         SectionAdapter fromStopsSection = new SectionAdapter(mContext, this,
-                Repository.getInstance().getRoutesList().getFromStop().length,
                 Repository.getInstance().getRoutesList().getFromStop(), "fromStops", "From Stops");
-
         SectionAdapter boardingSoonSection = new SectionAdapter(mContext, this,
-                Repository.getInstance().getRoutesList().getBoardingSoon().length,
                 Repository.getInstance().getRoutesList().getBoardingSoon(), "boardingSoon",
                 "Boarding Soon");
-
         SectionAdapter walkingSection = new SectionAdapter(mContext, this,
-                Repository.getInstance().getRoutesList().getWalking().length,
                 Repository.getInstance().getRoutesList().getWalking(), "walking", "By Walking");
 
         // Adding sections -- check if some of them are null before adding (optimal will never be
@@ -313,21 +315,7 @@ public final class MapsPresenter implements FavoritesListAdapter.ListAdapterOnCl
         recyclerView.setLayoutManager((new LinearLayoutManager(mContext, 1, false)));
         recyclerView.setAdapter(routeOptionsListAdapter);
 
-//        // Adding SlideUp Listener
-//        View slideView = ((MapsActivity) mContext).findViewById(R.id.slideView);
-//        View fab = ((MapsActivity) mContext).findViewById(R.id.fab);
-//
-//        SlideUp slideUp = new SlideUpBuilder(slideView)
-//                .withStartGravity(Gravity.BOTTOM)
-//                .withStartState(SlideUp.State.HIDDEN)
-//                .build();
-//
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                slideUp.show();
-//            }
-//        });
+        slideView = ((MapsActivity) mContext).findViewById(R.id.slide_panel);
     }
 
     public void setmMap(GoogleMap mMap) {

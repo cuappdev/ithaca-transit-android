@@ -5,11 +5,11 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
 android {
-    compileSdkVersion 26
+    compileSdkVersion 27
     defaultConfig {
         applicationId "ithaca_transit.android.cornellappdev.com.ithaca_transit"
         minSdkVersion 21
-        targetSdkVersion 26
+        targetSdkVersion 27
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -30,18 +30,19 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
-    implementation 'com.android.support:appcompat-v7:26.1.0'
-    implementation 'com.android.support:design:26.1.0'
+    //noinspection GradleCompatible
+    implementation 'com.android.support:appcompat-v7:27.1.0'
+    implementation 'com.android.support:design:27.1.0'
     implementation 'com.android.support.constraint:constraint-layout:1.1.3'
-    implementation 'com.android.support:support-vector-drawable:26.1.0'
+    implementation 'com.android.support:support-vector-drawable:27.1.0'
     implementation 'com.github.arimorty:floatingsearchview:2.1.1'
     implementation 'com.github.cuappdev:futurenovajava:9ce71f7'
     implementation 'com.google.android.gms:play-services-maps:16.0.0'
     implementation 'com.google.android.gms:play-services-location:16.0.0'
     implementation 'com.google.android.libraries.places:places:1.0.0'
     implementation 'com.squareup.okhttp3:okhttp:3.13.1'
-    implementation 'com.android.support:cardview-v7:26.1.0'
-    implementation 'com.android.support:recyclerview-v7:26.1.0'
+    implementation 'com.android.support:cardview-v7:27.1.0'
+    implementation 'com.android.support:recyclerview-v7:27.1.0'
     implementation 'net.sourceforge.streamsupport:streamsupport:1.7.0'
     implementation 'net.sourceforge.streamsupport:android-retrofuture:1.7.0'
     implementation 'com.google.code.gson:gson:2.8.5'
@@ -49,6 +50,14 @@ dependencies {
     testImplementation 'junit:junit:4.12'
 
     // SlideUp library
-    compile "com.github.mancj:SlideUp-Android:2.2.8"
+    implementation "com.github.mancj:SlideUp-Android:2.2.8"
+
+    // Sectioned Recycler View library
+    implementation 'io.github.luizgrp.sectionedrecyclerviewadapter:sectionedrecyclerviewadapter:1.2.0'
+
+    // SlidingUp Panel Library
+    implementation 'com.sothree.slidinguppanel:library:3.4.0'
+    implementation 'jp.wasabeef:blurry:2.1.1'
+    implementation 'com.github.navasmdc:MaterialDesign:1.5@aar'
 
 }

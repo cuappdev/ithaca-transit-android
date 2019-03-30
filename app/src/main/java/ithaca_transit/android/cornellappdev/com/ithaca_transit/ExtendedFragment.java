@@ -12,7 +12,7 @@ public final class ExtendedFragment extends Fragment {
 
     @Nullable
     public View onCreateView(@Nullable LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.route_options_extended_fragment, container, false);
+        View view = inflater.inflate(R.layout.route_options_holder, container, false);
         return view;
     }
 

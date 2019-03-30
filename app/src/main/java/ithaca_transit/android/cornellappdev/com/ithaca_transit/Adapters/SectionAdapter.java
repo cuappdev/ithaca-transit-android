@@ -23,21 +23,21 @@ public class SectionAdapter extends StatelessSection {
 
 
     public SectionAdapter(Context context, MapsPresenter clickHandler,
-            int count, Route[] list, String type, String title) {
+         Route[] list, String type, String title) {
         super(SectionParameters.builder()
                 .itemResourceId(R.layout.route_card)
                 .headerResourceId(R.layout.header_section)
                 .build());
         mContext = context;
         mMapsPresenter = clickHandler;
-        mCount = count;
+        mCount = list.length;
         mRoutesList = list;
         mTitle = title;
         mType = type;
     }
 
     public void setList(Route[] list, int count, String query) {
-        mCount = count;
+        mCount = list.length;
         mRoutesList = list;
     }
 
@@ -55,16 +55,6 @@ public class SectionAdapter extends StatelessSection {
     public void onBindItemViewHolder(RecyclerView.ViewHolder holder,
             int position) {
         Route routeModel = mRoutesList[position];
-//        switch (mType) {
-//            case "optimal":
-//                routeModel = mRoutesList[0];
-//            case "fromStops":
-//                routeModel = mRoutesList[position];
-//            case "boardingSoon":
-//                routeModel = mRoutesList[position];
-//            case "walking":
-//                routeModel = mRoutesList[position];
-//        }
 
         ItemHolder holder2 = (ItemHolder) holder;
         holder2.duration.setText(routeModel.getDuration());
@@ -114,12 +104,9 @@ public class SectionAdapter extends StatelessSection {
     @Override
     public void onBindHeaderViewHolder(RecyclerView.ViewHolder holder) {
         HeaderHolder headerHolder = (HeaderHolder) holder;
-
         headerHolder.header.setText(mTitle);
 
-
         //TODO: If section is the second section, it's title should be "See all route options" until slide up
-
     }
 
     @Override

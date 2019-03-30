@@ -109,12 +109,6 @@ public final class FavoritesListAdapter extends Adapter {
                     .headers(map)
                     .method(Endpoint.Method.POST);
 
-            /*TODO: make sectionedroutes model, use that to get data
-              if fromstops is not empty, get first element, set mOptimalRoutes[position] to that route
-              else, get first element of boarding soon, set mOptimalRoutes to that
-              if that's empty, set optimal route to walk (or error message??) edge case though, can come back to it
-              else
-            */
             FutureNovaRequest.make(SectionedRoutes.class, searchEndpoint2).thenAccept((APIResponse<SectionedRoutes> response) -> {
                 SectionedRoutes sectionedRoutes = response.getData();
                 mAllRoutesToFavorites.put(position, sectionedRoutes);
