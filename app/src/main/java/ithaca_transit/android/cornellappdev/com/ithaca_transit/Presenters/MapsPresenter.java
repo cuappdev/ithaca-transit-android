@@ -4,17 +4,25 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.graphics.Color;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.LayoutManager;
 import android.view.View;
 import android.widget.SearchView;
+import android.widget.Toast;
 
+import com.appdev.futurenovajava.APIResponse;
 import com.appdev.futurenovajava.Endpoint;
+import com.appdev.futurenovajava.FutureNovaRequest;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.Dot;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PatternItem;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
@@ -33,6 +41,7 @@ import ithaca_transit.android.cornellappdev.com.ithaca_transit.Adapters.Favorite
  import ithaca_transit.android.cornellappdev.com.ithaca_transit.Adapters.SectionAdapter;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.ExtendedFragment;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.MapsActivity;
+import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.BusStop;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.Coordinate;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.Direction;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.Favorite;
@@ -68,6 +77,11 @@ public final class MapsPresenter implements FavoritesListAdapter.ListAdapterOnCl
     public RecyclerView mRecView;
     private View slideView;
     public SearchView mSearchView;
+    private BusStop[] mStopsList;
+
+    private Handler handler = new Handler(Looper.getMainLooper() /*UI thread*/);
+    private Runnable workRunnable;
+
 
     // Maps a polyline to its parent route
      private HashMap<ArrayList<Polyline>, Route>
@@ -94,6 +108,7 @@ public final class MapsPresenter implements FavoritesListAdapter.ListAdapterOnCl
         favoriteList.add(favorite1);
         favoriteList.add(favorite2);
         favoriteList.add(favorite3);
+
     }
 
     public final void setDynamicRecyclerView() {
@@ -208,7 +223,7 @@ public final class MapsPresenter implements FavoritesListAdapter.ListAdapterOnCl
             polylineBorderList.add(polylineBorder);
         }
 
-         polylineMap.put(polylinePathList, route);
+        polylineMap.put(polylinePathList, route);
         borderMap.put(polylinePathList, polylineBorderList);
 
         LatLng startLatLng = new LatLng(route.getStartCoords().getLatitude(),
@@ -333,6 +348,31 @@ public final class MapsPresenter implements FavoritesListAdapter.ListAdapterOnCl
 
     public void setmMap(GoogleMap mMap) {
         this.mMap = mMap;
+        // Draw markers here
     }
 
+    /* Place markers on map
+       Right now, the method displays all the bus stops (which gets messy)
+     */
+    public void makeStopsMarkers(GoogleMap mMap){
+        // Convert image to bitmap
+        Endpoint allStopsEndpoint = new Endpoint().path("v1/allstops").method(Endpoint.Method.GET);
+        FutureNovaRequest.make(BusStop[].class, allStopsEndpoint).thenAccept((APIResponse<BusStop[]> response) -> {
+            mStopsList = response.getData();
+
+            ((MapsActivity) mContext).runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    for(BusStop stop: mStopsList){
+
+                        MarkerOptions markerOptions = new MarkerOptions()
+                                .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_bus_marker))
+                                .position(new LatLng(stop.getLatitude(), stop.getLongitude()))
+                                .title(stop.getName());
+                        mMap.addMarker(markerOptions);
+                    }
+                }
+            });
+        });
+    }
 }

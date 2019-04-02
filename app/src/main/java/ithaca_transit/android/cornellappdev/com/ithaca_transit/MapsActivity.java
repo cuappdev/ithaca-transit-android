@@ -87,7 +87,7 @@ public final class MapsActivity extends AppCompatActivity implements OnMapReadyC
     protected void onCreate(Bundle savedInstanceState) {
 
         Endpoint.Config config = new Endpoint.Config();
-        config.scheme = Optional.of("http");
+        config.scheme = Optional.of("https");
         config.host = Optional.of("transit-backend.cornellappdev.com");
 
         // Versions may vary, so version type is not appended to common path
@@ -328,10 +328,10 @@ public final class MapsActivity extends AppCompatActivity implements OnMapReadyC
                         public final void onSuccess(Location location) {
                             if (location != null) {
                                 MapsActivity.this.lastLocation = location;
-                                LatLng currentLatLng = new LatLng(location.getLatitude(),
-                                        location.getLongitude());
+                                LatLng currentLatLng = new LatLng(42.4470171,
+                                       -76.4829955);
                                 mMap.animateCamera(
-                                        CameraUpdateFactory.newLatLngZoom(currentLatLng, 14.0F));
+                                        CameraUpdateFactory.newLatLngZoom(currentLatLng, 15.0F));
                             }
                         }
                     }));
