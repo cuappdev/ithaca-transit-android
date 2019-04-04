@@ -42,7 +42,6 @@ public final class OptionsFragment extends Fragment {
         return view;
     }
 
-
     @NotNull
     public final TextView getAllRoutesText() {
         return allRoutesText;

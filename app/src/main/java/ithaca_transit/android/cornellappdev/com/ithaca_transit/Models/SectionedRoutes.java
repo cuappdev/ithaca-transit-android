@@ -39,20 +39,14 @@ public class SectionedRoutes {
     }
 
     public Route getOptRoute() {
-
         if (fromStop.length > 0) {
             optimal = getFromStop()[0];
         } else if (boardingSoon.length > 0) {
             optimal = getBoardingSoon()[0];
         } else {
-            // In this case the only route is the walking route, so we set the optimal section to
-            // the
-            // sole walking route and make the walking list null
+            // Set the optimal section to the sole walking route and make the walking list null
             optimal = walking[0];
         }
-
         return optimal;
     }
-
-
 }
