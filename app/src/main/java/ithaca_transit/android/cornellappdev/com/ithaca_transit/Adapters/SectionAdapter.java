@@ -1,15 +1,14 @@
 package ithaca_transit.android.cornellappdev.com.ithaca_transit.Adapters;
 
 import android.content.Context;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import io.github.luizgrp.sectionedrecyclerviewadapter.SectionParameters;
 import io.github.luizgrp.sectionedrecyclerviewadapter.StatelessSection;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.Route;
-import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.SectionedRoutes;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Presenters.MapsPresenter;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.R;
 
@@ -23,7 +22,7 @@ public class SectionAdapter extends StatelessSection {
 
 
     public SectionAdapter(Context context, MapsPresenter clickHandler,
-         Route[] list, String type, String title) {
+            Route[] list, String type, String title) {
         super(SectionParameters.builder()
                 .itemResourceId(R.layout.route_card)
                 .headerResourceId(R.layout.header_section)
@@ -65,6 +64,12 @@ public class SectionAdapter extends StatelessSection {
                 mMapsPresenter.onRouteClick(position, mRoutesList);
             }
         });
+        holder2.directions.setHasFixedSize(true);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(mContext,
+                LinearLayoutManager.VERTICAL, false);
+        holder2.directions.setLayoutManager((RecyclerView.LayoutManager) layoutManager);
+        holder2.directions.setAdapter(
+                new DirectionsListAdapter(mContext, routeModel.getDirections()));
 
     }
 
@@ -74,7 +79,7 @@ public class SectionAdapter extends StatelessSection {
 
     private class ItemHolder extends RecyclerView.ViewHolder {
         private TextView duration;
-        private ListView directions;
+        private RecyclerView directions;
         private View rootView;
         private TextView route_description;
 
@@ -85,7 +90,7 @@ public class SectionAdapter extends StatelessSection {
             directions = itemView.findViewById(R.id.directions);
             rootView = itemView;
             route_description = itemView.findViewById(R.id.route_description);
-         }
+        }
 
     }
 
@@ -106,14 +111,14 @@ public class SectionAdapter extends StatelessSection {
         HeaderHolder headerHolder = (HeaderHolder) holder;
         headerHolder.header.setText(mTitle);
 
-        //TODO: If section is the second section, it's title should be "See all route options" until slide up
+        //TODO: If section is the second section, it's title should be "See all route options"
+        // until slide up
     }
 
     @Override
     public RecyclerView.ViewHolder getHeaderViewHolder(View view) {
         return new HeaderHolder(view);
     }
-
 
 
 }

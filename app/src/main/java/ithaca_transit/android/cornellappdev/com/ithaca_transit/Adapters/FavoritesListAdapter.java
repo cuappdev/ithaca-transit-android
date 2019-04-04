@@ -42,12 +42,12 @@ public final class FavoritesListAdapter extends Adapter {
 
     private Context mContext;
     private ArrayList<Favorite> mFavList;
-    private final FavoritesListAdapter.ListAdapterOnClickHandler mListAdapterOnClickHandler;
+    private final TextAdapterOnClickHandler mListAdapterOnClickHandler;
 
     // stores most optimal route for favorite
     private Route[] mOptimalRoutes;
 
-    public FavoritesListAdapter(@NotNull Context context, @NotNull ListAdapterOnClickHandler listAdapterOnClickHandler,
+    public FavoritesListAdapter(@NotNull Context context, @NotNull TextAdapterOnClickHandler listAdapterOnClickHandler,
                                 @NotNull ArrayList<Favorite> favorites) {
         super();
         mContext = context;
@@ -117,7 +117,7 @@ public final class FavoritesListAdapter extends Adapter {
         }
     }
 
-    public interface ListAdapterOnClickHandler {
+    public interface TextAdapterOnClickHandler {
         void onFavoriteClick(int var1, @NotNull ArrayList<Favorite> var2);
     }
 
