@@ -2,7 +2,6 @@ package ithaca_transit.android.cornellappdev.com.ithaca_transit.Adapters;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,17 +10,18 @@ import android.widget.TextView;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.Direction;
-import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.Route;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.R;
 import kotlin.TypeCastException;
 
 public class DirectionsListAdapter extends RecyclerView.Adapter {
 
     private Context mContext;
-    private Direction[] mDirections;
+    private ArrayList<Direction> mDirections;
 
-    public DirectionsListAdapter(@NonNull Context context, Direction[] directions) {
+    public DirectionsListAdapter(@NonNull Context context, ArrayList<Direction> directions) {
         mContext = context;
         mDirections = directions;
     }
@@ -46,19 +46,20 @@ public class DirectionsListAdapter extends RecyclerView.Adapter {
         } else {
             DirectionsListAdapter.TextAdapterViewHolder holder2 =
                     (DirectionsListAdapter.TextAdapterViewHolder) holder;
-            Direction direction = mDirections[position];
-            holder2.directionDistance.setText(direction.getDistance().toString());
+            Direction direction = mDirections.get(position);
+            if (mDirections.get(position).getType().equals("walk")) {
+                holder2.directionDistance.setText(direction.getDistance().toString());
+            }
             holder2.directionDestination.setText(direction.getName());
         }
     }
 
     @Override
     public int getItemCount() {
-        return mDirections.length;
+        return mDirections.size();
     }
 
-    public final class TextAdapterViewHolder extends RecyclerView.ViewHolder  {
-        @NotNull
+    public final class TextAdapterViewHolder extends RecyclerView.ViewHolder {
         private TextView directionDestination;
         private TextView directionDistance;
         private View rootView;
@@ -67,8 +68,7 @@ public class DirectionsListAdapter extends RecyclerView.Adapter {
             return rootView;
         }
 
-        @NotNull
-        public TextView getDirectionDestination() {
+         public TextView getDirectionDestination() {
             return directionDestination;
         }
 
@@ -78,7 +78,8 @@ public class DirectionsListAdapter extends RecyclerView.Adapter {
 
         public TextAdapterViewHolder(@NotNull View itemView) {
             super(itemView);
-            this.directionDestination = (TextView) itemView.findViewById(R.id.direction_destination);
+            this.directionDestination = (TextView) itemView.findViewById(
+                    R.id.direction_destination);
             this.directionDistance = (TextView) itemView.findViewById(R.id.direction_distance);
             this.rootView = itemView;
         }

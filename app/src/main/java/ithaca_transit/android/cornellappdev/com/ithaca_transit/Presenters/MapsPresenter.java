@@ -119,7 +119,6 @@ public final class MapsPresenter implements FavoritesListAdapter.TextAdapterOnCl
     }
 
     public void onFavoriteClick(int position, @NotNull ArrayList<Favorite> list) {
-
         drawRoutes(favoriteListAdapter.getOptimalRoutes()[position],
                 favoriteListAdapter.getmAllRoutesToFavorites().get(position));
     }
@@ -168,13 +167,13 @@ public final class MapsPresenter implements FavoritesListAdapter.TextAdapterOnCl
 
         Route route = Repository.getInstance().getSelectedRoute();
         PolylineOptions polylineOptionsCenter = new PolylineOptions();
-        polylineOptionsCenter.color(R.color.tcat_blue);
+        polylineOptionsCenter.color(R.color.tcatBlue);
         polylineOptionsCenter.clickable(true);
         polylineOptionsCenter.width(25F);
 
         // Creating larger polyline under path to provide border
         PolylineOptions polylineOptionsBorder = new PolylineOptions();
-        polylineOptionsBorder.color(Color.RED);
+        polylineOptionsBorder.color(Color.BLUE);
         polylineOptionsBorder.width(30F);
 
         List<Direction> directionList = Arrays.asList(
@@ -186,7 +185,6 @@ public final class MapsPresenter implements FavoritesListAdapter.TextAdapterOnCl
             if (direction.getType().equals("walk")) {
                 polylineOptionsCenter.pattern(PATTERN_DOT_LIST);
                 polylineOptionsBorder.pattern(PATTERN_DOT_LIST);
-                polylineOptionsCenter.width(30f);
             } else {
                 polylineOptionsCenter.pattern(null);
                 polylineOptionsBorder.pattern(null);
@@ -264,7 +262,7 @@ public final class MapsPresenter implements FavoritesListAdapter.TextAdapterOnCl
 
         for (ArrayList<Polyline> sub_polyline_list : routeMap.get(previousRoute)) {
             for (Polyline sub_polyline : sub_polyline_list) {
-                sub_polyline.setColor(R.color.tcat_blue);
+                sub_polyline.setColor(R.color.tcatBlue);
             }
         }
     }

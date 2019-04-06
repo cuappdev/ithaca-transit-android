@@ -38,7 +38,7 @@ public final class FavoritesListAdapter extends Adapter {
 
     // stores all routes for favorite at the position represented by the key
     private HashMap<Integer, SectionedRoutes>
-            mAllRoutesToFavorites = new HashMap<Integer, SectionedRoutes>();
+            mAllRoutesToFavorites = new HashMap();
 
     private Context mContext;
     private ArrayList<Favorite> mFavList;
@@ -87,7 +87,7 @@ public final class FavoritesListAdapter extends Adapter {
             int secondsEpoch = (int) (calendar.getTimeInMillis()/1000L);
 
             // Getting the other route options
-            Map<String, String> map = new HashMap<String, String>();
+            HashMap<String, String> map = new HashMap();
             map.put("Content-Type", "application/json");
             JSONObject searchJSON = new JSONObject();
             try {

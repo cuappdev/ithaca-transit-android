@@ -94,5 +94,9 @@ public class Direction {
     public String getName() {
         return name;
     }
+
+    public void setDistance(Double distance) {
+        this.distance = distance;
+    }
 }
 

@@ -6,8 +6,11 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
 import io.github.luizgrp.sectionedrecyclerviewadapter.SectionParameters;
 import io.github.luizgrp.sectionedrecyclerviewadapter.StatelessSection;
+import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.Direction;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.Route;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Presenters.MapsPresenter;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.R;
@@ -68,9 +71,12 @@ public class SectionAdapter extends StatelessSection {
         LinearLayoutManager layoutManager = new LinearLayoutManager(mContext,
                 LinearLayoutManager.VERTICAL, false);
         holder2.directions.setLayoutManager((RecyclerView.LayoutManager) layoutManager);
-        holder2.directions.setAdapter(
-                new DirectionsListAdapter(mContext, routeModel.getDirections()));
 
+        // Remove doubles from route directions list
+        ArrayList<Direction> routeDirections = routeModel.getTruncatedDirections();
+
+        holder2.directions.setAdapter(
+                new DirectionsListAdapter(mContext, routeDirections));
     }
 
     public interface ListAdapterOnClickHandler {
@@ -83,7 +89,6 @@ public class SectionAdapter extends StatelessSection {
         private View rootView;
         private TextView route_description;
 
-
         ItemHolder(View itemView) {
             super(itemView);
             duration = itemView.findViewById(R.id.duration);
@@ -91,13 +96,11 @@ public class SectionAdapter extends StatelessSection {
             rootView = itemView;
             route_description = itemView.findViewById(R.id.route_description);
         }
-
     }
 
     private class HeaderHolder extends RecyclerView.ViewHolder {
         private TextView header;
         private View rootView;
-
 
         HeaderHolder(View headerView) {
             super(headerView);
@@ -112,13 +115,10 @@ public class SectionAdapter extends StatelessSection {
         headerHolder.header.setText(mTitle);
 
         //TODO: If section is the second section, it's title should be "See all route options"
-        // until slide up
     }
 
     @Override
     public RecyclerView.ViewHolder getHeaderViewHolder(View view) {
         return new HeaderHolder(view);
     }
-
-
 }

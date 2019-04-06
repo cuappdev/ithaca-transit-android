@@ -328,8 +328,8 @@ public final class MapsActivity extends AppCompatActivity implements OnMapReadyC
                         public final void onSuccess(Location location) {
                             if (location != null) {
                                 MapsActivity.this.lastLocation = location;
-                                LatLng currentLatLng = new LatLng(42.4470171,
-                                       -76.4829955);
+                                LatLng currentLatLng = new LatLng(lastLocation.getLatitude(),
+                                       lastLocation.getLongitude());
                                 mMap.animateCamera(
                                         CameraUpdateFactory.newLatLngZoom(currentLatLng, 15.0F));
                             }

@@ -2,6 +2,7 @@ package ithaca_transit.android.cornellappdev.com.ithaca_transit.Models;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
@@ -143,6 +144,22 @@ public class Route {
         return "No description available";
     }
 
-
+    // Used to display information about directions on route card
+    public ArrayList<Direction> getTruncatedDirections() {
+        ArrayList<Direction> truncatedDirections = new ArrayList<Direction>();
+        for (int count = 0; count < directions.length; count++) {
+            if(count == 0){
+                truncatedDirections.add(directions[count]);
+            }
+            else {
+                if (!(directions[count].getName().equals(directions[count - 1].getName())
+                        && directions[count].getType().equals("depart")
+                        && directions[count - 1].getType().equals("walk"))) {
+                    truncatedDirections.add(directions[count]);
+                }
+            }
+        }
+        return truncatedDirections;
+    }
 
 }
