@@ -1,6 +1,9 @@
 <resources>
+    <string name="about">About Us</string>
+    <string name="alerts">Service Alerts</string>
     <string name="all_routes">See all route options</string>
     <string name="app_name">ithaca-transit</string>
+    <string name="feedback">Send Feedback</string>
     <string name="field_arrival_time">arrivalTime</string>
     <string name="field_bounding_box">boundingBox</string>
     <string name="field_data">data</string>
@@ -26,7 +29,9 @@
     <string name="field_type">type</string>
     <string name="method_get">GET</string>
     <string name="method_post">POST</string>
+    <string name="notify">Notifications</string>
     <string name="get_method_allstops">allstops</string>
+    <string name="home_menu_title">Ithaca Transit</string>
     <string name="query_delay"><![CDATA[delay?&stopID=%d&tripID=%d]]></string>
     <string name="query_route"><![CDATA[route?&start=%s&end=%s&time=%d&arriveBy=%b&destinationName=%s]]></string>
     <string name="query_search">search</string>
