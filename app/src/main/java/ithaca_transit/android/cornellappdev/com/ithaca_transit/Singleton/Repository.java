@@ -7,11 +7,9 @@ import com.google.android.gms.maps.GoogleMap;
 import java.util.ArrayList;
 import java.util.List;
 
-
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.Route;
 
 public class Repository {
-
     private static Repository sRepoInstance = new Repository();
 
     private Context context;
@@ -54,5 +52,4 @@ public class Repository {
     public void setSelectedRoute(Route selectedRoute) {
         this.selectedRoute = selectedRoute;
     }
-
 }

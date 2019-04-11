@@ -8,12 +8,18 @@ import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.res.ResourcesCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
-import android.text.Html;
+import android.view.MenuItem;
 import android.view.View;
+
+import android.support.v4.content.res.ResourcesCompat;
+import android.text.Html;
+
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,6 +27,7 @@ import android.widget.Toast;
 import com.appdev.futurenovajava.APIResponse;
 import com.appdev.futurenovajava.Endpoint;
 import com.appdev.futurenovajava.FutureNovaRequest;
+
 import com.arlib.floatingsearchview.FloatingSearchView;
 import com.arlib.floatingsearchview.suggestions.SearchSuggestionsAdapter;
 import com.arlib.floatingsearchview.suggestions.model.SearchSuggestion;
@@ -60,7 +67,6 @@ import java8.util.Optional;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
 
-
 public final class MapsActivity extends AppCompatActivity implements OnMapReadyCallback {
     private FusedLocationProviderClient fusedLocationClient;
     private PlacesClient placesClient;
@@ -68,7 +74,9 @@ public final class MapsActivity extends AppCompatActivity implements OnMapReadyC
     public MapsPresenter mController;
     private GoogleMap mMap;
     private RecyclerView mRecView;
+    private DrawerLayout mHomeView;
     private FloatingSearchView mSearchView;
+    private NavigationView mHomeMenu;
 
     private Handler handler = new Handler(Looper.getMainLooper() /*UI thread*/);
     private Runnable workRunnable;
@@ -100,7 +108,46 @@ public final class MapsActivity extends AppCompatActivity implements OnMapReadyC
 
         mController.setDynamicRecyclerView();
 
+        mHomeView = this.findViewById(R.id.home_view);
+        mHomeMenu = this.findViewById(R.id.home_menu);
+
         setUpSearch();
+        setUpMenu();
+    }
+
+    public void onHeaderClick(View view) {
+//        Intent goHome = new Intent(getBaseContext(), MapsActivity.class);
+//        startActivity(goHome);
+    }
+
+    private void setUpMenu() {
+        mHomeView.addDrawerListener(
+            new DrawerLayout.DrawerListener() {
+                @Override
+                public void onDrawerSlide(View drawerView, float slideOffset) {
+                    if (slideOffset < 0.4) { mSearchView.setLeftMenuOpen(false); }
+                }
+
+                @Override
+                public void onDrawerOpened(View drawerView) { mSearchView.setLeftMenuOpen(true); }
+
+                @Override
+                public void onDrawerClosed(View drawerView) {}
+
+                @Override
+                public void onDrawerStateChanged(int newState) {}
+            }
+        );
+
+        mHomeMenu.setNavigationItemSelectedListener(
+            new NavigationView.OnNavigationItemSelectedListener() {
+                @Override
+                public boolean onNavigationItemSelected(MenuItem item) {
+                    mHomeView.closeDrawer(mHomeMenu);
+                    return true;
+                }
+            }
+        );
     }
 
     private void setUpSearch() {
@@ -112,6 +159,14 @@ public final class MapsActivity extends AppCompatActivity implements OnMapReadyC
                 workRunnable = () -> autoCompleteRequest(newQuery);
                 handler.postDelayed(workRunnable, 250 /*delay*/);
             }
+        });
+      
+        mSearchView.setOnLeftMenuClickListener(new FloatingSearchView.OnLeftMenuClickListener() {
+            @Override
+            public void onMenuOpened() { mHomeView.openDrawer(mHomeMenu); }
+
+            @Override
+            public void onMenuClosed() { mHomeView.closeDrawer(mHomeMenu); }
         });
 
         mSearchView.setOnBindSuggestionCallback(
