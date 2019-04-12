@@ -173,7 +173,7 @@ public final class MapsPresenter implements FavoritesListAdapter.TextAdapterOnCl
 
         // Creating larger polyline under path to provide border
         PolylineOptions polylineOptionsBorder = new PolylineOptions();
-        polylineOptionsBorder.color(Color.BLUE);
+        polylineOptionsBorder.color(R.color.tcatBlue);
         polylineOptionsBorder.width(30F);
 
         List<Direction> directionList = Arrays.asList(
