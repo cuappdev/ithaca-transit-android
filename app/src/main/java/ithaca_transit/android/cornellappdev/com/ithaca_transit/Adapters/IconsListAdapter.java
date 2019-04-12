@@ -6,7 +6,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -15,12 +16,12 @@ import java.util.ArrayList;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.Direction;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.R;
 
-public class DirectionsListAdapter extends RecyclerView.Adapter {
+public class IconsListAdapter extends RecyclerView.Adapter {
 
     private Context mContext;
     private ArrayList<Direction> mDirections;
 
-    public DirectionsListAdapter(@NonNull Context context, ArrayList<Direction> directions) {
+    public IconsListAdapter(@NonNull Context context, ArrayList<Direction> directions) {
         mContext = context;
         mDirections = directions;
     }
@@ -28,11 +29,11 @@ public class DirectionsListAdapter extends RecyclerView.Adapter {
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        int layoutId = R.layout.list_item_direction;
+        int layoutId = R.layout.icon_list_item;
 
         View view = LayoutInflater.from(this.mContext).inflate(layoutId, parent, false);
         RecyclerView.ViewHolder viewHolder =
-                (RecyclerView.ViewHolder) (new DirectionsListAdapter.TextAdapterViewHolder(view));
+                (RecyclerView.ViewHolder) (new IconsListAdapter.ImageViewHolder(view));
         return viewHolder;
     }
 
@@ -41,15 +42,15 @@ public class DirectionsListAdapter extends RecyclerView.Adapter {
         if (holder == null) {
             throw new ClassCastException(
                     "null cannot be cast to non-null type com.cornellappdev.android.eatery"
-                            + ".DirectionsListAdapter.TextAdapterViewHolder");
+                            + ".IconsListAdapter.ImageAdapterViewHolder");
         } else {
-            DirectionsListAdapter.TextAdapterViewHolder holder2 =
-                    (DirectionsListAdapter.TextAdapterViewHolder) holder;
+            IconsListAdapter.ImageViewHolder holder2 =
+                    (IconsListAdapter.ImageViewHolder) holder;
             Direction direction = mDirections.get(position);
-            if (mDirections.get(position).getType().equals("walk")) {
-                holder2.directionDistance.setText(direction.getDistance().toString());
+            if (((Direction) direction).getType().equals("walk")) {
+                holder2.iconImage.setImageResource(R.drawable.walk);
+                holder2.containerImage.setVisibility(View.GONE);
             }
-            holder2.directionDestination.setText(direction.getName());
         }
     }
 
@@ -58,29 +59,26 @@ public class DirectionsListAdapter extends RecyclerView.Adapter {
         return mDirections.size();
     }
 
-    public final class TextAdapterViewHolder extends RecyclerView.ViewHolder {
-        private TextView directionDestination;
-        private TextView directionDistance;
+    public final class ImageViewHolder extends RecyclerView.ViewHolder {
+        private ImageView iconImage;
         private View rootView;
+        private View containerImage;
+
+        public ImageView getIconImage() {
+            return iconImage;
+        }
 
         public View getRootView() {
             return rootView;
         }
 
-        public TextView getDirectionDestination() {
-            return directionDestination;
-        }
-
-        public TextView getDirectionDistance() {
-            return directionDistance;
-        }
-
-        public TextAdapterViewHolder(@NotNull View itemView) {
+        public ImageViewHolder(@NotNull View itemView) {
             super(itemView);
-            this.directionDestination = (TextView) itemView.findViewById(
-                    R.id.direction_destination);
-            this.directionDistance = (TextView) itemView.findViewById(R.id.direction_distance);
+            this.iconImage = (ImageView) itemView.findViewById(
+                    R.id.icon_image);
             this.rootView = itemView;
+            this.containerImage = (RelativeLayout) itemView.findViewById(
+                    R.id.container_bus_number);
         }
     }
 }

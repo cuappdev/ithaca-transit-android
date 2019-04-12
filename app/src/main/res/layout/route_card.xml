@@ -47,6 +47,32 @@
                 android:textColor="@color/routeDetails"/>
 
             <android.support.v7.widget.RecyclerView
+                android:id="@+id/icons"
+                android:layout_width="57dp"
+                android:layout_height="106dp"
+                android:layout_below="@id/route_description"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="2dp"
+                android:background="@android:color/transparent"
+                android:cacheColorHint="@android:color/transparent"
+                android:divider="@color/white"
+                android:dividerHeight="0dp"
+                android:paddingLeft="2dp"></android.support.v7.widget.RecyclerView>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/path_dots"
+                android:layout_width="54dp"
+                android:layout_height="106dp"
+                android:layout_below="@id/route_description"
+                android:layout_marginLeft="80dp"
+                android:layout_marginTop="2dp"
+                android:background="@android:color/transparent"
+                android:cacheColorHint="@android:color/transparent"
+                android:divider="@color/white"
+                android:dividerHeight="0dp"
+                android:paddingLeft="2dp"></android.support.v7.widget.RecyclerView>
+
+            <android.support.v7.widget.RecyclerView
                 android:id="@+id/directions"
                 android:layout_width="221dp"
                 android:layout_height="104dp"

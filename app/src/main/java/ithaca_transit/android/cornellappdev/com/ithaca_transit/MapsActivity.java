@@ -12,7 +12,6 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
-
 import android.text.Html;
 import android.view.View;
 import android.widget.ImageView;
@@ -36,7 +35,6 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
-
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.net.FetchPlaceRequest;
 import com.google.android.libraries.places.api.net.PlacesClient;
@@ -57,7 +55,6 @@ import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.Place;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.Route;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.SectionedRoutes;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Presenters.MapsPresenter;
-import ithaca_transit.android.cornellappdev.com.ithaca_transit.Singleton.Repository;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Utils.LocationAutocomplete;
 import java8.util.Optional;
 import okhttp3.MediaType;
@@ -149,7 +146,6 @@ public final class MapsActivity extends AppCompatActivity implements OnMapReadyC
                             textView.setTextSize(15f);
                         }
                     }
-
                 });
 
         mSearchView.setOnSearchListener(new FloatingSearchView.OnSearchListener() {
@@ -166,15 +162,16 @@ public final class MapsActivity extends AppCompatActivity implements OnMapReadyC
                         } else {
                             FetchPlaceRequest request = FetchPlaceRequest.builder(dest.toString(),
                                     Arrays.asList(
-                                            com.google.android.libraries.places.api.model.Place.Field.LAT_LNG)).build();
+                                            com.google.android.libraries.places.api.model.Place
+                                                    .Field.LAT_LNG)).build();
 
                             placesClient.fetchPlace(request).addOnSuccessListener((response) -> {
                                 launchRoute(MapsActivity.this.lastLocation.getLatitude() +
-                                                ", " + MapsActivity.this.lastLocation.getLongitude(),
+                                                ", " + MapsActivity.this.lastLocation
+                                                .getLongitude(),
                                         response.getPlace().getLatLng().latitude + ", "
                                                 + response.getPlace().getLatLng().longitude,
                                         dest.getName());
-
                             });
                         }
                     }
@@ -209,7 +206,8 @@ public final class MapsActivity extends AppCompatActivity implements OnMapReadyC
         }
 
         final RequestBody requestBody =
-                RequestBody.create(MediaType.get("application/json; charset=utf-8"), searchJSON.toString());
+                RequestBody.create(MediaType.get("application/json; charset=utf-8"),
+                        searchJSON.toString());
 
         Endpoint searchEndpoint = new Endpoint()
                 .path("v2/route")
@@ -329,7 +327,7 @@ public final class MapsActivity extends AppCompatActivity implements OnMapReadyC
                             if (location != null) {
                                 MapsActivity.this.lastLocation = location;
                                 LatLng currentLatLng = new LatLng(lastLocation.getLatitude(),
-                                       lastLocation.getLongitude());
+                                        lastLocation.getLongitude());
                                 mMap.animateCamera(
                                         CameraUpdateFactory.newLatLngZoom(currentLatLng, 15.0F));
                             }

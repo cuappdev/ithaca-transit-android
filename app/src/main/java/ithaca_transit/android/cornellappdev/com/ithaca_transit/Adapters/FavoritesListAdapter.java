@@ -5,22 +5,13 @@ import android.support.v7.widget.RecyclerView.Adapter;
 import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.appdev.futurenovajava.APIResponse;
 import com.appdev.futurenovajava.Endpoint;
 import com.appdev.futurenovajava.FutureNovaRequest;
-
-import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.Favorite;
-import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.Route;
-import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.SectionedRoutes;
-import ithaca_transit.android.cornellappdev.com.ithaca_transit.R;
-import java8.util.Optional;
-import kotlin.TypeCastException;
-import okhttp3.MediaType;
-import okhttp3.RequestBody;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -30,8 +21,15 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.TimeZone;
+
+import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.Favorite;
+import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.Route;
+import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.SectionedRoutes;
+import ithaca_transit.android.cornellappdev.com.ithaca_transit.R;
+import java8.util.Optional;
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
 
 
 public final class FavoritesListAdapter extends Adapter {
@@ -47,8 +45,9 @@ public final class FavoritesListAdapter extends Adapter {
     // stores most optimal route for favorite
     private Route[] mOptimalRoutes;
 
-    public FavoritesListAdapter(@NotNull Context context, @NotNull TextAdapterOnClickHandler listAdapterOnClickHandler,
-                                @NotNull ArrayList<Favorite> favorites) {
+    public FavoritesListAdapter(@NotNull Context context,
+            @NotNull TextAdapterOnClickHandler listAdapterOnClickHandler,
+            @NotNull ArrayList<Favorite> favorites) {
         super();
         mContext = context;
         mFavList = favorites;
@@ -67,7 +66,7 @@ public final class FavoritesListAdapter extends Adapter {
         int layoutId = R.layout.card_item_maps;
 
         View view = LayoutInflater.from(this.mContext).inflate(layoutId, parent, false);
-        ViewHolder viewHolder = (ViewHolder)(new FavoritesListAdapter.TextAdapterViewHolder(view));
+        ViewHolder viewHolder = (ViewHolder) (new FavoritesListAdapter.TextAdapterViewHolder(view));
         return viewHolder;
     }
 
@@ -77,14 +76,18 @@ public final class FavoritesListAdapter extends Adapter {
 
     public void onBindViewHolder(@Nullable ViewHolder holder, int position) {
         if (holder == null) {
-            throw new TypeCastException("null cannot be cast to non-null type com.cornellappdev.android.eatery.FavoritesFavoritesListAdapter.TextAdapterViewHolder");
+            throw new ClassCastException(
+                    "null cannot be cast to non-null type com.cornellappdev.android.eatery"
+                            + ".FavoritesFavoritesListAdapter.TextAdapterViewHolder");
         } else {
-            FavoritesListAdapter.TextAdapterViewHolder holder2 = (FavoritesListAdapter.TextAdapterViewHolder)holder;
-            holder2.getFavoriteName().setText(mFavList.get(position).getStartPlace().getName() + "--" +
+            FavoritesListAdapter.TextAdapterViewHolder holder2 =
+                    (FavoritesListAdapter.TextAdapterViewHolder) holder;
+            holder2.getFavoriteName().setText(mFavList.get(position).getStartPlace().getName()
+                    + "--" +
                     mFavList.get(position).getEndPlace().getName());
 
             Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("\"America/NewYork\""));
-            int secondsEpoch = (int) (calendar.getTimeInMillis()/1000L);
+            int secondsEpoch = (int) (calendar.getTimeInMillis() / 1000L);
 
             // Getting the other route options
             HashMap<String, String> map = new HashMap();
@@ -101,7 +104,8 @@ public final class FavoritesListAdapter extends Adapter {
             }
 
             final RequestBody requestBody =
-                    RequestBody.create(MediaType.get("application/json; charset=utf-8"), searchJSON.toString());
+                    RequestBody.create(MediaType.get("application/json; charset=utf-8"),
+                            searchJSON.toString());
 
             Endpoint searchEndpoint2 = new Endpoint()
                     .path("v2/route")
@@ -109,11 +113,12 @@ public final class FavoritesListAdapter extends Adapter {
                     .headers(map)
                     .method(Endpoint.Method.POST);
 
-            FutureNovaRequest.make(SectionedRoutes.class, searchEndpoint2).thenAccept((APIResponse<SectionedRoutes> response) -> {
-                SectionedRoutes sectionedRoutes = response.getData();
-                mAllRoutesToFavorites.put(position, sectionedRoutes);
-                mOptimalRoutes[position] = sectionedRoutes.getOptRoute();
-            });
+            FutureNovaRequest.make(SectionedRoutes.class, searchEndpoint2).thenAccept(
+                    (APIResponse<SectionedRoutes> response) -> {
+                        SectionedRoutes sectionedRoutes = response.getData();
+                        mAllRoutesToFavorites.put(position, sectionedRoutes);
+                        mOptimalRoutes[position] = sectionedRoutes.getOptRoute();
+                    });
         }
     }
 
@@ -139,7 +144,7 @@ public final class FavoritesListAdapter extends Adapter {
         public TextAdapterViewHolder(@NotNull View itemView) {
             super(itemView);
             this.favoriteName = (TextView) itemView.findViewById(R.id.place_name);
-            itemView.setOnClickListener((OnClickListener)this);
+            itemView.setOnClickListener((OnClickListener) this);
         }
     }
 

@@ -58,18 +58,22 @@ public class Route {
             }
         } else {
             description = "Board";
-            Calendar calendar = Calendar.getInstance();
+            Calendar calendar = Calendar.getInstance(
+                    TimeZone.getTimeZone("America/New_York"));
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
-            Date now = new Date(System.currentTimeMillis());
+
+            Date now = Calendar.getInstance(
+                    TimeZone.getTimeZone("America/New_York")).getTime();
+
             calendar.setTime(now);
             Date currentDate = calendar.getTime();
 
             try {
                 Date departureDate = format.parse(departureTime);
 
-                if (departureDate.getDay() - currentDate.getDay() > 1) {
-                    description = description + " on " + currentDate.getMonth() + "/"
-                            + departureDate.getDay();
+                if (departureDate.getDay() != currentDate.getDay()) {
+                    description = description + " on " + (departureDate.getMonth() + 1) + "/" +
+                            departureDate.getDate();
                 } else if (departureDate.getHours() - currentDate.getHours() > 1) {
                     description = description + " in " + (departureDate.getHours()
                             - currentDate.getHours()) + " hours";
@@ -147,15 +151,28 @@ public class Route {
     // Used to display information about directions on route card
     public ArrayList<Direction> getTruncatedDirections() {
         ArrayList<Direction> truncatedDirections = new ArrayList<Direction>();
-        for (int count = 0; count < directions.length; count++) {
-            if(count == 0){
-                truncatedDirections.add(directions[count]);
-            }
-            else {
-                if (!(directions[count].getName().equals(directions[count - 1].getName())
-                        && directions[count].getType().equals("depart")
-                        && directions[count - 1].getType().equals("walk"))) {
+
+        //TODO: if only one element with walk type, add current location, distance(probably
+        // within adapter), and then final destination
+        if (false) {
+
+        } else {
+            int count = 0;
+            while (count < directions.length) {
+
+                if (count < directions.length - 1 && (directions[count].getName().equals(
+                        directions[count + 1].getName())
+                        && directions[count].getType().equals("walk")
+                        && directions[count + 1].getType().equals("depart"))) {
+
+                    // want to show distance walking to departure stop
+                    Direction direction = directions[count + 1];
+                    direction.setDistance(directions[count].getDistance());
+                    truncatedDirections.add(direction);
+                    count = count + 2;
+                } else {
                     truncatedDirections.add(directions[count]);
+                    count++;
                 }
             }
         }

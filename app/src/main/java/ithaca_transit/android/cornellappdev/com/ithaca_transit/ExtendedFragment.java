@@ -11,7 +11,8 @@ import org.jetbrains.annotations.Nullable;
 public final class ExtendedFragment extends Fragment {
 
     @Nullable
-    public View onCreateView(@Nullable LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@Nullable LayoutInflater inflater, @Nullable ViewGroup container,
+            @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.route_options_holder, container, false);
         return view;
     }

@@ -4,6 +4,8 @@ import android.content.Context;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -77,6 +79,19 @@ public class SectionAdapter extends StatelessSection {
 
         holder2.directions.setAdapter(
                 new DirectionsListAdapter(mContext, routeDirections));
+
+        // Remove last element from route directions when we add icons, as we don't need icon for arrival
+//        int size = routeDirections.size();
+//        routeDirections.remove(size - 1);
+        LinearLayoutManager iconsLayoutManager = new LinearLayoutManager(mContext,
+                LinearLayoutManager.VERTICAL, false);
+        holder2.icons.setLayoutManager((RecyclerView.LayoutManager) iconsLayoutManager);
+        holder2.icons.setAdapter(new IconsListAdapter(mContext, routeDirections));
+
+        LinearLayoutManager dotsLayoutManager = new LinearLayoutManager(mContext,
+                LinearLayoutManager.VERTICAL, false);
+        holder2.dots.setLayoutManager((RecyclerView.LayoutManager) dotsLayoutManager);
+        holder2.dots.setAdapter(new DotsListAdapter(mContext, routeDirections));
     }
 
     public interface ListAdapterOnClickHandler {
@@ -86,6 +101,8 @@ public class SectionAdapter extends StatelessSection {
     private class ItemHolder extends RecyclerView.ViewHolder {
         private TextView duration;
         private RecyclerView directions;
+        private RecyclerView icons;
+        private RecyclerView dots;
         private View rootView;
         private TextView route_description;
 
@@ -93,6 +110,8 @@ public class SectionAdapter extends StatelessSection {
             super(itemView);
             duration = itemView.findViewById(R.id.duration);
             directions = itemView.findViewById(R.id.directions);
+            dots = itemView.findViewById(R.id.path_dots);
+            icons = itemView.findViewById(R.id.icons);
             rootView = itemView;
             route_description = itemView.findViewById(R.id.route_description);
         }
