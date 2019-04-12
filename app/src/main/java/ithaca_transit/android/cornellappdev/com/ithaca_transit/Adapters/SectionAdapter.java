@@ -1,11 +1,11 @@
 package ithaca_transit.android.cornellappdev.com.ithaca_transit.Adapters;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -80,9 +80,8 @@ public class SectionAdapter extends StatelessSection {
         holder2.directions.setAdapter(
                 new DirectionsListAdapter(mContext, routeDirections));
 
-        // Remove last element from route directions when we add icons, as we don't need icon for arrival
-//        int size = routeDirections.size();
-//        routeDirections.remove(size - 1);
+        // Remove last element from route directions when we add icons, as we don't need icon for
+        // arrival
         LinearLayoutManager iconsLayoutManager = new LinearLayoutManager(mContext,
                 LinearLayoutManager.VERTICAL, false);
         holder2.icons.setLayoutManager((RecyclerView.LayoutManager) iconsLayoutManager);
@@ -92,6 +91,18 @@ public class SectionAdapter extends StatelessSection {
                 LinearLayoutManager.VERTICAL, false);
         holder2.dots.setLayoutManager((RecyclerView.LayoutManager) dotsLayoutManager);
         holder2.dots.setAdapter(new DotsListAdapter(mContext, routeDirections));
+
+        if (routeModel.getTotalDelay() > 0) {
+            if (routeModel.getTotalDelay() < 60) {
+                holder2.delay.setText(routeModel.getTotalDelay() + " minutes late");
+            } else {
+                holder2.delay.setText(((int) routeModel.getTotalDelay() / 60) + " hours late");
+            }
+            holder2.delay.setTextColor(Color.RED);
+
+        } else {
+            holder2.delay.setText("On Time");
+        }
     }
 
     public interface ListAdapterOnClickHandler {
@@ -99,6 +110,7 @@ public class SectionAdapter extends StatelessSection {
     }
 
     private class ItemHolder extends RecyclerView.ViewHolder {
+        private TextView delay;
         private TextView duration;
         private RecyclerView directions;
         private RecyclerView icons;
@@ -108,6 +120,7 @@ public class SectionAdapter extends StatelessSection {
 
         ItemHolder(View itemView) {
             super(itemView);
+            delay =  itemView.findViewById(R.id.delay);
             duration = itemView.findViewById(R.id.duration);
             directions = itemView.findViewById(R.id.directions);
             dots = itemView.findViewById(R.id.path_dots);
@@ -132,8 +145,6 @@ public class SectionAdapter extends StatelessSection {
     public void onBindHeaderViewHolder(RecyclerView.ViewHolder holder) {
         HeaderHolder headerHolder = (HeaderHolder) holder;
         headerHolder.header.setText(mTitle);
-
-        //TODO: If section is the second section, it's title should be "See all route options"
     }
 
     @Override

@@ -81,7 +81,6 @@ public class Route {
                     description = description + " in " + (departureDate.getMinutes()
                             - currentDate.getMinutes()) + " minutes";
                 }
-
             } catch (ParseException e) {
                 e.printStackTrace();
             }
@@ -152,8 +151,6 @@ public class Route {
     public ArrayList<Direction> getTruncatedDirections() {
         ArrayList<Direction> truncatedDirections = new ArrayList<Direction>();
 
-        //TODO: if only one element with walk type, add current location, distance(probably
-        // within adapter), and then final destination
         if (false) {
 
         } else {
@@ -177,6 +174,16 @@ public class Route {
             }
         }
         return truncatedDirections;
+    }
+
+    public int getTotalDelay(){
+        int delay = 0;
+        for(Direction direction: directions){
+            if(direction.getType().equals("depart")){
+                delay = direction.getDelay() + delay;
+            }
+        }
+        return delay;
     }
 
 }
