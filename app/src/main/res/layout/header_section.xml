@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@color/routeBackground"
+    android:layout_width="match_parent"
+    android:layout_height="50dp">
+    <TextView
+        android:textColor="@color/black"
+        android:id="@+id/header_holder"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+
+</android.support.constraint.ConstraintLayout>

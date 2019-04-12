@@ -3,9 +3,7 @@ package ithaca_transit.android.cornellappdev.com.ithaca_transit.Models;
 
 import java.util.Date;
 
-import ithaca_transit.android.cornellappdev.com.ithaca_transit.Enums.DirectionType;
-
-public final class Direction {
+public class Direction {
 
     private static final Date BLANK_TIME = new Date();
 
@@ -23,7 +21,33 @@ public final class Direction {
     private String[] tripIdentifiers;
     private String type;
 
-    public final String locationDescription() {
+    public Direction(int delay, Double distance,
+            Coordinate endLocation, Date endTime, String name,
+            Coordinate[] path, int routeNumber,
+            Coordinate startLocation, Date startTime, Boolean stayOnBusForTransfer,
+            Place[] stops, String[] tripIdentifiers, String type) {
+        this.delay = delay;
+        this.distance = distance;
+        this.endLocation = endLocation;
+        this.endTime = endTime;
+        this.name = name;
+        this.path = path;
+        this.routeNumber = routeNumber;
+        this.startLocation = startLocation;
+        this.startTime = startTime;
+        this.stayOnBusForTransfer = stayOnBusForTransfer;
+        this.stops = stops;
+        this.tripIdentifiers = tripIdentifiers;
+        this.type = type;
+    }
+
+    public Direction(Double distance, String name, String type) {
+        this.distance = distance;
+        this.name = name;
+        this.type = type;
+    }
+
+    public String locationDescription() {
         if (type != null) {
             switch (type) {
                 case "walk":
@@ -93,6 +117,10 @@ public final class Direction {
 
     public String getName() {
         return name;
+    }
+
+    public void setDistance(Double distance) {
+        this.distance = distance;
     }
 }
 

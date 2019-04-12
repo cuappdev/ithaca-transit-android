@@ -4,7 +4,7 @@
     <color name="black">#000000</color>
     <color name="blue">#4a90e2</color>
     <color name="gray">#9E9E9E</color>
-    <color name="green">#63c774</color>
+    <color name="green">#27AE60</color>
     <color name="hintColor">#9B9B9B</color>
     <color name="leaveNowGray">#616161</color>
     <color name="lightGray">#E5E5E5</color>
@@ -13,6 +13,7 @@
     <color name="red">#f2655d</color>
     <color name="routeBackground">#FAFAFA</color>
     <color name="routeDetails">#212121</color>
+    <color name="tcatBlue">#009cdf</color>
     <color name="textBlack">#3D3D3D</color>
     <color name="typeColor">#4A4A4A</color>
     <color name="white">#ffffff</color>

@@ -2,6 +2,7 @@ package ithaca_transit.android.cornellappdev.com.ithaca_transit.Models;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
@@ -57,18 +58,22 @@ public class Route {
             }
         } else {
             description = "Board";
-            Calendar calendar = Calendar.getInstance();
+            Calendar calendar = Calendar.getInstance(
+                    TimeZone.getTimeZone("America/New_York"));
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
-            Date now = new Date(System.currentTimeMillis());
+
+            Date now = Calendar.getInstance(
+                    TimeZone.getTimeZone("America/New_York")).getTime();
+
             calendar.setTime(now);
             Date currentDate = calendar.getTime();
 
             try {
                 Date departureDate = format.parse(departureTime);
 
-                if (departureDate.getDay() - currentDate.getDay() > 1) {
-                    description = description + " on " + currentDate.getMonth() + "/"
-                            + departureDate.getDay();
+                if (departureDate.getDay() != currentDate.getDay()) {
+                    description = description + " on " + (departureDate.getMonth() + 1) + "/" +
+                            departureDate.getDate();
                 } else if (departureDate.getHours() - currentDate.getHours() > 1) {
                     description = description + " in " + (departureDate.getHours()
                             - currentDate.getHours()) + " hours";
@@ -76,7 +81,6 @@ public class Route {
                     description = description + " in " + (departureDate.getMinutes()
                             - currentDate.getMinutes()) + " minutes";
                 }
-
             } catch (ParseException e) {
                 e.printStackTrace();
             }
@@ -143,5 +147,43 @@ public class Route {
         return "No description available";
     }
 
+    // Used to display information about directions on route card
+    public ArrayList<Direction> getTruncatedDirections() {
+        ArrayList<Direction> truncatedDirections = new ArrayList<Direction>();
+
+        if (false) {
+
+        } else {
+            int count = 0;
+            while (count < directions.length) {
+
+                if (count < directions.length - 1 && (directions[count].getName().equals(
+                        directions[count + 1].getName())
+                        && directions[count].getType().equals("walk")
+                        && directions[count + 1].getType().equals("depart"))) {
+
+                    // want to show distance walking to departure stop
+                    Direction direction = directions[count + 1];
+                    direction.setDistance(directions[count].getDistance());
+                    truncatedDirections.add(direction);
+                    count = count + 2;
+                } else {
+                    truncatedDirections.add(directions[count]);
+                    count++;
+                }
+            }
+        }
+        return truncatedDirections;
+    }
+
+    public int getTotalDelay(){
+        int delay = 0;
+        for(Direction direction: directions){
+            if(direction.getType().equals("depart")){
+                delay = direction.getDelay() + delay;
+            }
+        }
+        return delay;
+    }
 
 }

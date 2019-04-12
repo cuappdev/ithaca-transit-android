@@ -69,15 +69,4 @@
             android:textSize="14sp" />
     </RelativeLayout>
 
-    <RelativeLayout
-        android:visibility="invisible"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-        <include layout="@layout/route_options_extended_fragment"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-
-    </RelativeLayout>
-
-
 </RelativeLayout>

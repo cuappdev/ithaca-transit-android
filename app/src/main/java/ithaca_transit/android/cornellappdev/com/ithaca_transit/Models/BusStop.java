@@ -18,6 +18,8 @@ public class BusStop{
     @SerializedName("long")
     private double longitude;
 
+    private String type;
+
     public String getName() {
         return this.name;
     }

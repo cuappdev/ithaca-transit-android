@@ -3,6 +3,8 @@ package ithaca_transit.android.cornellappdev.com.ithaca_transit.Presenters;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -10,11 +12,15 @@ import android.support.v7.widget.RecyclerView.LayoutManager;
 import android.view.View;
 import android.widget.SearchView;
 
+import com.appdev.futurenovajava.APIResponse;
 import com.appdev.futurenovajava.Endpoint;
+import com.appdev.futurenovajava.FutureNovaRequest;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.Dot;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PatternItem;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
@@ -27,48 +33,64 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
+import io.github.luizgrp.sectionedrecyclerviewadapter.SectionedRecyclerViewAdapter;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Adapters.FavoritesListAdapter;
-import ithaca_transit.android.cornellappdev.com.ithaca_transit.Adapters.RoutesListAdapter;
+import ithaca_transit.android.cornellappdev.com.ithaca_transit.Adapters.SectionAdapter;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.ExtendedFragment;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.MapsActivity;
+import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.BusStop;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.Coordinate;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.Direction;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.Favorite;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.Place;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.Route;
+import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.SectionedRoutes;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.R;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Singleton.Repository;
 
 
-public final class MapsPresenter implements FavoritesListAdapter.ListAdapterOnClickHandler,
-        GoogleMap.OnPolylineClickListener {
+public final class MapsPresenter implements FavoritesListAdapter.TextAdapterOnClickHandler,
+        GoogleMap.OnPolylineClickListener, SectionAdapter.ListAdapterOnClickHandler {
+
     public static final PatternItem DOT = new Dot();
     public static final List<PatternItem> PATTERN_DOT_LIST = Arrays.asList(DOT);
 
     // Hardcoded data for favorites
-    private static final Place goldwin = new Place(42.4491, -76.4835, "Goldwin");
-    private static final Place duffield = new Place(42.4446, -76.4823, "Duffield");
-    private static final Place dickson = new Place(42.4547, -76.4794, "Clara Dickson");
-    private static final Favorite favorite1 = new Favorite(goldwin, duffield);
-    private static final Favorite favorite2 = new Favorite(dickson, duffield);
-    private static final Favorite favorite3 = new Favorite(duffield, dickson);
-    private static final Favorite[] favoriteList = new Favorite[]{favorite1, favorite2, favorite3};
+    private Place goldwin = new Place(42.4491, -76.4835, "Goldwin");
+    private Place duffield = new Place(42.4446, -76.4823, "Duffield");
+    private Place dickson = new Place(42.4547, -76.4794, "Clara Dickson");
+    private Favorite favorite1 = new Favorite(goldwin, duffield);
+    private Favorite favorite2 = new Favorite(dickson, duffield);
+    private Favorite favorite3 = new Favorite(duffield, dickson);
+    private static ArrayList<Favorite> favoriteList = new ArrayList<Favorite>();
+
     private FavoritesListAdapter favoriteListAdapter;
-    private RoutesListAdapter routeOptionsListAdapter;
+    private SectionedRecyclerViewAdapter routeOptionsListAdapter;
 
     private Endpoint.Config mConfig;
     private Context mContext;
     private FragmentManager mManager;
     private GoogleMap mMap;
     public RecyclerView mRecView;
+    private View slideView;
     public SearchView mSearchView;
+    private BusStop[] mStopsList;
+
+    private ArrayList<Polyline> mPathLastSelected;
+    private ArrayList<Polyline> mBorderLastSelected;
 
     // Maps a polyline to its parent route
-    private HashMap<Polyline, Route> polylineMap = new HashMap<Polyline, Route>();
-    ;
+    private HashMap<ArrayList<Polyline>, Route>
+            polylineMap = new HashMap<ArrayList<Polyline>, Route>();
 
     // Maps a route to all polylines that represent its path
-    private HashMap<Route, List<Polyline>> routeMap = new HashMap<Route, List<Polyline>>();
+    private HashMap<Route, List<ArrayList<Polyline>>>
+            routeMap = new HashMap<Route, List<ArrayList<Polyline>>>();
+
+    // Maps a polyline path to its border
+    private HashMap<ArrayList<Polyline>, ArrayList<Polyline>>
+            borderMap = new HashMap<ArrayList<Polyline>, ArrayList<Polyline>>();
+
 
     public MapsPresenter(@NotNull FragmentManager manager, Context context,
             Endpoint.Config config) {
@@ -77,6 +99,10 @@ public final class MapsPresenter implements FavoritesListAdapter.ListAdapterOnCl
         mManager = manager;
         mConfig = config;
 
+        // Adding hardcoded favorites
+        favoriteList.add(favorite1);
+        favoriteList.add(favorite2);
+        favoriteList.add(favorite3);
     }
 
     public final void setDynamicRecyclerView() {
@@ -85,78 +111,104 @@ public final class MapsPresenter implements FavoritesListAdapter.ListAdapterOnCl
                 LinearLayoutManager.HORIZONTAL, false);
         mRecView.setLayoutManager((LayoutManager) layoutManager);
         favoriteListAdapter = new FavoritesListAdapter(mContext,
-                (FavoritesListAdapter.ListAdapterOnClickHandler) this,
-                favoriteList, mConfig);
+                (FavoritesListAdapter.TextAdapterOnClickHandler) this,
+                favoriteList);
         mRecView.setAdapter(favoriteListAdapter);
         mRecView.setVisibility(View.VISIBLE);
         favoriteListAdapter.notifyDataSetChanged();
-
     }
 
-    public void onFavoriteClick(int position, @NotNull Favorite[] list) {
-
+    public void onFavoriteClick(int position, @NotNull ArrayList<Favorite> list) {
         drawRoutes(favoriteListAdapter.getOptimalRoutes()[position],
                 favoriteListAdapter.getmAllRoutesToFavorites().get(position));
     }
 
-    public void drawRoutes(Route route, ArrayList<Route> routeList) {
+    public void drawRoutes(Route route, SectionedRoutes routeList) {
         removeAllRoutes();
         Repository.getInstance().setSelectedRoute(route);
         Repository.getInstance().setRoutesList(routeList);
         drawSelectedRoute();
         drawWalkRoute();
+
         makeExtendedOptionsFragment();
+        mRecView.setVisibility(View.GONE);
     }
 
     public void removeAllRoutes() {
         // Remove all lines from map when new route gets selected
         polylineMap.clear();
+        routeMap.clear();
         mMap.clear();
+        makeStopsMarkers(mMap);
     }
 
     /* Removes bus route currently displayed on screen
-       Called when a user selects a route to display from route options
+       Called when a user selects a route to display from route options fragment
     */
     public void removeSelectdRoute() {
         Route previousRoute = Repository.getInstance().getSelectedRoute();
-        List<Polyline> polylines = routeMap.get(previousRoute);
 
-        for (Polyline polyline : polylines) {
+        // Removing paths of selected route from map
+        for (Polyline polyline : mPathLastSelected) {
             polyline.remove();
         }
+
+        // Removing borders from map
+        for (Polyline border : mBorderLastSelected) {
+            border.remove();
+        }
+
+        // Removing mappings
+        polylineMap.remove(mPathLastSelected);
         routeMap.remove(previousRoute);
     }
 
     public void drawSelectedRoute() {
-        //removeAllRoutes();
 
         Route route = Repository.getInstance().getSelectedRoute();
-        PolylineOptions polylineOptions = new PolylineOptions();
-        polylineOptions.color(Color.BLUE);
-        polylineOptions.clickable(true);
+        PolylineOptions polylineOptionsCenter = new PolylineOptions();
+        polylineOptionsCenter.color(R.color.tcatBlue);
+        polylineOptionsCenter.clickable(true);
+        polylineOptionsCenter.width(25F);
+
+        // Creating larger polyline under path to provide border
+        PolylineOptions polylineOptionsBorder = new PolylineOptions();
+        polylineOptionsBorder.color(R.color.tcatBlue);
+        polylineOptionsBorder.width(30F);
 
         List<Direction> directionList = Arrays.asList(
                 Repository.getInstance().getSelectedRoute().getDirections());
-        ArrayList<Polyline> polylineList = new ArrayList<Polyline>();
+        ArrayList<Polyline> polylinePathList = new ArrayList<Polyline>();
+        ArrayList<Polyline> polylineBorderList = new ArrayList<Polyline>();
 
         for (Direction direction : directionList) {
             if (direction.getType().equals("walk")) {
-                polylineOptions.pattern(PATTERN_DOT_LIST);
-                polylineOptions.width(30f);
+                polylineOptionsCenter.pattern(PATTERN_DOT_LIST);
+                polylineOptionsBorder.pattern(PATTERN_DOT_LIST);
             } else {
-                polylineOptions.pattern(null);
+                polylineOptionsCenter.pattern(null);
+                polylineOptionsBorder.pattern(null);
+
             }
 
             for (Coordinate coordinate : direction.getPath()) {
                 LatLng latLng = new LatLng(coordinate.getLatitude(), coordinate.getLongitude());
-                polylineOptions.add(latLng);
+                polylineOptionsCenter.add(latLng);
+                polylineOptionsBorder.add(latLng);
             }
 
             // Drawing sub-polyline on map
-            Polyline polyline = mMap.addPolyline(polylineOptions);
-            polylineList.add(polyline);
-            polylineMap.put(polyline, route);
+            Polyline polylineBorder = mMap.addPolyline(polylineOptionsBorder);
+            Polyline polylineCenter = mMap.addPolyline(polylineOptionsCenter);
+
+            // Adding polyline representing path to polyline, route hash map
+            polylinePathList.add(polylineCenter);
+            polylineBorderList.add(polylineBorder);
         }
+
+        polylineMap.put(polylinePathList, route);
+        mBorderLastSelected = polylineBorderList;
+        mPathLastSelected = polylinePathList;
 
         LatLng startLatLng = new LatLng(route.getStartCoords().getLatitude(),
                 route.getStartCoords().getLongitude());
@@ -164,27 +216,33 @@ public final class MapsPresenter implements FavoritesListAdapter.ListAdapterOnCl
     }
 
     public void drawWalkRoute() {
-        int idxLast = Repository.getInstance().getRoutesList().size();
-        Route route = Repository.getInstance().getRoutesList().get(idxLast - 1);
 
-        PolylineOptions polylineOptions = new PolylineOptions();
-        polylineOptions.pattern(PATTERN_DOT_LIST);
-        polylineOptions.color(Color.GRAY);
-        polylineOptions.clickable(true);
-        polylineOptions.width(30f);
+        Route route = Repository.getInstance().getRoutesList().getWalking()[0];
 
-        Direction[] directionList = route.getDirections();
-        for (Direction direction : directionList) {
-            for (Coordinate coordinate : direction.getPath()) {
-                LatLng latLng = new LatLng(coordinate.getLatitude(), coordinate.getLongitude());
-                polylineOptions.add(latLng);
+        // Check if this route is equal to selected route. If so, don't draw, as that means that
+        // it's already been drawn
+        if (route != Repository.getInstance().getSelectedRoute()) {
+            PolylineOptions polylineOptions = new PolylineOptions();
+            polylineOptions.pattern(PATTERN_DOT_LIST);
+            polylineOptions.color(Color.GRAY);
+            polylineOptions.clickable(true);
+            polylineOptions.width(30f);
+
+            Direction[] directionList = route.getDirections();
+            for (Direction direction : directionList) {
+                for (Coordinate coordinate : direction.getPath()) {
+                    LatLng latLng = new LatLng(coordinate.getLatitude(), coordinate.getLongitude());
+                    polylineOptions.add(latLng);
+                }
             }
-        }
 
-        // Drawing route on map
-        Polyline polyline = mMap.addPolyline(polylineOptions);
-        polylineMap.put(polyline, route);
-        routeMap.put(route, Collections.singletonList(polyline));
+            // Drawing route on map
+            Polyline polyline = mMap.addPolyline(polylineOptions);
+            ArrayList<Polyline> polyineList = new ArrayList<Polyline>(Arrays.asList(polyline));
+
+            polylineMap.put(polyineList, route);
+            routeMap.put(route, Collections.singletonList(polyineList));
+        }
 
     }
 
@@ -192,23 +250,35 @@ public final class MapsPresenter implements FavoritesListAdapter.ListAdapterOnCl
     public void onPolylineClick(Polyline polyline) {
         // Change color of previously selected route
         Route previousRoute = Repository.getInstance().getSelectedRoute();
-        for (Polyline sub_polyline : routeMap.get(previousRoute)) {
-            sub_polyline.setColor(Color.GRAY);
+        for (ArrayList<Polyline> sub_polyline_list : routeMap.get(previousRoute)) {
+            for (Polyline sub_polyline : sub_polyline_list) {
+                sub_polyline.setColor(Color.GRAY);
+            }
         }
 
         // Update value, color of selected route
         Route newRoute = polylineMap.get(polyline);
         Repository.getInstance().setSelectedRoute(newRoute);
 
-        for (Polyline sub_polyline : routeMap.get(newRoute)) {
-            sub_polyline.setColor(Color.BLUE);
+        for (ArrayList<Polyline> sub_polyline_list : routeMap.get(previousRoute)) {
+            for (Polyline sub_polyline : sub_polyline_list) {
+                sub_polyline.setColor(R.color.tcatBlue);
+            }
         }
     }
 
-    public void onRouteClick(int adapterPosition, ArrayList<Route> routeArrayList) {
-        Repository.getInstance().setSelectedRoute(routeArrayList.get(adapterPosition));
+    public void onRouteClick(int position, Route[] routeList) {
+        // Remove currently selected route from map
+        removeSelectdRoute();
+
+        // Getting position within section
+        Repository.getInstance().setSelectedRoute(routeList[position]);
+
         drawSelectedRoute();
         drawWalkRoute();
+        slideView.setVisibility(View.GONE);
+
+        //TODO: Detail view gets created and inflated here
     }
 
     public void makeExtendedOptionsFragment() {
@@ -221,15 +291,82 @@ public final class MapsPresenter implements FavoritesListAdapter.ListAdapterOnCl
         mManager.executePendingTransactions();
 
         // Setting up Extended Fragment recycler view
-        RecyclerView recyclerView = ((MapsActivity) mContext).findViewById(R.id.routes);
+        RecyclerView recyclerView = ((MapsActivity) mContext).findViewById(
+                R.id.nearby_stops_routes);
+        routeOptionsListAdapter = new SectionedRecyclerViewAdapter();
+
+        Route optimalAsList[] = new Route[1];
+        optimalAsList[0] = Repository.getInstance().getRoutesList().getOptRoute();
+        // creating routes list adapter for each section
+        SectionAdapter optimalSection = new SectionAdapter(mContext, this,
+                optimalAsList, "optimal", null);
+        SectionAdapter fromStopsSection = new SectionAdapter(mContext, this,
+                Repository.getInstance().getRoutesList().getFromStop(), "fromStops", "From Stops");
+        SectionAdapter boardingSoonSection = new SectionAdapter(mContext, this,
+                Repository.getInstance().getRoutesList().getBoardingSoon(), "boardingSoon",
+                "Boarding Soon");
+        SectionAdapter walkingSection = new SectionAdapter(mContext, this,
+                Repository.getInstance().getRoutesList().getWalking(), "walking", "By Walking");
+
+        // Adding sections -- check if some of them are null before adding (optimal will never be null)
+        routeOptionsListAdapter.addSection(optimalSection);
+        if (Repository.getInstance().getRoutesList().getFromStop() != null &&
+                Repository.getInstance().getRoutesList().getFromStop().length != 0) {
+            routeOptionsListAdapter.addSection(fromStopsSection);
+        }
+        if (Repository.getInstance().getRoutesList().getBoardingSoon() != null &&
+                Repository.getInstance().getRoutesList().getBoardingSoon().length != 0) {
+            routeOptionsListAdapter.addSection(boardingSoonSection);
+        }
+        // If only route is walk route, set optimal to walk and leave walk section empty
+        if (optimalAsList[0] !=
+                Repository.getInstance().getRoutesList().getWalking()[0]) {
+            routeOptionsListAdapter.addSection(walkingSection);
+        }
+
         recyclerView.setLayoutManager((new LinearLayoutManager(mContext, 1, false)));
-        routeOptionsListAdapter = new RoutesListAdapter(mContext, this,
-                Repository.getInstance().getRoutesList().size(),
-                Repository.getInstance().getRoutesList());
+
         recyclerView.setAdapter(routeOptionsListAdapter);
+
+        slideView = ((MapsActivity) mContext).findViewById(R.id.slide_panel);
+
     }
 
     public void setmMap(GoogleMap mMap) {
         this.mMap = mMap;
+        makeStopsMarkers(mMap);
+    }
+
+    /* Place markers on map
+       Right now, the method displays all the bus stops (which gets messy)
+     */
+    public void makeStopsMarkers(GoogleMap mMap) {
+        // Change icon size
+        Bitmap bitmap = BitmapFactory.decodeResource(mContext.getResources(),
+                R.drawable.ic_bus_marker);
+        Bitmap resized_bitmap = Bitmap.createScaledBitmap(bitmap, 40, 40, false);
+
+        Endpoint allStopsEndpoint = new Endpoint().path("v1/allstops").method(Endpoint.Method.GET);
+        FutureNovaRequest.make(BusStop[].class, allStopsEndpoint).thenAccept(
+                (APIResponse<BusStop[]> response) -> {
+                    mStopsList = response.getData();
+
+                    ((MapsActivity) mContext).runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            for (BusStop stop : mStopsList) {
+
+                                MarkerOptions markerOptions = new MarkerOptions()
+                                        .icon(BitmapDescriptorFactory.fromBitmap(resized_bitmap))
+                                        .position(
+                                                new LatLng(stop.getLatitude(), stop.getLongitude()))
+                                        .title(stop.getName());
+
+                                mMap.addMarker(markerOptions);
+                            }
+                        }
+                    });
+                });
+
     }
 }

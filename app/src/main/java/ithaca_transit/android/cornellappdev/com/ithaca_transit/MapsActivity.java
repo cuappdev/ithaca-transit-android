@@ -60,8 +60,8 @@ import java.util.TimeZone;
 
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.Place;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.Route;
+import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.SectionedRoutes;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Presenters.MapsPresenter;
-import ithaca_transit.android.cornellappdev.com.ithaca_transit.Singleton.Repository;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Utils.LocationAutocomplete;
 import java8.util.Optional;
 import okhttp3.MediaType;
@@ -81,12 +81,22 @@ public final class MapsActivity extends AppCompatActivity implements OnMapReadyC
     private Handler handler = new Handler(Looper.getMainLooper() /*UI thread*/);
     private Runnable workRunnable;
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        if (mRecView.getVisibility() == View.GONE) {
+            mRecView.setVisibility(View.VISIBLE);
+        }
+    }
+
     protected void onCreate(Bundle savedInstanceState) {
 
         Endpoint.Config config = new Endpoint.Config();
-        config.scheme = Optional.of("http");
+        config.scheme = Optional.of("https");
         config.host = Optional.of("transit-backend.cornellappdev.com");
-        config.commonPath = Optional.of("/api/v1");
+
+        // Versions may vary, so version type is not appended to common path
+        config.commonPath = Optional.of("/api/");
         Endpoint.config = config;
 
         //Initializes Google Places, Location Identifier, and the Google Maps Controller
@@ -97,13 +107,12 @@ public final class MapsActivity extends AppCompatActivity implements OnMapReadyC
         placesClient = Places.createClient(this);
         fusedLocationClient = LocationServices.getFusedLocationProviderClient((Activity) this);
         FragmentManager manager = this.getFragmentManager();
-        Repository.getInstance().setContext(this);
         mController = new MapsPresenter(manager, this, config);
 
         SupportMapFragment mapFragment =
                 (SupportMapFragment) this.getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync((OnMapReadyCallback) this);
-        RecyclerView mRecView = this.findViewById(R.id.recycler_view_maps);
+        mRecView = this.findViewById(R.id.recycler_view_maps);
         mController.mRecView = mRecView;
 
         mController.setDynamicRecyclerView();
@@ -192,7 +201,6 @@ public final class MapsActivity extends AppCompatActivity implements OnMapReadyC
                             textView.setTextSize(15f);
                         }
                     }
-
                 });
 
         mSearchView.setOnSearchListener(new FloatingSearchView.OnSearchListener() {
@@ -209,15 +217,16 @@ public final class MapsActivity extends AppCompatActivity implements OnMapReadyC
                         } else {
                             FetchPlaceRequest request = FetchPlaceRequest.builder(dest.toString(),
                                     Arrays.asList(
-                                            com.google.android.libraries.places.api.model.Place.Field.LAT_LNG)).build();
+                                            com.google.android.libraries.places.api.model.Place
+                                                    .Field.LAT_LNG)).build();
 
                             placesClient.fetchPlace(request).addOnSuccessListener((response) -> {
                                 launchRoute(MapsActivity.this.lastLocation.getLatitude() +
-                                                ", " + MapsActivity.this.lastLocation.getLongitude(),
+                                                ", " + MapsActivity.this.lastLocation
+                                                .getLongitude(),
                                         response.getPlace().getLatLng().latitude + ", "
                                                 + response.getPlace().getLatLng().longitude,
                                         dest.getName());
-
                             });
                         }
                     }
@@ -232,35 +241,47 @@ public final class MapsActivity extends AppCompatActivity implements OnMapReadyC
 
     //Retrieves Route info from backend, sends it to MapPresenter
     private void launchRoute(String start, String end, String name) {
-        Map<String, String> mapString = new HashMap<String, String>();
-        mapString.put("start", start);
-        mapString.put("end", end);
-        mapString.put("arriveBy", String.valueOf(false));
-        mapString.put("destinationName", name);
 
         Calendar calendar = Calendar.getInstance(
                 TimeZone.getTimeZone("\"America/NewYork\""));
         int secondsEpoch = (int) (calendar.getTimeInMillis() / 1000L);
-        mapString.put("time", String.valueOf(secondsEpoch));
+
+        Map<String, String> mapString = new HashMap<String, String>();
+        mapString.put("Content-Type", "application/json");
+        JSONObject searchJSON = new JSONObject();
+
+        try {
+            searchJSON.put("start", start);
+            searchJSON.put("end", end);
+            searchJSON.put("arriveBy", String.valueOf(false));
+            searchJSON.put("destinationName", name);
+            searchJSON.put("time", String.valueOf(secondsEpoch));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        final RequestBody requestBody =
+                RequestBody.create(MediaType.get("application/json; charset=utf-8"),
+                        searchJSON.toString());
 
         Endpoint searchEndpoint = new Endpoint()
-                .queryItems(mapString)
-                .path("route")
-                .method(Endpoint.Method.GET);
+                .path("v2/route")
+                .body(Optional.of(requestBody))
+                .headers(mapString)
+                .method(Endpoint.Method.POST);
 
         FutureNovaRequest.make(
-                Route[].class, searchEndpoint).thenAccept(
-                (APIResponse<Route[]> response) -> {
+                SectionedRoutes.class, searchEndpoint).thenAccept(
+                (APIResponse<SectionedRoutes> response) -> {
 
-                    ArrayList<Route> routes = new ArrayList<Route>();
-                    for (Route r : response.getData()) {
-                        routes.add(r);
-                    }
+                    SectionedRoutes sectionedRoutes = response.getData();
+                    Route optRoute = sectionedRoutes.getOptRoute();
+
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            if (routes.size() > 0) {
-                                getController().drawRoutes(routes.get(0), routes);
+                            if (optRoute != null) {
+                                getController().drawRoutes(optRoute, sectionedRoutes);
                                 getSearchView().setSearchText(name);
                                 getSearchView().clearSearchFocus();
                             } else {
@@ -298,7 +319,7 @@ public final class MapsActivity extends AppCompatActivity implements OnMapReadyC
                         searchJSON.toString());
 
         Endpoint searchEndpoint = new Endpoint()
-                .path("search")
+                .path("v1/search")
                 .body(Optional.of(requestBody))
                 .headers(map)
                 .method(Endpoint.Method.POST);
@@ -360,10 +381,10 @@ public final class MapsActivity extends AppCompatActivity implements OnMapReadyC
                         public final void onSuccess(Location location) {
                             if (location != null) {
                                 MapsActivity.this.lastLocation = location;
-                                LatLng currentLatLng = new LatLng(location.getLatitude(),
-                                        location.getLongitude());
+                                LatLng currentLatLng = new LatLng(lastLocation.getLatitude(),
+                                        lastLocation.getLongitude());
                                 mMap.animateCamera(
-                                        CameraUpdateFactory.newLatLngZoom(currentLatLng, 14.0F));
+                                        CameraUpdateFactory.newLatLngZoom(currentLatLng, 15.0F));
                             }
                         }
                     }));
