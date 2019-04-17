@@ -12,7 +12,7 @@ public class Place {
     @SerializedName("long")
     private Double longitude;
     private String name;
-    private String placeId;
+    private String placeID;
     private String type;
 
      public Place(Double latitude, Double longitude, String name) {
@@ -27,7 +27,7 @@ public class Place {
         this.detail = detail;
         this.latitude = latitude;
         this.longitude = longitude;
-        this.placeId = placeId;
+        this.placeID = placeID;
         this.type = type;
     }
 
@@ -53,7 +53,7 @@ public class Place {
     }
 
     public String getPlaceID() {
-        return placeId;
+        return placeID;
     }
 
     public String getType() {

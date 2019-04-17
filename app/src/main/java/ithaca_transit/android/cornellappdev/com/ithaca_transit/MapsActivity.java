@@ -329,8 +329,13 @@ public final class MapsActivity extends AppCompatActivity implements OnMapReadyC
 
             final List<LocationAutocomplete> wrappedResults = new ArrayList<>();
             if (searchResults != null) {
+                int i = 0;
                 for (Place p : searchResults) {
                     wrappedResults.add(new LocationAutocomplete(p));
+
+                    //Limit number of displayed results to 8
+                    i++;
+                    if (i > 8) break;
                 }
             }
             mSearchView.post(new Runnable() {
