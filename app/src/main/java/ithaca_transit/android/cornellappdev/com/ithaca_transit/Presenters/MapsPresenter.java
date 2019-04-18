@@ -10,34 +10,45 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.LayoutManager;
 import android.view.View;
+import android.widget.ScrollView;
 import android.widget.SearchView;
 
 import com.appdev.futurenovajava.APIResponse;
 import com.appdev.futurenovajava.Endpoint;
 import com.appdev.futurenovajava.FutureNovaRequest;
+import com.arlib.floatingsearchview.FloatingSearchView;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.Dot;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PatternItem;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import org.jetbrains.annotations.NotNull;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import io.github.luizgrp.sectionedrecyclerviewadapter.SectionedRecyclerViewAdapter;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Adapters.FavoritesListAdapter;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Adapters.SectionAdapter;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.ExtendedFragment;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.MapsActivity;
+import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.BusLocation;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.BusStop;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.Coordinate;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.Direction;
@@ -47,6 +58,9 @@ import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.Route;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.SectionedRoutes;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.R;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Singleton.Repository;
+import java8.util.Optional;
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
 
 
 public final class MapsPresenter implements FavoritesListAdapter.TextAdapterOnClickHandler,
@@ -72,12 +86,14 @@ public final class MapsPresenter implements FavoritesListAdapter.TextAdapterOnCl
     private FragmentManager mManager;
     private GoogleMap mMap;
     public RecyclerView mRecView;
-    private View slideView;
-    public SearchView mSearchView;
+    private SlidingUpPanelLayout slideView;
+    public FloatingSearchView mSearchView;
     private BusStop[] mStopsList;
 
     private ArrayList<Polyline> mPathLastSelected;
     private ArrayList<Polyline> mBorderLastSelected;
+
+    private Marker mBusLocationMarker;
 
     // Maps a polyline to its parent route
     private HashMap<ArrayList<Polyline>, Route>
@@ -131,6 +147,8 @@ public final class MapsPresenter implements FavoritesListAdapter.TextAdapterOnCl
         drawWalkRoute();
 
         makeExtendedOptionsFragment();
+        slideView.setPanelHeight(900);
+        mSearchView.bringToFront();
         mRecView.setVisibility(View.GONE);
     }
 
@@ -176,11 +194,11 @@ public final class MapsPresenter implements FavoritesListAdapter.TextAdapterOnCl
         polylineOptionsBorder.color(R.color.tcatBlue);
         polylineOptionsBorder.width(30F);
 
-        List<Direction> directionList = Arrays.asList(
-                Repository.getInstance().getSelectedRoute().getDirections());
+
         ArrayList<Polyline> polylinePathList = new ArrayList<Polyline>();
         ArrayList<Polyline> polylineBorderList = new ArrayList<Polyline>();
-
+        List<Direction> directionList = Arrays.asList(
+                Repository.getInstance().getSelectedRoute().getDirections());
         for (Direction direction : directionList) {
             if (direction.getType().equals("walk")) {
                 polylineOptionsCenter.pattern(PATTERN_DOT_LIST);
@@ -188,7 +206,6 @@ public final class MapsPresenter implements FavoritesListAdapter.TextAdapterOnCl
             } else {
                 polylineOptionsCenter.pattern(null);
                 polylineOptionsBorder.pattern(null);
-
             }
 
             for (Coordinate coordinate : direction.getPath()) {
@@ -213,6 +230,45 @@ public final class MapsPresenter implements FavoritesListAdapter.TextAdapterOnCl
         LatLng startLatLng = new LatLng(route.getStartCoords().getLatitude(),
                 route.getStartCoords().getLongitude());
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(startLatLng, 15.0F));
+
+        // Draw dot for start, end
+        Bitmap walkMarker = BitmapFactory.decodeResource(mContext.getResources(),
+                R.drawable.walkmarker);
+        walkMarker = Bitmap.createScaledBitmap(walkMarker, 50, 50, false);
+
+        Bitmap busMarker = BitmapFactory.decodeResource(mContext.getResources(),
+                R.drawable.busmarker);
+        busMarker = Bitmap.createScaledBitmap(walkMarker, 50, 50, false);
+
+        Bitmap endMarker = BitmapFactory.decodeResource(mContext.getResources(),
+                R.drawable.endmarker);
+        busMarker = Bitmap.createScaledBitmap(walkMarker, 50, 50, false);
+
+        Bitmap chosenBitmap;
+        for (Direction direction : directionList) {
+
+            Coordinate coord = direction.getPath()[0];
+            if (direction.getType().equals("walk")) {
+                chosenBitmap = walkMarker;
+            } else {
+                chosenBitmap = busMarker;
+            }
+
+            MarkerOptions markerOptions = new MarkerOptions()
+                    .icon(BitmapDescriptorFactory.fromBitmap(chosenBitmap))
+                    .position(new LatLng(coord.getLatitude(), coord.getLongitude()))
+                    .title(direction.getName());
+
+            mMap.addMarker(markerOptions);
+        }
+
+        Coordinate endCoords = route.getEndCoords();
+        MarkerOptions markerOptions = new MarkerOptions()
+                .icon(BitmapDescriptorFactory.fromBitmap(endMarker))
+                .position(new LatLng(endCoords.getLatitude(), endCoords.getLongitude()))
+                .title(null);
+        mMap.addMarker(markerOptions);
+
     }
 
     public void drawWalkRoute() {
@@ -243,7 +299,6 @@ public final class MapsPresenter implements FavoritesListAdapter.TextAdapterOnCl
             polylineMap.put(polyineList, route);
             routeMap.put(route, Collections.singletonList(polyineList));
         }
-
     }
 
     @Override
@@ -279,6 +334,29 @@ public final class MapsPresenter implements FavoritesListAdapter.TextAdapterOnCl
         slideView.setVisibility(View.GONE);
 
         //TODO: Detail view gets created and inflated here
+
+        // Check to see if route invovles buses
+        if (!Repository.getInstance().getSelectedRoute().isWalkOnlyRoute()) {
+            ArrayList<Direction> directionArrayList =
+                    Repository.getInstance().getSelectedRoute().getBusInfo();
+
+            // For now, only track first bus
+            int dirCount = 0;
+            Direction direction = directionArrayList.get(dirCount);
+            ScheduledExecutorService scheduledExecutorService =
+                    Executors.newSingleThreadScheduledExecutor();
+            Runnable task = new Runnable() {
+                @Override
+                public void run() {
+                    updateBusLocation(direction);
+                }
+            };
+
+            int initDelay = 0;
+            int updatePeriod = 5;
+            scheduledExecutorService.scheduleAtFixedRate(task, initDelay, updatePeriod,
+                    TimeUnit.SECONDS);
+        }
     }
 
     public void makeExtendedOptionsFragment() {
@@ -308,7 +386,8 @@ public final class MapsPresenter implements FavoritesListAdapter.TextAdapterOnCl
         SectionAdapter walkingSection = new SectionAdapter(mContext, this,
                 Repository.getInstance().getRoutesList().getWalking(), "walking", "By Walking");
 
-        // Adding sections -- check if some of them are null before adding (optimal will never be null)
+        // Adding sections -- check if some of them are null before adding (optimal will never be
+        // null)
         routeOptionsListAdapter.addSection(optimalSection);
         if (Repository.getInstance().getRoutesList().getFromStop() != null &&
                 Repository.getInstance().getRoutesList().getFromStop().length != 0) {
@@ -325,11 +404,10 @@ public final class MapsPresenter implements FavoritesListAdapter.TextAdapterOnCl
         }
 
         recyclerView.setLayoutManager((new LinearLayoutManager(mContext, 1, false)));
-
         recyclerView.setAdapter(routeOptionsListAdapter);
 
-        slideView = ((MapsActivity) mContext).findViewById(R.id.slide_panel);
-
+        slideView = ((MapsActivity) mContext).findViewById(R.id.maps_activity);
+        mSearchView.bringToFront();
     }
 
     public void setmMap(GoogleMap mMap) {
@@ -367,6 +445,48 @@ public final class MapsPresenter implements FavoritesListAdapter.TextAdapterOnCl
                         }
                     });
                 });
+    }
 
+    public void updateBusLocation(Direction direction) {
+        Map<String, String> map = new HashMap<String, String>();
+        map.put("Content-Type", "application/json");
+
+        JSONObject trackingJSON = new JSONObject();
+        try {
+            trackingJSON.put("routeID", direction.getRouteNumber());
+            trackingJSON.put("stopID", direction.getStops()[0].getName());
+            trackingJSON.put("tripID", direction.getTripIdentifiers());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        final RequestBody requestBody =
+                RequestBody.create(MediaType.get("application/json; charset=utf-8"),
+                        trackingJSON.toString());
+
+        Endpoint searchEndpoint = new Endpoint()
+                .path("v1/tracking")
+                .body(Optional.of(requestBody))
+                .headers(map)
+                .method(Endpoint.Method.POST);
+
+        FutureNovaRequest.make(BusLocation.class, searchEndpoint).thenAccept(response -> {
+            BusLocation busLocation = response.getData();
+            // remomove old marker, add new one
+
+            if (mBusLocationMarker != null) {
+                mBusLocationMarker.remove();
+            }
+            MarkerOptions markerOptions = new MarkerOptions()
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.buslocationmarker))
+                    .position(
+                            new LatLng(busLocation.getLatitude(), busLocation.getLongitude()))
+                    .title("Bus " + busLocation.getName());
+            mBusLocationMarker = mMap.addMarker(markerOptions);
+        });
+    }
+
+    public void setSearchView(FloatingSearchView searchView) {
+        mSearchView = searchView;
     }
 }

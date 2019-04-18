@@ -2,7 +2,6 @@ package ithaca_transit.android.cornellappdev.com.ithaca_transit.Adapters;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.graphics.Typeface;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -99,7 +98,6 @@ public class SectionAdapter extends StatelessSection {
                 holder2.delay.setText(((int) routeModel.getTotalDelay() / 60) + " hours late");
             }
             holder2.delay.setTextColor(Color.RED);
-
         } else {
             holder2.delay.setText("On Time");
         }
@@ -120,7 +118,7 @@ public class SectionAdapter extends StatelessSection {
 
         ItemHolder(View itemView) {
             super(itemView);
-            delay =  itemView.findViewById(R.id.delay);
+            delay = itemView.findViewById(R.id.delay);
             duration = itemView.findViewById(R.id.duration);
             directions = itemView.findViewById(R.id.directions);
             dots = itemView.findViewById(R.id.path_dots);

@@ -43,6 +43,10 @@ public class Route {
         return startCoords;
     }
 
+    public Coordinate getEndCoords() {
+        return endCoords;
+    }
+
     public String getDescription() {
         String description = "";
 
@@ -85,7 +89,6 @@ public class Route {
                 e.printStackTrace();
             }
         }
-
         return description;
     }
 
@@ -151,7 +154,12 @@ public class Route {
     public ArrayList<Direction> getTruncatedDirections() {
         ArrayList<Direction> truncatedDirections = new ArrayList<Direction>();
 
-        if (false) {
+        if (directions.length == 1 && directions[0].getType().equals("walk")) {
+            // Add Current Location
+            Direction start = new Direction(directions[0].getDistance(), "walk", "Current Location");
+            Direction destination = new Direction(0.0, "walk", directions[0].getName());
+            truncatedDirections.add(start);
+            truncatedDirections.add(destination);
 
         } else {
             int count = 0;
@@ -176,14 +184,28 @@ public class Route {
         return truncatedDirections;
     }
 
-    public int getTotalDelay(){
+    public int getTotalDelay() {
         int delay = 0;
-        for(Direction direction: directions){
-            if(direction.getType().equals("depart")){
+        for (Direction direction : directions) {
+            if (direction.getType().equals("depart")) {
                 delay = direction.getDelay() + delay;
             }
         }
         return delay;
+    }
+
+    // Determines how many unique buses we need to track
+    // Returns the first direction associated with the unique bus
+    public ArrayList<Direction> getBusInfo(){
+        ArrayList<Direction> directionArrayList = new ArrayList<>();
+
+        int count = 0;
+        while(count < directions.length){
+            if(directions[count].getType().equals("depart")){
+                directionArrayList.add(directions[count]);
+            }
+        }
+        return directionArrayList;
     }
 
 }

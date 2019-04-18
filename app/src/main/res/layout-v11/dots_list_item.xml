@@ -8,9 +8,13 @@
                     android:layout_height="match_parent"
                     android:id="@+id/dots_container">
         <ImageView
-            android:id="@+id/dots_image"
+            android:id="@+id/icon_image_one"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
-
+        <ImageView
+            android:id="@+id/icon_image_two"
+            android:layout_below="@+id/icon_image_one"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
     </RelativeLayout>
 </LinearLayout>
