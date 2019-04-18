@@ -17,6 +17,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.view.MenuItem;
 import android.view.View;
+
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,6 +25,7 @@ import android.widget.Toast;
 import com.appdev.futurenovajava.APIResponse;
 import com.appdev.futurenovajava.Endpoint;
 import com.appdev.futurenovajava.FutureNovaRequest;
+
 import com.arlib.floatingsearchview.FloatingSearchView;
 import com.arlib.floatingsearchview.suggestions.SearchSuggestionsAdapter;
 import com.arlib.floatingsearchview.suggestions.model.SearchSuggestion;
@@ -158,6 +160,7 @@ public final class MapsActivity extends AppCompatActivity implements OnMapReadyC
                         return true;
                     }
                 }
+
         );
     }
 
@@ -170,6 +173,14 @@ public final class MapsActivity extends AppCompatActivity implements OnMapReadyC
                 workRunnable = () -> autoCompleteRequest(newQuery);
                 handler.postDelayed(workRunnable, 250 /*delay*/);
             }
+        });
+      
+        mSearchView.setOnLeftMenuClickListener(new FloatingSearchView.OnLeftMenuClickListener() {
+            @Override
+            public void onMenuOpened() { mHomeView.openDrawer(mHomeMenu); }
+
+            @Override
+            public void onMenuClosed() { mHomeView.closeDrawer(mHomeMenu); }
         });
 
         mSearchView.setOnLeftMenuClickListener(new FloatingSearchView.OnLeftMenuClickListener() {

@@ -14,6 +14,7 @@ public final class ExtendedFragment extends Fragment {
     public View onCreateView(@Nullable LayoutInflater inflater, @Nullable ViewGroup container,
             @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.route_options_extended_fragment, container, false);
+
         return view;
     }
 

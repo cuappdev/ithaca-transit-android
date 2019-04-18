@@ -98,6 +98,7 @@ public class SectionAdapter extends StatelessSection {
                 holder2.delay.setText(((int) routeModel.getTotalDelay() / 60) + " hours late");
             }
             holder2.delay.setTextColor(Color.RED);
+
         } else {
             holder2.delay.setText("On Time");
         }
@@ -119,6 +120,7 @@ public class SectionAdapter extends StatelessSection {
         ItemHolder(View itemView) {
             super(itemView);
             delay = itemView.findViewById(R.id.delay);
+
             duration = itemView.findViewById(R.id.duration);
             directions = itemView.findViewById(R.id.directions);
             dots = itemView.findViewById(R.id.path_dots);

@@ -29,6 +29,7 @@ import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
+
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -94,6 +95,7 @@ public final class MapsPresenter implements FavoritesListAdapter.TextAdapterOnCl
     private ArrayList<Polyline> mBorderLastSelected;
 
     private Marker mBusLocationMarker;
+
 
     // Maps a polyline to its parent route
     private HashMap<ArrayList<Polyline>, Route>
@@ -199,6 +201,7 @@ public final class MapsPresenter implements FavoritesListAdapter.TextAdapterOnCl
         ArrayList<Polyline> polylineBorderList = new ArrayList<Polyline>();
         List<Direction> directionList = Arrays.asList(
                 Repository.getInstance().getSelectedRoute().getDirections());
+
         for (Direction direction : directionList) {
             if (direction.getType().equals("walk")) {
                 polylineOptionsCenter.pattern(PATTERN_DOT_LIST);
@@ -206,6 +209,7 @@ public final class MapsPresenter implements FavoritesListAdapter.TextAdapterOnCl
             } else {
                 polylineOptionsCenter.pattern(null);
                 polylineOptionsBorder.pattern(null);
+
             }
 
             for (Coordinate coordinate : direction.getPath()) {
@@ -386,8 +390,7 @@ public final class MapsPresenter implements FavoritesListAdapter.TextAdapterOnCl
         SectionAdapter walkingSection = new SectionAdapter(mContext, this,
                 Repository.getInstance().getRoutesList().getWalking(), "walking", "By Walking");
 
-        // Adding sections -- check if some of them are null before adding (optimal will never be
-        // null)
+        // Adding sections -- check if some of them are null before adding (optimal will never be null)
         routeOptionsListAdapter.addSection(optimalSection);
         if (Repository.getInstance().getRoutesList().getFromStop() != null &&
                 Repository.getInstance().getRoutesList().getFromStop().length != 0) {
@@ -408,6 +411,7 @@ public final class MapsPresenter implements FavoritesListAdapter.TextAdapterOnCl
 
         slideView = ((MapsActivity) mContext).findViewById(R.id.maps_activity);
         mSearchView.bringToFront();
+
     }
 
     public void setmMap(GoogleMap mMap) {
@@ -484,6 +488,7 @@ public final class MapsPresenter implements FavoritesListAdapter.TextAdapterOnCl
                     .title("Bus " + busLocation.getName());
             mBusLocationMarker = mMap.addMarker(markerOptions);
         });
+
     }
 
     public void setSearchView(FloatingSearchView searchView) {

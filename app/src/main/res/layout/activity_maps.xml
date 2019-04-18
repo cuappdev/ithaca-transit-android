@@ -28,6 +28,7 @@
                 <include layout = "@layout/activity_toolbar_search"/>
             </fragment>
 
+
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/recycler_view_maps"
                 android:layout_alignParentBottom="true"

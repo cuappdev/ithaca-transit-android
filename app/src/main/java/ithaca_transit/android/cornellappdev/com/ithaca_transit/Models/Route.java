@@ -161,6 +161,7 @@ public class Route {
             truncatedDirections.add(start);
             truncatedDirections.add(destination);
 
+
         } else {
             int count = 0;
             while (count < directions.length) {

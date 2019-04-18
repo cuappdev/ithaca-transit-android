@@ -7,6 +7,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+<<<<<<< HEAD
+=======
+import android.widget.TextView;
+>>>>>>> ad4edb476ed789edf28072b4da7bc56295d0035e
 
 import org.jetbrains.annotations.NotNull;
 
@@ -43,6 +47,7 @@ public class DotsListAdapter extends RecyclerView.Adapter {
                     "null cannot be cast to non-null type com.cornellappdev.android.eatery"
                             + ".DotsListAdapter.ImageAdapterViewHolder");
         } else {
+<<<<<<< HEAD
             DotsListAdapter.ImageViewHolder holder2 =
                     (DotsListAdapter.ImageViewHolder) holder;
 
@@ -71,6 +76,9 @@ public class DotsListAdapter extends RecyclerView.Adapter {
                     holder2.iconImageDot.setImageResource(R.drawable.busstop);
                 }
             }
+=======
+
+>>>>>>> ad4edb476ed789edf28072b4da7bc56295d0035e
         }
     }
 
@@ -80,12 +88,20 @@ public class DotsListAdapter extends RecyclerView.Adapter {
     }
 
     public final class ImageViewHolder extends RecyclerView.ViewHolder {
+<<<<<<< HEAD
         private ImageView iconImageDot;
         private ImageView iconImageLine;
         private View rootView;
 
         public ImageView getIconImage() {
             return iconImageDot;
+=======
+        private ImageView iconImage;
+        private View rootView;
+
+        public ImageView getIconImage() {
+            return iconImage;
+>>>>>>> ad4edb476ed789edf28072b4da7bc56295d0035e
         }
 
         public View getRootView() {
@@ -94,10 +110,15 @@ public class DotsListAdapter extends RecyclerView.Adapter {
 
         public ImageViewHolder(@NotNull View itemView) {
             super(itemView);
+<<<<<<< HEAD
             this.iconImageDot = (ImageView) itemView.findViewById(
                     R.id.icon_image_one);
             this.iconImageLine = (ImageView) itemView.findViewById(
                     R.id.icon_image_two);
+=======
+            this.iconImage = (ImageView) itemView.findViewById(
+                    R.id.icon_image);
+>>>>>>> ad4edb476ed789edf28072b4da7bc56295d0035e
             this.rootView = itemView;
         }
     }
