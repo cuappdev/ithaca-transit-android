@@ -283,12 +283,12 @@ public final class MapsPresenter implements FavoritesListAdapter.TextAdapterOnCl
 
     public void makeExtendedOptionsFragment() {
 
-        ExtendedFragment optionsFragment = new ExtendedFragment();
-        FragmentTransaction fragmentTransaction = this.mManager.beginTransaction();
-        fragmentTransaction.add(R.id.container, optionsFragment);
-        fragmentTransaction.addToBackStack((String) null);
-        fragmentTransaction.commit();
-        mManager.executePendingTransactions();
+//        ExtendedFragment optionsFragment = new ExtendedFragment();
+//        FragmentTransaction fragmentTransaction = this.mManager.beginTransaction();
+//        fragmentTransaction.add(R.id.container, optionsFragment);
+//        fragmentTransaction.addToBackStack((String) null);
+//        fragmentTransaction.commit();
+//        mManager.executePendingTransactions();
 
         // Setting up Extended Fragment recycler view
         RecyclerView recyclerView = ((MapsActivity) mContext).findViewById(
@@ -327,8 +327,8 @@ public final class MapsPresenter implements FavoritesListAdapter.TextAdapterOnCl
         recyclerView.setLayoutManager((new LinearLayoutManager(mContext, 1, false)));
 
         recyclerView.setAdapter(routeOptionsListAdapter);
-
-        slideView = ((MapsActivity) mContext).findViewById(R.id.slide_panel);
+//
+//        slideView = ((MapsActivity) mContext).findViewById(R.id.slide_panel);
 
     }
 

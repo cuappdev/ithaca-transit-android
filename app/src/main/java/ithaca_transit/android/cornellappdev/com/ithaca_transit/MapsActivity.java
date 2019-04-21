@@ -116,12 +116,12 @@ public final class MapsActivity extends AppCompatActivity implements OnMapReadyC
         mController.mRecView = mRecView;
 
         mController.setDynamicRecyclerView();
+//
+//        mHomeView = this.findViewById(R.id.home_view);
+//        mHomeMenu = this.findViewById(R.id.home_menu);
 
-        mHomeView = this.findViewById(R.id.home_view);
-        mHomeMenu = this.findViewById(R.id.home_menu);
-
-        setUpSearch();
-        setUpMenu();
+//        setUpSearch();
+//        setUpMenu();
     }
 
     public void onHeaderClick(View view) {
@@ -239,6 +239,7 @@ public final class MapsActivity extends AppCompatActivity implements OnMapReadyC
         });
     }
 
+    //TODO: this method should be moved to the presenter
     //Retrieves Route info from backend, sends it to MapPresenter
     private void launchRoute(String start, String end, String name) {
 
@@ -302,6 +303,7 @@ public final class MapsActivity extends AppCompatActivity implements OnMapReadyC
         return mSearchView;
     }
 
+    //TODO: this should be moved to this own activity/presenter
     private void autoCompleteRequest(String query) {
         Map<String, String> map = new HashMap<String, String>();
 
@@ -341,6 +343,7 @@ public final class MapsActivity extends AppCompatActivity implements OnMapReadyC
         });
     }
 
+    //TODO: what is the point of this method
     private final void setMapLongClick(final GoogleMap map) {
         map.setOnMapLongClickListener((new OnMapLongClickListener() {
             public final void onMapLongClick(LatLng latLng) {
