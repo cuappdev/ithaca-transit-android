@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import org.jetbrains.annotations.NotNull;
+
 
 import java.util.ArrayList;
 
@@ -75,7 +75,7 @@ public class DirectionsListAdapter extends RecyclerView.Adapter {
             return directionDistance;
         }
 
-        public TextAdapterViewHolder(@NotNull View itemView) {
+        public TextAdapterViewHolder(View itemView) {
             super(itemView);
             this.directionDestination = (TextView) itemView.findViewById(
                     R.id.direction_destination);
