@@ -9,8 +9,12 @@ import android.graphics.Color;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.LayoutManager;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.SearchView;
+import android.widget.TextView;
 
 import com.appdev.futurenovajava.APIResponse;
 import com.appdev.futurenovajava.Endpoint;
@@ -20,6 +24,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.Dot;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PatternItem;
 import com.google.android.gms.maps.model.Polyline;
@@ -145,7 +150,7 @@ public final class MapsPresenter implements FavoritesListAdapter.TextAdapterOnCl
     /* Removes bus route currently displayed on screen
        Called when a user selects a route to display from route options fragment
     */
-    public void removeSelectdRoute() {
+    public void removeSelectedRoute() {
         Route previousRoute = Repository.getInstance().getSelectedRoute();
 
         // Removing paths of selected route from map
@@ -269,7 +274,7 @@ public final class MapsPresenter implements FavoritesListAdapter.TextAdapterOnCl
 
     public void onRouteClick(int position, Route[] routeList) {
         // Remove currently selected route from map
-        removeSelectdRoute();
+        removeSelectedRoute();
 
         // Getting position within section
         Repository.getInstance().setSelectedRoute(routeList[position]);
@@ -351,21 +356,57 @@ public final class MapsPresenter implements FavoritesListAdapter.TextAdapterOnCl
                 (APIResponse<BusStop[]> response) -> {
                     mStopsList = response.getData();
 
-                    ((MapsActivity) mContext).runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
+                    ((MapsActivity) mContext).runOnUiThread(() -> {
                             for (BusStop stop : mStopsList) {
 
                                 MarkerOptions markerOptions = new MarkerOptions()
                                         .icon(BitmapDescriptorFactory.fromBitmap(resized_bitmap))
-                                        .position(
-                                                new LatLng(stop.getLatitude(), stop.getLongitude()))
+                                        .position(new LatLng(stop.getLatitude(), stop.getLongitude()))
                                         .title(stop.getName());
 
                                 mMap.addMarker(markerOptions);
+
+                                mMap.setOnMarkerClickListener((Marker marker) -> {
+                                        marker.showInfoWindow();
+                                        return true;
+                                    }
+                                );
+
+                                mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
+                                    @Override
+                                    public View getInfoWindow(Marker marker) {
+                                        return null;
+                                    }
+
+                                    @Override
+                                    public View getInfoContents(Marker marker) {
+                                        View v = LayoutInflater.from(mContext).inflate(
+                                                R.layout.bus_stop_info, null);
+
+                                        TextView name = v.findViewById(R.id.stop_name);
+                                        ImageView icon = v.findViewById(R.id.bus_marker_icon);
+                                        TextView busNums = v.findViewById(R.id.bus_route_numbers);
+
+                                        String stopName = marker.getTitle();
+                                        name.setText(stopName);
+
+                                        // Add route numbers
+                                        // TODO: Update these to be real numbers!
+                                        busNums.setText("10, 30, 32");
+
+                                        return v;
+                                    }
+                                });
+
+                                mMap.setOnInfoWindowClickListener((Marker marker) -> {
+                                        String stopName = marker.getTitle();
+
+                                        // TODO: Lesley: link to Kevin's PR!
+                                    }
+                                );
                             }
                         }
-                    });
+                    );
                 });
 
     }
