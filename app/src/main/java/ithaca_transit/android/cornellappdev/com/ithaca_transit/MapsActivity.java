@@ -8,26 +8,32 @@ import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-
+import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.Html;
+import android.text.SpannableString;
+import android.text.TextWatcher;
+import android.text.style.ForegroundColorSpan;
 import android.view.MenuItem;
 import android.view.View;
-
-import android.support.v4.content.res.ResourcesCompat;
-import android.text.Html;
-
+import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.appdev.futurenovajava.APIResponse;
 import com.appdev.futurenovajava.Endpoint;
 import com.appdev.futurenovajava.FutureNovaRequest;
-
 import com.arlib.floatingsearchview.FloatingSearchView;
 import com.arlib.floatingsearchview.suggestions.SearchSuggestionsAdapter;
 import com.arlib.floatingsearchview.suggestions.model.SearchSuggestion;
@@ -58,6 +64,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.TimeZone;
 
+import ithaca_transit.android.cornellappdev.com.ithaca_transit.Adapters.RouteSwitcherAdapter;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.Place;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.Route;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.SectionedRoutes;
@@ -77,6 +84,17 @@ public final class MapsActivity extends AppCompatActivity implements OnMapReadyC
     private DrawerLayout mHomeView;
     private FloatingSearchView mSearchView;
     private NavigationView mHomeMenu;
+
+    private Button mRouteIndicator;
+    private ConstraintLayout mRouteSwitchLayout;
+    private EditText mRouteStartInput;
+    private EditText mRouteEndInput;
+    private ImageButton mRouteSwitchButton;
+    private ListView mRouteSwitchList;
+    private RouteSwitcherAdapter mRouteSwitcherAdapter;
+    private int focusedView;
+    private Place startLoc;
+    private Place endLoc;
 
     private Handler handler = new Handler(Looper.getMainLooper() /*UI thread*/);
     private Runnable workRunnable;
@@ -120,6 +138,7 @@ public final class MapsActivity extends AppCompatActivity implements OnMapReadyC
         mHomeView = this.findViewById(R.id.home_view);
         mHomeMenu = this.findViewById(R.id.home_menu);
 
+        setUpRouteSwitcher();
         setUpSearch();
         setUpMenu();
     }
@@ -129,33 +148,168 @@ public final class MapsActivity extends AppCompatActivity implements OnMapReadyC
 //        startActivity(goHome);
     }
 
+    private void setUpRouteSwitcher() {
+        mRouteIndicator = this.findViewById(R.id.route_indicator);
+        mRouteSwitchLayout = this.findViewById(R.id.route_switcher_layout);
+        mRouteStartInput = this.findViewById(R.id.startloc_input);
+        mRouteEndInput = this.findViewById(R.id.endloc_input);
+        mRouteSwitchButton = this.findViewById(R.id.swap_destination);
+        mRouteSwitchList = this.findViewById(R.id.route_switcher_list);
+
+        mRouteSwitcherAdapter = new RouteSwitcherAdapter(this, new ArrayList<Place>());
+
+        mRouteSwitchList.setAdapter(mRouteSwitcherAdapter);
+        mRouteSwitchList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                switch (focusedView){
+                    case 1: {
+                        startLoc = (Place) adapterView.getItemAtPosition(i);
+                        mRouteStartInput.setText("");
+                        mRouteStartInput.setHint(startLoc.getName());
+                        mRouteSwitcherAdapter.clear();
+                    }break;
+                    case 2: {
+                        endLoc = (Place) adapterView.getItemAtPosition(i);
+                        mRouteEndInput.setText("");
+                        mRouteEndInput.setHint(endLoc.getName());
+                        mRouteSwitcherAdapter.clear();
+                    }break;
+                    default: break;
+                }
+            }
+        });
+        mRouteSwitchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Place temp = startLoc;
+                startLoc = endLoc;
+                endLoc = temp;
+                mRouteStartInput.setHint(startLoc.getName());
+                mRouteEndInput.setHint(endLoc.getName());
+            }
+        });
+        mRouteIndicator.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mRouteStartInput.setHint(startLoc.getName());
+                mRouteEndInput.setHint(endLoc.getName());
+                mRouteIndicator.setVisibility(View.GONE);
+                mRouteSwitchLayout.setVisibility(View.VISIBLE);
+            }
+        });
+        mRouteStartInput.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                focusedView = 1;
+                handler.removeCallbacks(workRunnable);
+                workRunnable = () -> routeSwitcherAutocomplete(charSequence.toString(), mRouteSwitcherAdapter);
+                handler.postDelayed(workRunnable, 250 /*delay*/);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+            }
+        });
+        mRouteEndInput.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                focusedView = 2;
+                handler.removeCallbacks(workRunnable);
+                workRunnable = () -> routeSwitcherAutocomplete(charSequence.toString(), mRouteSwitcherAdapter);
+                handler.postDelayed(workRunnable, 250 /*delay*/);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+            }
+        });
+    }
+
+    private void routeSwitcherAutocomplete(String query, RouteSwitcherAdapter rsAdapter) {
+        Map<String, String> map = new HashMap<String, String>();
+
+        map.put("Content-Type", "application/json");
+
+        JSONObject searchJSON = new JSONObject();
+        try {
+            searchJSON.put("query", query);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        final RequestBody requestBody =
+                RequestBody.create(MediaType.get("application/json; charset=utf-8"),
+                        searchJSON.toString());
+
+        Endpoint searchEndpoint = new Endpoint()
+                .path("v1/search")
+                .body(Optional.of(requestBody))
+                .headers(map)
+                .method(Endpoint.Method.POST);
+
+        FutureNovaRequest.make(Place[].class, searchEndpoint).thenAccept(response -> {
+            Place[] searchResults = response.getData();
+
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    rsAdapter.clear();
+                    if (searchResults != null) {
+                        int i = 0;
+                        for (Place p : searchResults) {
+                            rsAdapter.add(p);
+                            //Limit number of displayed results to 12
+                            i++;
+                            if (i > 12) break;
+                        }
+                    }
+                }
+            });
+        });
+    }
+
     private void setUpMenu() {
         mHomeView.addDrawerListener(
-            new DrawerLayout.DrawerListener() {
-                @Override
-                public void onDrawerSlide(View drawerView, float slideOffset) {
-                    if (slideOffset < 0.4) { mSearchView.setLeftMenuOpen(false); }
+                new DrawerLayout.DrawerListener() {
+                    @Override
+                    public void onDrawerSlide(View drawerView, float slideOffset) {
+                        if (slideOffset < 0.4) {
+                            mSearchView.setLeftMenuOpen(false);
+                        }
+                    }
+
+                    @Override
+                    public void onDrawerOpened(View drawerView) {
+                        mSearchView.setLeftMenuOpen(true);
+                    }
+
+                    @Override
+                    public void onDrawerClosed(View drawerView) {
+                    }
+
+                    @Override
+                    public void onDrawerStateChanged(int newState) {
+                    }
                 }
-
-                @Override
-                public void onDrawerOpened(View drawerView) { mSearchView.setLeftMenuOpen(true); }
-
-                @Override
-                public void onDrawerClosed(View drawerView) {}
-
-                @Override
-                public void onDrawerStateChanged(int newState) {}
-            }
         );
 
         mHomeMenu.setNavigationItemSelectedListener(
-            new NavigationView.OnNavigationItemSelectedListener() {
-                @Override
-                public boolean onNavigationItemSelected(MenuItem item) {
-                    mHomeView.closeDrawer(mHomeMenu);
-                    return true;
+                new NavigationView.OnNavigationItemSelectedListener() {
+                    @Override
+                    public boolean onNavigationItemSelected(MenuItem item) {
+                        mHomeView.closeDrawer(mHomeMenu);
+                        return true;
+                    }
                 }
-            }
         );
     }
 
@@ -169,13 +323,17 @@ public final class MapsActivity extends AppCompatActivity implements OnMapReadyC
                 handler.postDelayed(workRunnable, 250 /*delay*/);
             }
         });
-      
+
         mSearchView.setOnLeftMenuClickListener(new FloatingSearchView.OnLeftMenuClickListener() {
             @Override
-            public void onMenuOpened() { mHomeView.openDrawer(mHomeMenu); }
+            public void onMenuOpened() {
+                mHomeView.openDrawer(mHomeMenu);
+            }
 
             @Override
-            public void onMenuClosed() { mHomeView.closeDrawer(mHomeMenu); }
+            public void onMenuClosed() {
+                mHomeView.closeDrawer(mHomeMenu);
+            }
         });
 
         mSearchView.setOnBindSuggestionCallback(
@@ -210,6 +368,10 @@ public final class MapsActivity extends AppCompatActivity implements OnMapReadyC
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
+                        startLoc = new Place(MapsActivity.this.lastLocation.getLatitude(),
+                                            MapsActivity.this.lastLocation.getLongitude(),
+                                     "Current Location");
+                        endLoc = dest;
                         if (dest.getPlaceID() == null) {
                             launchRoute(MapsActivity.this.lastLocation.getLatitude() +
                                             ", " + MapsActivity.this.lastLocation.getLongitude(),
@@ -284,6 +446,20 @@ public final class MapsActivity extends AppCompatActivity implements OnMapReadyC
                                 getController().drawRoutes(optRoute, sectionedRoutes);
                                 getSearchView().setSearchText(name);
                                 getSearchView().clearSearchFocus();
+                                getSearchView().setVisibility(View.GONE);
+                                mRouteIndicator.setVisibility(View.VISIBLE);
+                                String s = "Current Location  >  " + (name.length() > 20 ?
+                                        name.substring(0, 17) + "..." : name);
+                                SpannableString route =
+                                        new SpannableString(
+                                                s.substring(0, Math.min(s.length(), 42)));
+                                route.setSpan(new ForegroundColorSpan(Color.parseColor("#08a0e0")),
+                                        0, 19, 0);
+                                // make "Here" (characters 6 to 10) Blue
+                                route.setSpan(new ForegroundColorSpan(Color.BLACK), 20,
+                                        route.length(), 0);
+                                mRouteIndicator.setText(route, TextView.BufferType.SPANNABLE);
+                                mRouteIndicator.bringToFront();
                             } else {
                                 Toast.makeText(MapsActivity.this,
                                         "Something went wrong, we can't provide a route.",
