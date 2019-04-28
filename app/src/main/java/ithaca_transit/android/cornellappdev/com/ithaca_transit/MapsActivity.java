@@ -162,20 +162,23 @@ public final class MapsActivity extends AppCompatActivity implements OnMapReadyC
         mRouteSwitchList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                switch (focusedView){
+                switch (focusedView) {
                     case 1: {
                         startLoc = (Place) adapterView.getItemAtPosition(i);
                         mRouteStartInput.setText("");
                         mRouteStartInput.setHint(startLoc.getName());
                         mRouteSwitcherAdapter.clear();
-                    }break;
+                    }
+                    break;
                     case 2: {
                         endLoc = (Place) adapterView.getItemAtPosition(i);
                         mRouteEndInput.setText("");
                         mRouteEndInput.setHint(endLoc.getName());
                         mRouteSwitcherAdapter.clear();
-                    }break;
-                    default: break;
+                    }
+                    break;
+                    default:
+                        break;
                 }
             }
         });
@@ -207,7 +210,8 @@ public final class MapsActivity extends AppCompatActivity implements OnMapReadyC
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 focusedView = 1;
                 handler.removeCallbacks(workRunnable);
-                workRunnable = () -> routeSwitcherAutocomplete(charSequence.toString(), mRouteSwitcherAdapter);
+                workRunnable = () -> routeSwitcherAutocomplete(charSequence.toString(),
+                        mRouteSwitcherAdapter);
                 handler.postDelayed(workRunnable, 250 /*delay*/);
             }
 
@@ -224,7 +228,8 @@ public final class MapsActivity extends AppCompatActivity implements OnMapReadyC
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 focusedView = 2;
                 handler.removeCallbacks(workRunnable);
-                workRunnable = () -> routeSwitcherAutocomplete(charSequence.toString(), mRouteSwitcherAdapter);
+                workRunnable = () -> routeSwitcherAutocomplete(charSequence.toString(),
+                        mRouteSwitcherAdapter);
                 handler.postDelayed(workRunnable, 250 /*delay*/);
             }
 
@@ -369,8 +374,8 @@ public final class MapsActivity extends AppCompatActivity implements OnMapReadyC
                     @Override
                     public void run() {
                         startLoc = new Place(MapsActivity.this.lastLocation.getLatitude(),
-                                            MapsActivity.this.lastLocation.getLongitude(),
-                                     "Current Location");
+                                MapsActivity.this.lastLocation.getLongitude(),
+                                "Current Location");
                         endLoc = dest;
                         if (dest.getPlaceID() == null) {
                             launchRoute(MapsActivity.this.lastLocation.getLatitude() +

@@ -25,7 +25,8 @@ public class RouteSwitcherAdapter extends ArrayAdapter<Place> {
     public View getView(int position, View convertView, ViewGroup parent) {
         Place place = getItem(position);
         if (convertView == null) {
-            convertView = LayoutInflater.from(getContext()).inflate(R.layout.location_list_item, parent, false);
+            convertView = LayoutInflater.from(getContext()).inflate(R.layout.location_list_item,
+                    parent, false);
         }
         TextView title = (TextView) convertView.findViewById(R.id.rs_autocomplete_title);
         TextView details = (TextView) convertView.findViewById(R.id.rs_autocomplete_detail);
@@ -34,7 +35,7 @@ public class RouteSwitcherAdapter extends ArrayAdapter<Place> {
         return convertView;
     }
 
-    public Place getItem(int position){
+    public Place getItem(int position) {
         return mPlaceList.get(position);
     }
 
