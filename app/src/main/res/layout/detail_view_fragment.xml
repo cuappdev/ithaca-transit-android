@@ -49,7 +49,7 @@
             android:layout_alignTop="@id/bus_container"
             android:layout_marginLeft="20dp"
             android:layout_toRightOf="@id/bus_container"
-            android:text="Hey ya'll how y'all doin?" android:textColor="@color/black"/>
+            android:text="" android:textColor="@color/black"/>
 
     </RelativeLayout>
 

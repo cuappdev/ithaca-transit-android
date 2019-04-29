@@ -23,6 +23,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.TimeZone;
 
+import ithaca_transit.android.cornellappdev.com.ithaca_transit.MapsActivity;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.Favorite;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.Route;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.SectionedRoutes;
@@ -80,45 +81,54 @@ public final class FavoritesListAdapter extends Adapter {
                     "null cannot be cast to non-null type com.cornellappdev.android.eatery"
                             + ".FavoritesFavoritesListAdapter.TextAdapterViewHolder");
         } else {
-            FavoritesListAdapter.TextAdapterViewHolder holder2 =
-                    (FavoritesListAdapter.TextAdapterViewHolder) holder;
-            holder2.getFavoriteName().setText(mFavList.get(position).getStartPlace().getName()
-                    + "--" +
-                    mFavList.get(position).getEndPlace().getName());
 
-            Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("\"America/NewYork\""));
-            int secondsEpoch = (int) (calendar.getTimeInMillis() / 1000L);
+            ((MapsActivity) mContext).runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    FavoritesListAdapter.TextAdapterViewHolder holder2 =
+                            (FavoritesListAdapter.TextAdapterViewHolder) holder;
+                    holder2.getFavoriteName().setText(mFavList.get(
+                            position).getStartPlace().getName()
+                            + "--" +
+                            mFavList.get(position).getEndPlace().getName());
 
-            // Getting the other route options
-            HashMap<String, String> map = new HashMap();
-            map.put("Content-Type", "application/json");
-            JSONObject searchJSON = new JSONObject();
-            try {
-                searchJSON.put("start", mFavList.get(position).getStartPlace().toString());
-                searchJSON.put("end", mFavList.get(position).getEndPlace().toString());
-                searchJSON.put("destinationName", mFavList.get(position).getEndPlace().getName());
-                searchJSON.put("arriveBy", false);
-                searchJSON.put("time", secondsEpoch);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+                    Calendar calendar = Calendar.getInstance(
+                            TimeZone.getTimeZone("\"America/NewYork\""));
+                    int secondsEpoch = (int) (calendar.getTimeInMillis() / 1000L);
 
-            final RequestBody requestBody =
-                    RequestBody.create(MediaType.get("application/json; charset=utf-8"),
-                            searchJSON.toString());
+                    // Getting the other route options
+                    HashMap<String, String> map = new HashMap();
+                    map.put("Content-Type", "application/json");
+                    JSONObject searchJSON = new JSONObject();
+                    try {
+                        searchJSON.put("start", mFavList.get(position).getStartPlace().toString());
+                        searchJSON.put("end", mFavList.get(position).getEndPlace().toString());
+                        searchJSON.put("destinationName", mFavList.get(
+                                position).getEndPlace().getName());
+                        searchJSON.put("arriveBy", false);
+                        searchJSON.put("time", secondsEpoch);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
 
-            Endpoint searchEndpoint2 = new Endpoint()
-                    .path("v2/route")
-                    .body(Optional.of(requestBody))
-                    .headers(map)
-                    .method(Endpoint.Method.POST);
+                    final RequestBody requestBody =
+                            RequestBody.create(MediaType.get("application/json; charset=utf-8"),
+                                    searchJSON.toString());
 
-            FutureNovaRequest.make(SectionedRoutes.class, searchEndpoint2).thenAccept(
-                    (APIResponse<SectionedRoutes> response) -> {
-                        SectionedRoutes sectionedRoutes = response.getData();
-                        mAllRoutesToFavorites.put(position, sectionedRoutes);
-                        mOptimalRoutes[position] = sectionedRoutes.getOptRoute();
-                    });
+                    Endpoint searchEndpoint2 = new Endpoint()
+                            .path("v2/route")
+                            .body(Optional.of(requestBody))
+                            .headers(map)
+                            .method(Endpoint.Method.POST);
+
+                    FutureNovaRequest.make(SectionedRoutes.class, searchEndpoint2).thenAccept(
+                            (APIResponse<SectionedRoutes> response) -> {
+                                SectionedRoutes sectionedRoutes = response.getData();
+                                mAllRoutesToFavorites.put(position, sectionedRoutes);
+                                mOptimalRoutes[position] = sectionedRoutes.getOptRoute();
+                            });
+                }
+            });
         }
     }
 

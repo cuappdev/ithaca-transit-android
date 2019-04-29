@@ -146,8 +146,8 @@ public class SectionAdapter extends StatelessSection {
                 1).getType().equals("walk")) {
             holder2.dots_walk_only_start.setVisibility(View.VISIBLE);
             holder2.dots_walk_only_end.setVisibility(View.VISIBLE);
-
         }
+
         // if not walk only and only start/end, we must be taking bus path
         else if (size < 3) {
             holder2.dots_one_bus.setVisibility(View.VISIBLE);
@@ -176,7 +176,7 @@ public class SectionAdapter extends StatelessSection {
             }
             holder2.delay.setTextColor(Color.RED);
 
-        } else {
+        } else if(!routeModel.isWalkOnlyRoute()){
             holder2.delay.setText("On Time");
             holder2.delay_image.setVisibility(View.VISIBLE);
         }

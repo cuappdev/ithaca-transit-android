@@ -10,45 +10,86 @@
         android:id="@+id/time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="8:30 pm"
         android:textColor="@color/black"
         android:textSize="14sp"/>
 
     <ImageView
-        android:id="@+id/dots"
+        android:visibility="invisible"
+        android:id="@+id/bus_stop_dot"
         android:layout_width="24dp"
         android:layout_height="22dp" android:layout_alignParentTop="true"
-        android:layout_marginLeft="8dp"
-        android:layout_toRightOf="@id/time" android:src="@drawable/busstop"/>
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="0dp" android:layout_toRightOf="@id/time"
+        android:src="@drawable/busstop"/>
 
     <ImageView
-        android:id="@+id/dots3"
+        android:visibility="invisible"
+        android:id="@+id/walk_end_dot"
+        android:layout_width="24dp"
+        android:layout_height="22dp" android:layout_alignParentTop="true"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="0dp" android:layout_toRightOf="@id/time"
+        android:src="@drawable/destination"/>
+    <ImageView
+        android:id="@+id/walk_start_dot"
+        android:layout_width="24dp"
+        android:layout_height="22dp" android:layout_alignParentTop="true"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="0dp" android:layout_toRightOf="@id/time"
+        android:src="@drawable/walkstart" android:visibility="invisible"/>
+    <ImageView
+        android:visibility="invisible"
+        android:id="@+id/dot_partition"
         android:layout_width="7dp"
         android:layout_height="13dp" android:layout_alignParentTop="true"
         android:layout_marginLeft="91dp"
         android:layout_marginTop="39dp" android:layout_toRightOf="@id/time"
         android:src="@drawable/walkstart"/>
     <ImageView
-        android:id="@+id/dots4"
+        android:visibility="invisible"
+        android:id="@+id/walk_path_1"
         android:layout_width="7dp"
         android:layout_height="13dp" android:layout_alignParentTop="true"
-        android:layout_marginLeft="140dp"
-        android:layout_marginTop="39dp" android:layout_toRightOf="@id/time"
-        android:src="@drawable/arrow"/>
+        android:layout_marginLeft="19dp"
+        android:layout_marginTop="25dp" android:layout_toRightOf="@id/time"
+        android:src="@drawable/walkstart"/>
     <ImageView
-        android:id="@+id/dots2"
+        android:visibility="invisible"
+        android:id="@+id/walk_path_2"
+        android:layout_width="7dp"
+        android:layout_height="13dp" android:layout_alignParentTop="true"
+        android:layout_marginLeft="18dp"
+        android:layout_marginTop="42dp" android:layout_toRightOf="@id/time"
+        android:src="@drawable/walkstart"/>
+    <ImageView
+        android:visibility="invisible"
+        android:id="@+id/walk_path_3"
+        android:layout_width="7dp"
+        android:layout_height="13dp" android:layout_alignParentTop="true"
+        android:layout_marginLeft="18dp"
+        android:layout_marginTop="58dp" android:layout_toRightOf="@id/time"
+        android:src="@drawable/walkstart"/>
+    <ImageView
+        android:id="@+id/drop_down_arrow"
+        android:layout_width="13dp"
+        android:layout_height="13dp" android:layout_alignParentTop="true"
+        android:layout_marginLeft="147dp"
+        android:layout_marginTop="39dp" android:layout_toRightOf="@id/time"
+        android:src="@drawable/arrow" android:visibility="invisible"/>
+    <ImageView
+        android:id="@+id/bus_stop_path"
         android:layout_width="22dp"
         android:layout_height="58dp" android:layout_alignParentTop="true"
-        android:layout_marginLeft="8dp"
+        android:layout_marginLeft="11dp"
         android:layout_marginTop="22dp" android:layout_toRightOf="@id/time"
-        android:src="@drawable/detail_line"/>
+        android:src="@drawable/detail_line" android:visibility="invisible"/>
     <TextView
         android:id="@+id/direction_type"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_marginLeft="19dp"
-        android:layout_marginTop="0dp" android:layout_toRightOf="@id/dots" android:text="Board"
+        android:layout_marginTop="0dp" android:layout_toRightOf="@id/bus_stop_dot"
         android:textColor="@color/black" android:textSize="14sp"/>
 
 
@@ -59,7 +100,8 @@
         android:layout_alignParentStart="false"
         android:layout_alignParentTop="false"
         android:layout_marginLeft="20dp"
-        android:layout_toRightOf="@id/direction_type" android:background="@drawable/bus_background">
+        android:layout_toRightOf="@id/direction_type" android:background="@drawable/bus_background"
+        android:visibility="invisible">
         <ImageView
             android:id="@+id/ic_bus"
             android:layout_width="16dp"
@@ -70,7 +112,7 @@
         </ImageView>
 
         <TextView
-            android:id="@+id/tv_bus_number_header"
+            android:id="@+id/tv_bus_number_detail"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignTop="@+id/bus_container"
@@ -85,7 +127,6 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_marginLeft="22dp" android:layout_toRightOf="@id/bus_container"
-        android:text="at RPCC"
         android:textColor="@color/black" android:textSize="14sp"
         tools:ignore="NotSibling"/>
 
@@ -96,38 +137,38 @@
         android:layout_below="@id/direction_type"
         android:layout_alignStart="@+id/direction_type"
         android:layout_marginStart="0dp" android:layout_marginTop="6dp"
-        android:text="20 ft" android:textColor="@color/gray" android:textSize="10sp"/>
+        android:textColor="@color/gray" android:textSize="10sp"/>
 
     <TextView
-        android:id="@+id/distance2"
+        android:id="@+id/num_stops"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/direction_type"
         android:layout_alignStart="@+id/direction_type"
         android:layout_marginStart="-1dp" android:layout_marginTop="19dp"
-        android:text="3 stops" android:textColor="@color/gray"
-        android:textSize="10sp"/>
+        android:textColor="@color/gray"
+        android:textSize="11sp"/>
     <TextView
-        android:id="@+id/distance3"
+        android:id="@+id/direction_duration"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/direction_type"
         android:layout_alignStart="@+id/direction_type"
         android:layout_marginStart="53dp" android:layout_marginTop="19dp"
-        android:text="11 min" android:textColor="@color/gray"
-        android:textSize="10sp"/>
+        android:textColor="@color/gray"
+        android:textSize="11sp"/>
     <View
         android:id="@+id/bottom_divider"
         android:layout_width="259dp"
-        android:layout_height="2dp"
+        android:layout_height="1dp"
         android:layout_alignParentStart="true" android:layout_alignParentBottom="true"
         android:layout_marginStart="101dp" android:layout_marginBottom="11dp"
-        android:background="@color/gray"/>
+        android:background="@color/gray" android:visibility="invisible"/>
     <View
         android:id="@+id/stops_divider"
-        android:layout_width="160dp"
-        android:layout_height="3dp"
+        android:layout_width="137dp"
+        android:layout_height="1dp"
         android:layout_alignParentStart="true" android:layout_alignParentBottom="true"
-        android:layout_marginStart="200dp" android:layout_marginBottom="33dp"
-        android:background="@color/gray"/>
+        android:layout_marginStart="223dp" android:layout_marginBottom="33dp"
+        android:background="@color/gray" android:visibility="invisible"/>
 </RelativeLayout>
