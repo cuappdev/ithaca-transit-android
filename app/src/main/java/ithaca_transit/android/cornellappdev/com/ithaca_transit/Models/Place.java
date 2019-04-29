@@ -31,7 +31,6 @@ public class Place {
         this.type = type;
     }
 
-
     public Place(String detail) {
         this.detail = detail;
     }

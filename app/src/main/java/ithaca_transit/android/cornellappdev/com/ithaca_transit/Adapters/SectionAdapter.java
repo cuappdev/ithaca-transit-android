@@ -81,6 +81,7 @@ public class SectionAdapter extends StatelessSection {
         if (size == 2 && routeDirections.get(0).getType().equals("walk") && routeDirections.get(
                 1).getType().equals("walk")) {
             holder2.direction_destination_two.setText(routeDirections.get(0).getDistance() + " ft");
+
             holder2.direction_destination_two.setTextColor(Color.GRAY);
             holder2.direction_destination_three.setText(routeDirections.get(1).getName());
         } else {
@@ -91,13 +92,14 @@ public class SectionAdapter extends StatelessSection {
                 if (routeDirections.get(2).getType().equals("walk")) {
                     holder2.direction_distance_three.setText(
                             routeDirections.get(2).getDistance() + " ft");
+
                 }
             }
             if (size >= 4) {
                 holder2.direction_destination_four.setText(routeDirections.get(size - 1).getName());
                 if (routeDirections.get(size - 1).getType().equals("walk")) {
                     holder2.direction_distance_four.setText(
-                            routeDirections.get(size - 1).getDistance() + " ft");
+                    routeDirections.get(size - 1).getDistance() + " ft");
                 }
             }
         }

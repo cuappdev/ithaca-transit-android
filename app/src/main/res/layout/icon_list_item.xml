@@ -3,7 +3,8 @@
               android:layout_width="50dp"
               android:layout_height="50dp"
               android:orientation="vertical"
-              android:paddingBottom="30dp"
+              android:paddingBottom="15dp"
+              android:id="@+id/lin_layout"
 >
     <RelativeLayout android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -15,14 +16,31 @@
 
         <RelativeLayout
              android:id="@+id/container_bus_number"
-             android:layout_height="match_parent"
-             android:layout_width="match_parent">
-            <include layout="@layout/bus_number"
-                     android:layout_width="300dp"
-                     android:layout_height="300dp">
+             android:layout_height="300dp"
+             android:layout_width="300dp">
+            <LinearLayout
+                android:layout_width="56dp"
+                android:layout_height="27dp"
+                android:background="@drawable/bus_background">
 
-            </include>
+                <ImageView
+                    android:id="@+id/ic_bus"
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginTop="2dp"
+                    android:src="@drawable/ic_bus_marker">
+                </ImageView>
+
+                <TextView
+                    android:id="@+id/tv_bus_number"
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:layout_marginTop="2dp"
+                    android:text=""
+                    android:textColor="@color/white"
+                    android:textSize="15sp"/>
+            </LinearLayout>
         </RelativeLayout>
-
     </RelativeLayout>
 </LinearLayout>
