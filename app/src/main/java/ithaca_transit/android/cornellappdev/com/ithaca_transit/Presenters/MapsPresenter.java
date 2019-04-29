@@ -1,5 +1,8 @@
 package ithaca_transit.android.cornellappdev.com.ithaca_transit.Presenters;
 
+import static android.support.v4.content.res.ResourcesCompat.getColor;
+
+import android.app.Dialog;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
@@ -10,8 +13,11 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.LayoutManager;
 import android.view.View;
-import android.widget.ScrollView;
-import android.widget.SearchView;
+import android.widget.DatePicker;
+import android.widget.ExpandableListView;
+import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.TimePicker;
 
 import com.appdev.futurenovajava.APIResponse;
 import com.appdev.futurenovajava.Endpoint;
@@ -22,13 +28,13 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.Dot;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PatternItem;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
-
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
@@ -37,6 +43,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -47,8 +54,10 @@ import java.util.concurrent.TimeUnit;
 import io.github.luizgrp.sectionedrecyclerviewadapter.SectionedRecyclerViewAdapter;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Adapters.FavoritesListAdapter;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Adapters.SectionAdapter;
+import ithaca_transit.android.cornellappdev.com.ithaca_transit.DetailViewFragment;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.ExtendedFragment;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.MapsActivity;
+import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.BoundingBox;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.BusLocation;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.BusStop;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.Coordinate;
@@ -95,7 +104,6 @@ public final class MapsPresenter implements FavoritesListAdapter.TextAdapterOnCl
     private ArrayList<Polyline> mBorderLastSelected;
 
     private Marker mBusLocationMarker;
-
 
     // Maps a polyline to its parent route
     private HashMap<ArrayList<Polyline>, Route>
@@ -187,13 +195,13 @@ public final class MapsPresenter implements FavoritesListAdapter.TextAdapterOnCl
 
         Route route = Repository.getInstance().getSelectedRoute();
         PolylineOptions polylineOptionsCenter = new PolylineOptions();
-        polylineOptionsCenter.color(R.color.tcatBlue);
+        polylineOptionsCenter.color(getColor(mContext.getResources(), R.color.tcatBlue, null));
         polylineOptionsCenter.clickable(true);
         polylineOptionsCenter.width(25F);
 
         // Creating larger polyline under path to provide border
         PolylineOptions polylineOptionsBorder = new PolylineOptions();
-        polylineOptionsBorder.color(R.color.tcatBlue);
+        polylineOptionsBorder.color(getColor(mContext.getResources(), R.color.tcatBlue, null));
         polylineOptionsBorder.width(30F);
 
 
@@ -231,9 +239,13 @@ public final class MapsPresenter implements FavoritesListAdapter.TextAdapterOnCl
         mBorderLastSelected = polylineBorderList;
         mPathLastSelected = polylinePathList;
 
-        LatLng startLatLng = new LatLng(route.getStartCoords().getLatitude(),
-                route.getStartCoords().getLongitude());
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(startLatLng, 15.0F));
+        // Setting bounds
+        BoundingBox boundingBox = route.getBoundingBox();
+        LatLng northeast = new LatLng(boundingBox.getMaxLat(), boundingBox.getMaxLong());
+        LatLng southwest = new LatLng(boundingBox.getMinLat(), boundingBox.getMinLong());
+        LatLngBounds latLngBounds = new LatLngBounds(northeast, southwest);
+
+        mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds,0));
 
         // Draw dot for start, end
         Bitmap walkMarker = BitmapFactory.decodeResource(mContext.getResources(),
@@ -329,15 +341,14 @@ public final class MapsPresenter implements FavoritesListAdapter.TextAdapterOnCl
     public void onRouteClick(int position, Route[] routeList) {
         // Remove currently selected route from map
         removeSelectdRoute();
-
+        Route newRoute = routeList[position];
         // Getting position within section
-        Repository.getInstance().setSelectedRoute(routeList[position]);
+        Repository.getInstance().setSelectedRoute(newRoute);
 
         drawSelectedRoute();
         drawWalkRoute();
         slideView.setVisibility(View.GONE);
 
-        //TODO: Detail view gets created and inflated here
 
         // Check to see if route invovles buses
         if (!Repository.getInstance().getSelectedRoute().isWalkOnlyRoute()) {
@@ -361,6 +372,8 @@ public final class MapsPresenter implements FavoritesListAdapter.TextAdapterOnCl
             scheduledExecutorService.scheduleAtFixedRate(task, initDelay, updatePeriod,
                     TimeUnit.SECONDS);
         }
+
+        makeDetailViewFragment();
     }
 
     public void makeExtendedOptionsFragment() {
@@ -390,7 +403,8 @@ public final class MapsPresenter implements FavoritesListAdapter.TextAdapterOnCl
         SectionAdapter walkingSection = new SectionAdapter(mContext, this,
                 Repository.getInstance().getRoutesList().getWalking(), "walking", "By Walking");
 
-        // Adding sections -- check if some of them are null before adding (optimal will never be null)
+        // Adding sections -- check if some of them are null before adding (optimal will never be
+        // null)
         routeOptionsListAdapter.addSection(optimalSection);
         if (Repository.getInstance().getRoutesList().getFromStop() != null &&
                 Repository.getInstance().getRoutesList().getFromStop().length != 0) {
@@ -409,9 +423,56 @@ public final class MapsPresenter implements FavoritesListAdapter.TextAdapterOnCl
         recyclerView.setLayoutManager((new LinearLayoutManager(mContext, 1, false)));
         recyclerView.setAdapter(routeOptionsListAdapter);
 
+        // Adding dialogue
+        ImageView clock = ((MapsActivity) mContext).findViewById(R.id.ic_clock);
+        clock.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Dialog dialogFragment = new Dialog(mContext);
+                dialogFragment.setContentView(R.layout.dialog_leave_now);
+
+                DatePicker datePicker = dialogFragment.findViewById(R.id.date_picker);
+                TimePicker timePicker = dialogFragment.findViewById(R.id.time_picker);
+
+                Date date = new Date();
+                datePicker.init(date.getYear(), date.getMonth(), date.getDay(),
+                        new DatePicker.OnDateChangedListener() {
+                            @Override
+                            public void onDateChanged(DatePicker datePicker, int i, int i1,
+                                    int i2) {
+                                Date leaveDate = new Date();
+                                leaveDate.setYear(leaveDate.getYear());
+                                leaveDate.setYear(leaveDate.getMonth());
+                                leaveDate.setYear(leaveDate.getDay());
+                            }
+                        });
+
+                dialogFragment.show();
+            }
+        });
+
         slideView = ((MapsActivity) mContext).findViewById(R.id.maps_activity);
         mSearchView.bringToFront();
 
+    }
+
+    public void makeDetailViewFragment(){
+        DetailViewFragment detailViewFragment = new DetailViewFragment();
+        FragmentTransaction fragmentTransaction = this.mManager.beginTransaction();
+        fragmentTransaction.replace(R.id.container, detailViewFragment);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
+        mManager.executePendingTransactions();
+
+        Route route = Repository.getInstance().getSelectedRoute();
+        ArrayList<Direction> detailDirections = route.getDetailDirections();
+
+
+        //set adapter on list and what not
+        ExpandableListView listView = ((MapsActivity)mContext).findViewById(R.id.directions_list_view);
+
+        //listView.setLayoutManager((new LinearLayoutManager(mContext, 1, false)));
+        //recyclerView.setAdapter(routeOptionsListAdapter);
     }
 
     public void setmMap(GoogleMap mMap) {
@@ -424,31 +485,40 @@ public final class MapsPresenter implements FavoritesListAdapter.TextAdapterOnCl
      */
     public void makeStopsMarkers(GoogleMap mMap) {
         // Change icon size
-        Bitmap bitmap = BitmapFactory.decodeResource(mContext.getResources(),
-                R.drawable.ic_bus_marker);
-        Bitmap resized_bitmap = Bitmap.createScaledBitmap(bitmap, 40, 40, false);
 
-        Endpoint allStopsEndpoint = new Endpoint().path("v1/allstops").method(Endpoint.Method.GET);
-        FutureNovaRequest.make(BusStop[].class, allStopsEndpoint).thenAccept(
-                (APIResponse<BusStop[]> response) -> {
-                    mStopsList = response.getData();
+        ((MapsActivity) mContext).runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Bitmap bitmap = BitmapFactory.decodeResource(mContext.getResources(),
+                        R.drawable.ic_bus_marker);
+                Bitmap resized_bitmap = Bitmap.createScaledBitmap(bitmap, 40, 40, false);
 
-                    ((MapsActivity) mContext).runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            for (BusStop stop : mStopsList) {
+                Endpoint allStopsEndpoint = new Endpoint().path("v1/allstops").method(
+                        Endpoint.Method.GET);
+                FutureNovaRequest.make(BusStop[].class, allStopsEndpoint).thenAccept(
+                        (APIResponse<BusStop[]> response) -> {
+                            mStopsList = response.getData();
 
-                                MarkerOptions markerOptions = new MarkerOptions()
-                                        .icon(BitmapDescriptorFactory.fromBitmap(resized_bitmap))
-                                        .position(
-                                                new LatLng(stop.getLatitude(), stop.getLongitude()))
-                                        .title(stop.getName());
+                            ((MapsActivity) mContext).runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    for (BusStop stop : mStopsList) {
 
-                                mMap.addMarker(markerOptions);
-                            }
-                        }
-                    });
-                });
+                                        MarkerOptions markerOptions = new MarkerOptions()
+                                                .icon(BitmapDescriptorFactory.fromBitmap(
+                                                        resized_bitmap))
+                                                .position(
+                                                        new LatLng(stop.getLatitude(),
+                                                                stop.getLongitude()))
+                                                .title(stop.getName());
+
+                                        mMap.addMarker(markerOptions);
+                                    }
+                                }
+                            });
+                        });
+            }
+        });
     }
 
     public void updateBusLocation(Direction direction) {
@@ -488,7 +558,6 @@ public final class MapsPresenter implements FavoritesListAdapter.TextAdapterOnCl
                     .title("Bus " + busLocation.getName());
             mBusLocationMarker = mMap.addMarker(markerOptions);
         });
-
     }
 
     public void setSearchView(FloatingSearchView searchView) {

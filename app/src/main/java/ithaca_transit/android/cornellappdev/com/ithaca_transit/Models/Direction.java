@@ -122,5 +122,19 @@ public class Direction {
     public void setDistance(Double distance) {
         this.distance = distance;
     }
+
+    /* Delete last element of stops array, as we want to depict the last stop as a direction in detail view
+     * For example, if the last stop is Duffield, we want to show "Get off at Duffield" instead of
+     * Duffield only showing up as a stop in the detail view
+     */
+    public void updateStops(){
+        int numStops = stops.length;
+        Place[] newStops = new Place[numStops-1];
+
+        for(int count=0;count<numStops-1;count++){
+            newStops[count] = stops[count];
+        }
+        stops = newStops;
+    }
 }
 
