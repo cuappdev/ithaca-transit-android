@@ -1,47 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml version="1.0" encoding="utf-8"?>
 
 <com.sothree.slidinguppanel.SlidingUpPanelLayout
-    android:id="@+id/maps_activity"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/maps_activity"
     android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     android:gravity="bottom"
-    app:umanoOverlay="true"
-    app:umanoPanelHeight="0dp"
-    app:umanoShadowHeight="5dp"
     app:umanoDragView="@id/dragView"
+    app:umanoPanelHeight="0dp"
     app:umanoScrollableView="@id/nearby_stops_routes"
-    android:layout_height="wrap_content">
+    app:umanoShadowHeight="5dp">
 
-    <FrameLayout
+    <RelativeLayout
+        android:id="@+id/main_screen"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
-        <fragment xmlns:android="http://schemas.android.com/apk/res/android"
-                  xmlns:map="http://schemas.android.com/apk/res-auto"
-                  xmlns:tools="http://schemas.android.com/tools"
-                  android:id="@+id/map"
-                  android:name="com.google.android.gms.maps.SupportMapFragment"
-                  android:layout_width="match_parent"
-                  android:layout_height="match_parent"
-                  tools:context=".MapsActivity">
-        </fragment>
+
+        <FrameLayout
+            android:id="@+id/map_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+        </FrameLayout>
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recycler_view_maps"
-            android:layout_alignParentBottom="true"
-            android:orientation="horizontal"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-        </android.support.v7.widget.RecyclerView>
-    </FrameLayout>
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginTop="20dp"
+            android:orientation="horizontal"/>
 
-    <RelativeLayout android:layout_width="match_parent"
+    </RelativeLayout>
+
+    <RelativeLayout android:id="@+id/dragView"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:clickable="true"
-                    android:id="@+id/dragView">
-        <include layout = "@layout/route_options_extended_fragment"/>
+                    android:background="@color/blue"
+                    android:clickable="true">
+        <!--<include layout="@layout/route_options_extended_fragment"/>-->
     </RelativeLayout>
 
 </com.sothree.slidinguppanel.SlidingUpPanelLayout>
