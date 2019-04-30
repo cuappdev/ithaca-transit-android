@@ -21,8 +21,7 @@
         <FrameLayout
             android:id="@+id/map_container"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
+            android:layout_height="match_parent">
         </FrameLayout>
 
         <android.support.v7.widget.RecyclerView
@@ -40,7 +39,7 @@
                     android:layout_height="wrap_content"
                     android:background="@color/blue"
                     android:clickable="true">
-        <!--<include layout="@layout/route_options_extended_fragment"/>-->
+        <include layout="@layout/route_options_extended_fragment"/>
     </RelativeLayout>
 
 </com.sothree.slidinguppanel.SlidingUpPanelLayout>
