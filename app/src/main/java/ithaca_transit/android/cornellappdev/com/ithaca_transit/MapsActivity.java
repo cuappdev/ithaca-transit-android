@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.FragmentManager;
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
@@ -22,12 +23,15 @@ import android.text.TextWatcher;
 import android.text.style.ForegroundColorSpan;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewTreeObserver;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -85,6 +89,7 @@ public final class MapsActivity extends AppCompatActivity implements OnMapReadyC
     private FloatingSearchView mSearchView;
     private NavigationView mHomeMenu;
 
+    private RelativeLayout mMapsRoot;
     private Button mRouteIndicator;
     private ConstraintLayout mRouteSwitchLayout;
     private EditText mRouteStartInput;
@@ -92,9 +97,10 @@ public final class MapsActivity extends AppCompatActivity implements OnMapReadyC
     private ImageButton mRouteSwitchButton;
     private ListView mRouteSwitchList;
     private RouteSwitcherAdapter mRouteSwitcherAdapter;
-    private int focusedView;
     private Place startLoc;
     private Place endLoc;
+    private int focusedInput;
+    private boolean routeSwitcherOpen;
 
     private Handler handler = new Handler(Looper.getMainLooper() /*UI thread*/);
     private Runnable workRunnable;
@@ -143,18 +149,101 @@ public final class MapsActivity extends AppCompatActivity implements OnMapReadyC
         setUpMenu();
     }
 
-    public void onHeaderClick(View view) {
-//        Intent goHome = new Intent(getBaseContext(), MapsActivity.class);
-//        startActivity(goHome);
-    }
 
     private void setUpRouteSwitcher() {
-        mRouteIndicator = this.findViewById(R.id.route_indicator);
+        mMapsRoot = this.findViewById(R.id.maps_activity);
+        mRouteIndicator = this.findViewById(R.id.route_indicator); //The Route Display Button
         mRouteSwitchLayout = this.findViewById(R.id.route_switcher_layout);
         mRouteStartInput = this.findViewById(R.id.startloc_input);
         mRouteEndInput = this.findViewById(R.id.endloc_input);
-        mRouteSwitchButton = this.findViewById(R.id.swap_destination);
+        mRouteSwitchButton = this.findViewById(R.id.swap_destination); //The Button to Swap Route Directions
         mRouteSwitchList = this.findViewById(R.id.route_switcher_list);
+
+        mMapsRoot.getViewTreeObserver().addOnGlobalLayoutListener(
+                new ViewTreeObserver.OnGlobalLayoutListener() {
+                    @Override
+                    public void onGlobalLayout() {
+                        Rect r = new Rect();
+                        mMapsRoot.getWindowVisibleDisplayFrame(r);
+                        int screenHeight = mMapsRoot.getRootView().getHeight();
+
+                        int keypadHeight = screenHeight - r.bottom;
+
+                        if (keypadHeight < screenHeight * 0.15 && routeSwitcherOpen) {
+                            routeSwitcherOpen = false;
+                            if (startLoc.getPlaceID() == null) {
+                                if (endLoc.getPlaceID() == null) {
+                                    launchRoute(startLoc.toString(),
+                                            endLoc.toString(), startLoc.getName(),
+                                            endLoc.getName());
+                                    mRouteIndicator.setVisibility(View.VISIBLE);
+                                    mRouteSwitchLayout.setVisibility(View.GONE);
+                                } else {
+                                    FetchPlaceRequest request = FetchPlaceRequest.builder(
+                                            endLoc.toString(),
+                                            Arrays.asList(
+                                                    com.google.android.libraries.places.api.model.Place
+                                                            .Field.LAT_LNG)).build();
+
+                                    placesClient.fetchPlace(request).addOnSuccessListener(
+                                            (response) -> {
+                                                launchRoute(startLoc.toString(),
+                                                        response.getPlace().getLatLng().latitude
+                                                                + ", "
+                                                                + response.getPlace().getLatLng().longitude,
+                                                        startLoc.getName(), endLoc.getName());
+                                                mRouteIndicator.setVisibility(View.VISIBLE);
+                                                mRouteSwitchLayout.setVisibility(View.GONE);
+                                            });
+                                }
+                            } else {
+                                FetchPlaceRequest requestStart = FetchPlaceRequest.builder(
+                                        startLoc.toString(),
+                                        Arrays.asList(
+                                                com.google.android.libraries.places.api.model.Place
+                                                        .Field.LAT_LNG)).build();
+
+                                placesClient.fetchPlace(requestStart).addOnSuccessListener(
+                                        (responseStart) -> {
+                                            if (endLoc.getPlaceID() == null) {
+                                                launchRoute(
+                                                        responseStart.getPlace().getLatLng().latitude
+                                                                + ", "
+                                                                + responseStart.getPlace().getLatLng().longitude,
+                                                        endLoc.toString(), startLoc.getName(),
+                                                        endLoc.getName());
+                                                mRouteIndicator.setVisibility(View.VISIBLE);
+                                                mRouteSwitchLayout.setVisibility(View.GONE);
+                                            } else {
+                                                FetchPlaceRequest requestEnd =
+                                                        FetchPlaceRequest.builder(endLoc.toString(),
+                                                                Arrays.asList(
+                                                                        com.google.android.libraries.places.api.model.Place
+                                                                                .Field.LAT_LNG)).build();
+
+                                                placesClient.fetchPlace(
+                                                        requestEnd).addOnSuccessListener(
+                                                        (responseEnd) -> {
+                                                            launchRoute(
+                                                                    responseStart.getPlace().getLatLng().latitude
+                                                                            + ", "
+                                                                            + responseStart.getPlace().getLatLng().longitude,
+                                                                    responseEnd.getPlace().getLatLng().latitude
+                                                                            + ", "
+                                                                            + responseEnd.getPlace().getLatLng().longitude,
+                                                                    startLoc.getName(),
+                                                                    endLoc.getName());
+                                                            mRouteIndicator.setVisibility(
+                                                                    View.VISIBLE);
+                                                            mRouteSwitchLayout.setVisibility(
+                                                                    View.GONE);
+                                                        });
+                                            }
+                                        });
+                            }
+                        }
+                    }
+                });
 
         mRouteSwitcherAdapter = new RouteSwitcherAdapter(this, new ArrayList<Place>());
 
@@ -162,7 +251,8 @@ public final class MapsActivity extends AppCompatActivity implements OnMapReadyC
         mRouteSwitchList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                switch (focusedView) {
+                // Checks whether the user is focused on the Start or End inputs
+                switch (focusedInput) {
                     case 1: {
                         startLoc = (Place) adapterView.getItemAtPosition(i);
                         mRouteStartInput.setText("");
@@ -199,6 +289,15 @@ public final class MapsActivity extends AppCompatActivity implements OnMapReadyC
                 mRouteEndInput.setHint(endLoc.getName());
                 mRouteIndicator.setVisibility(View.GONE);
                 mRouteSwitchLayout.setVisibility(View.VISIBLE);
+                mRouteStartInput.requestFocus();
+                InputMethodManager imm = (InputMethodManager) MapsActivity.this.getSystemService(
+                        Context.INPUT_METHOD_SERVICE);
+                imm.toggleSoftInput(InputMethodManager.SHOW_FORCED,
+                        InputMethodManager.HIDE_IMPLICIT_ONLY);
+                handler.removeCallbacks(workRunnable);
+                workRunnable = () -> routeSwitcherOpen = true;
+                //Delay Setting Boolean
+                handler.postDelayed(workRunnable, 100);
             }
         });
         mRouteStartInput.addTextChangedListener(new TextWatcher() {
@@ -208,11 +307,13 @@ public final class MapsActivity extends AppCompatActivity implements OnMapReadyC
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                focusedView = 1;
+                focusedInput = 1;
                 handler.removeCallbacks(workRunnable);
                 workRunnable = () -> routeSwitcherAutocomplete(charSequence.toString(),
                         mRouteSwitcherAdapter);
-                handler.postDelayed(workRunnable, 250 /*delay*/);
+                //Delay Requesting Autocomplete
+                handler.postDelayed(workRunnable, 250);
+                mRouteStartInput.requestFocus();
             }
 
             @Override
@@ -226,11 +327,13 @@ public final class MapsActivity extends AppCompatActivity implements OnMapReadyC
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                focusedView = 2;
+                focusedInput = 2;
                 handler.removeCallbacks(workRunnable);
                 workRunnable = () -> routeSwitcherAutocomplete(charSequence.toString(),
                         mRouteSwitcherAdapter);
-                handler.postDelayed(workRunnable, 250 /*delay*/);
+                //Delay Requesting Autocomplete
+                handler.postDelayed(workRunnable, 250);
+                mRouteEndInput.requestFocus();
             }
 
             @Override
@@ -325,7 +428,8 @@ public final class MapsActivity extends AppCompatActivity implements OnMapReadyC
             public void onSearchTextChanged(String oldQuery, String newQuery) {
                 handler.removeCallbacks(workRunnable);
                 workRunnable = () -> autoCompleteRequest(newQuery);
-                handler.postDelayed(workRunnable, 250 /*delay*/);
+                //Delay Requesting Autocomplete
+                handler.postDelayed(workRunnable, 250);
             }
         });
 
@@ -380,7 +484,7 @@ public final class MapsActivity extends AppCompatActivity implements OnMapReadyC
                         if (dest.getPlaceID() == null) {
                             launchRoute(MapsActivity.this.lastLocation.getLatitude() +
                                             ", " + MapsActivity.this.lastLocation.getLongitude(),
-                                    dest.toString(), dest.getName());
+                                    dest.toString(), "Current Location", dest.getName());
                         } else {
                             FetchPlaceRequest request = FetchPlaceRequest.builder(dest.toString(),
                                     Arrays.asList(
@@ -393,6 +497,7 @@ public final class MapsActivity extends AppCompatActivity implements OnMapReadyC
                                                 .getLongitude(),
                                         response.getPlace().getLatLng().latitude + ", "
                                                 + response.getPlace().getLatLng().longitude,
+                                        "Current Location",
                                         dest.getName());
                             });
                         }
@@ -407,7 +512,7 @@ public final class MapsActivity extends AppCompatActivity implements OnMapReadyC
     }
 
     //Retrieves Route info from backend, sends it to MapPresenter
-    private void launchRoute(String start, String end, String name) {
+    private void launchRoute(String start, String end, String name_start, String name_end) {
 
         Calendar calendar = Calendar.getInstance(
                 TimeZone.getTimeZone("\"America/NewYork\""));
@@ -421,7 +526,7 @@ public final class MapsActivity extends AppCompatActivity implements OnMapReadyC
             searchJSON.put("start", start);
             searchJSON.put("end", end);
             searchJSON.put("arriveBy", String.valueOf(false));
-            searchJSON.put("destinationName", name);
+            searchJSON.put("destinationName", name_end);
             searchJSON.put("time", String.valueOf(secondsEpoch));
         } catch (JSONException e) {
             e.printStackTrace();
@@ -449,19 +554,21 @@ public final class MapsActivity extends AppCompatActivity implements OnMapReadyC
                         public void run() {
                             if (optRoute != null) {
                                 getController().drawRoutes(optRoute, sectionedRoutes);
-                                getSearchView().setSearchText(name);
+                                getSearchView().setSearchText(name_end);
                                 getSearchView().clearSearchFocus();
                                 getSearchView().setVisibility(View.GONE);
                                 mRouteIndicator.setVisibility(View.VISIBLE);
-                                String s = "Current Location  >  " + (name.length() > 20 ?
-                                        name.substring(0, 17) + "..." : name);
+                                String s = (name_start.length() > 20 ?
+                                        name_start.substring(0, 17) + "..." : name_start) + "  >  "
+                                        + (name_end.length() > 20 ?
+                                        name_end.substring(0, 17) + "..." : name_end);
                                 SpannableString route =
                                         new SpannableString(
                                                 s.substring(0, Math.min(s.length(), 42)));
                                 route.setSpan(new ForegroundColorSpan(Color.parseColor("#08a0e0")),
                                         0, 19, 0);
-                                // make "Here" (characters 6 to 10) Blue
-                                route.setSpan(new ForegroundColorSpan(Color.BLACK), 20,
+                                route.setSpan(new ForegroundColorSpan(Color.BLACK),
+                                        Math.min(name_start.length(), 20),
                                         route.length(), 0);
                                 mRouteIndicator.setText(route, TextView.BufferType.SPANNABLE);
                                 mRouteIndicator.bringToFront();
