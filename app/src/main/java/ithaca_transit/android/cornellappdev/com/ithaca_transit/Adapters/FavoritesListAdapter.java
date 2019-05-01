@@ -3,6 +3,7 @@ package ithaca_transit.android.cornellappdev.com.ithaca_transit.Adapters;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView.Adapter;
 import android.support.v7.widget.RecyclerView.ViewHolder;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -137,8 +138,9 @@ public final class FavoritesListAdapter extends Adapter {
 
         public void onClick(@NotNull View v) {
             int adapterPosition = this.getAdapterPosition();
+            Log.d("FUCK THIS", mFavList.toString());
             FavoritesListAdapter.this.mListAdapterOnClickHandler.onFavoriteClick(adapterPosition,
-                    FavoritesListAdapter.this.mFavList);
+                    mFavList);
         }
 
         public TextAdapterViewHolder(@NotNull View itemView) {

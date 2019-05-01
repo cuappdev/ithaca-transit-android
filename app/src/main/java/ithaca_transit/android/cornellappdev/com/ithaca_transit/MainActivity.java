@@ -11,6 +11,7 @@ import android.view.View;
 
 
 import com.arlib.floatingsearchview.FloatingSearchView;
+import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -24,10 +25,12 @@ import ithaca_transit.android.cornellappdev.com.ithaca_transit.Presenters.MapsPr
 public class MainActivity extends AppCompatActivity implements FavoritesListAdapter.TextAdapterOnClickHandler,
         SearchFragment.OnSearchFragmentListener{
     private RecyclerView mRecView;
+    private SlidingUpPanelLayout mSlidingPanel;
     private MapFragment mapFragment;
     private FavoritesListAdapter favoriteListAdapter;
     private SearchFragment mSearchFragment;
     public static MapsPresenter mMapsPresenter;
+    private OptionsFragment mOptionsFragment;
 
     //TODO: move to presenter
     // Hardcoded data for favorites
@@ -38,6 +41,8 @@ public class MainActivity extends AppCompatActivity implements FavoritesListAdap
     private Favorite favorite2 = new Favorite(dickson, duffield);
     private Favorite favorite3 = new Favorite(duffield, dickson);
     private static ArrayList<Favorite> favoriteList = new ArrayList<Favorite>();
+    FragmentManager manager = getSupportFragmentManager();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,8 +52,8 @@ public class MainActivity extends AppCompatActivity implements FavoritesListAdap
         mapFragment = new MapFragment();
         mMapsPresenter = new MapsPresenter();
         mSearchFragment = new SearchFragment();
+        mSlidingPanel = findViewById(R.id.sliding_panel);
 
-        FragmentManager manager = getSupportFragmentManager();
         FragmentTransaction ft = manager.beginTransaction();
         ft.replace(R.id.map_container, mapFragment, "");
         ft.replace(R.id.search_view_container, mSearchFragment, "");
@@ -86,6 +91,13 @@ public class MainActivity extends AppCompatActivity implements FavoritesListAdap
     public void onFavoriteClick(int position, @NotNull ArrayList<Favorite> list) {
         mapFragment.drawRoutes(favoriteListAdapter.getOptimalRoutes()[position],
                 favoriteListAdapter.getmAllRoutesToFavorites().get(position));
+        mSlidingPanel.setPanelHeight(300);
+
+        mOptionsFragment = new OptionsFragment();
+        FragmentTransaction ft = manager.beginTransaction();
+        ft.replace(R.id.options_container, mOptionsFragment, "");
+        ft.commitAllowingStateLoss();
+
     }
 
     @Override

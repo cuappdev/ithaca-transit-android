@@ -103,13 +103,13 @@ public final class MapsActivity extends AppCompatActivity implements OnMapReadyC
         placesClient = Places.createClient(this);
         fusedLocationClient = LocationServices.getFusedLocationProviderClient((Activity) this);
         FragmentManager manager = this.getFragmentManager();
-        mController = new MapsPresenter(this, config);
+//        mController = new MapsPresenter(this, config);
 
         SupportMapFragment mapFragment =
                 (SupportMapFragment) this.getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync((OnMapReadyCallback) this);
         mRecView = this.findViewById(R.id.recycler_view_maps);
-        mController.mRecView = mRecView;
+//        mController.mRecView = mRecView;
 
 //
 //        mHomeView = this.findViewById(R.id.home_view);

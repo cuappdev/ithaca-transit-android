@@ -19,21 +19,19 @@ import ithaca_transit.android.cornellappdev.com.ithaca_transit.R;
 
 public class SectionAdapter extends StatelessSection {
     private final Context mContext;
-    private final MapsPresenter mMapsPresenter;
     private int mCount;
     private Route[] mRoutesList;
     private String mTitle; // Boarding Soon, From Stops, By Walking
     private String mType; //either optimal, fromStops, boardingSoon, or byWalking section
 
 
-    public SectionAdapter(Context context, MapsPresenter clickHandler,
+    public SectionAdapter(Context context,
             Route[] list, String type, String title) {
         super(SectionParameters.builder()
                 .itemResourceId(R.layout.route_card)
                 .headerResourceId(R.layout.header_section)
                 .build());
         mContext = context;
-        mMapsPresenter = clickHandler;
         mCount = list.length;
         mRoutesList = list;
         mTitle = title;
@@ -63,12 +61,12 @@ public class SectionAdapter extends StatelessSection {
         ItemHolder holder2 = (ItemHolder) holder;
         holder2.duration.setText(routeModel.getDuration());
         holder2.route_description.setText(routeModel.getDescription());
-        holder2.rootView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mMapsPresenter.onRouteClick(position, mRoutesList);
-            }
-        });
+//        holder2.rootView.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                mMapsPresenter.onRouteClick(position, mRoutesList);
+//            }
+//        });
         holder2.directions.setHasFixedSize(true);
         LinearLayoutManager layoutManager = new LinearLayoutManager(mContext,
                 LinearLayoutManager.VERTICAL, false);

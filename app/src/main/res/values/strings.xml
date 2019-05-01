@@ -33,12 +33,17 @@
     <string name="get_method_allstops">allstops</string>
     <string name="home_menu_title">Ithaca Transit</string>
     <string name="query_delay"><![CDATA[delay?&stopID=%d&tripID=%d]]></string>
-    <string name="query_route"><![CDATA[route?&start=%s&end=%s&time=%d&arriveBy=%b&destinationName=%s]]></string>
+    <string name="query_route">
+        <![CDATA[route?&start=%s&end=%s&time=%d&arriveBy=%b&destinationName=%s]]></string>
     <string name="query_search">search</string>
     <string name="search_hint">Where to?</string>
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
     <string name="title_activity_maps">Map</string>
+    <string name="google_maps_key">AIzaSyDnnP6flqM2O-E6om1mJVMM022Tfng4zZE</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
 

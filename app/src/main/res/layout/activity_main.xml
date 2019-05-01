@@ -3,12 +3,13 @@
 <com.sothree.slidinguppanel.SlidingUpPanelLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/maps_activity"
+    android:id="@+id/sliding_panel"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="bottom"
     app:umanoDragView="@id/dragView"
-    app:umanoPanelHeight="100dp"
+    app:umanoPanelHeight="0dp"
+    app:umanoOverlay="true"
     app:umanoScrollableView="@id/nearby_stops_routes"
     app:umanoShadowHeight="5dp">
 
@@ -39,7 +40,11 @@
                     android:layout_height="wrap_content"
                     android:background="@color/blue"
                     android:clickable="true">
-        <include layout="@layout/route_options_extended_fragment"/>
+        <FrameLayout
+            android:id="@+id/options_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        </FrameLayout>
     </RelativeLayout>
 
 </com.sothree.slidinguppanel.SlidingUpPanelLayout>
