@@ -11,9 +11,6 @@ import android.widget.TextView;
 
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.Route;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Singleton.Repository;
-import kotlin.jvm.internal.Intrinsics;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
@@ -22,11 +19,11 @@ import java.util.Date;
 
 
 public final class OptionsFragment extends Fragment {
-    @NotNull
+
     public TextView allRoutesText;
 
-    @Nullable
-    public View onCreateView(@Nullable LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.route_options_holder, container, false);
         ((TextView)view.findViewById(R.id.allRoutes)).setOnClickListener((new OnClickListener() {
@@ -42,7 +39,7 @@ public final class OptionsFragment extends Fragment {
         return view;
     }
 
-    @NotNull
+
     public final TextView getAllRoutesText() {
         return allRoutesText;
     }

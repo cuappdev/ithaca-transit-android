@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import org.jetbrains.annotations.NotNull;
+
 
 import java.util.ArrayList;
 
@@ -65,7 +65,7 @@ public class DotsListAdapter extends RecyclerView.Adapter {
             return rootView;
         }
 
-        public ImageViewHolder(@NotNull View itemView) {
+        public ImageViewHolder(View itemView) {
             super(itemView);
             this.iconImage = (ImageView) itemView.findViewById(
                     R.id.icon_image);

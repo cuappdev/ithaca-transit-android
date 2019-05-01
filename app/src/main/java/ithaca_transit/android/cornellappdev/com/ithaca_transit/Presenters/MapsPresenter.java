@@ -25,7 +25,7 @@ import com.google.android.gms.maps.model.PatternItem;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
-import org.jetbrains.annotations.NotNull;
+
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -92,7 +92,7 @@ public final class MapsPresenter implements FavoritesListAdapter.TextAdapterOnCl
             borderMap = new HashMap<ArrayList<Polyline>, ArrayList<Polyline>>();
 
 
-    public MapsPresenter(@NotNull FragmentManager manager, Context context,
+    public MapsPresenter(FragmentManager manager, Context context,
             Endpoint.Config config) {
         super();
         mContext = context;
@@ -118,7 +118,7 @@ public final class MapsPresenter implements FavoritesListAdapter.TextAdapterOnCl
         favoriteListAdapter.notifyDataSetChanged();
     }
 
-    public void onFavoriteClick(int position, @NotNull ArrayList<Favorite> list) {
+    public void onFavoriteClick(int position, ArrayList<Favorite> list) {
         drawRoutes(favoriteListAdapter.getOptimalRoutes()[position],
                 favoriteListAdapter.getmAllRoutesToFavorites().get(position));
     }

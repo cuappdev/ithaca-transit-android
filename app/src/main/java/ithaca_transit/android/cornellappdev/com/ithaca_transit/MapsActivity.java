@@ -3,6 +3,9 @@ package ithaca_transit.android.cornellappdev.com.ithaca_transit;
 import android.app.Activity;
 import android.app.FragmentManager;
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
@@ -124,16 +127,13 @@ public final class MapsActivity extends AppCompatActivity implements OnMapReadyC
         setUpMenu();
     }
 
-    public void onHeaderClick(View view) {
-//        Intent goHome = new Intent(getBaseContext(), MapsActivity.class);
-//        startActivity(goHome);
-    }
-
     private void setUpMenu() {
         mHomeView.addDrawerListener(
             new DrawerLayout.DrawerListener() {
                 @Override
                 public void onDrawerSlide(View drawerView, float slideOffset) {
+                    if (slideOffset > 0.0) { mRecView.setVisibility(View.GONE); }
+                    if (slideOffset < 0.1) { mRecView.setVisibility(View.VISIBLE); }
                     if (slideOffset < 0.4) { mSearchView.setLeftMenuOpen(false); }
                 }
 
@@ -141,34 +141,57 @@ public final class MapsActivity extends AppCompatActivity implements OnMapReadyC
                 public void onDrawerOpened(View drawerView) { mSearchView.setLeftMenuOpen(true); }
 
                 @Override
-                public void onDrawerClosed(View drawerView) {}
+                public void onDrawerClosed(View drawerView) { mRecView.setVisibility(View.VISIBLE); }
 
                 @Override
                 public void onDrawerStateChanged(int newState) {}
             }
         );
 
-        mHomeMenu.setNavigationItemSelectedListener(
-            new NavigationView.OnNavigationItemSelectedListener() {
-                @Override
-                public boolean onNavigationItemSelected(MenuItem item) {
-                    mHomeView.closeDrawer(mHomeMenu);
-                    return true;
+        mHomeMenu.setNavigationItemSelectedListener((MenuItem item) -> {
+                switch (item.toString()) {
+                    case "About Us":
+                        Intent moveToAbout = new Intent(MapsActivity.this, AboutActivity.class);
+                        startActivity(moveToAbout);
+                        break;
+                    case "Send Feedback":
+                        sendFeedback();
+                        break;
+                    default:
+                        System.out.println("Not handled");
                 }
-            }
-        );
+                mHomeView.closeDrawer(mHomeMenu);
+                return true;
+        });
+    }
+
+    private void sendFeedback() {
+        Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
+        String version = "Version not found.";
+
+        try {
+            PackageInfo pInfo = this.getPackageManager().getPackageInfo(getPackageName(), 0);
+            version = pInfo.versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        emailIntent.setType("message/rfc822");
+        emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, new String[]{"ithacatransit@cornellappdev.com"});
+        emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Ithaca Transit Android Feedback " + version);
+        emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, "");
+
+        startActivity(Intent.createChooser(emailIntent, "Send mail..."));
     }
 
     private void setUpSearch() {
         mSearchView = (FloatingSearchView) findViewById(R.id.search_view);
-        mSearchView.setOnQueryChangeListener(new FloatingSearchView.OnQueryChangeListener() {
-            @Override
-            public void onSearchTextChanged(String oldQuery, String newQuery) {
+        mSearchView.setOnQueryChangeListener((String oldQuery, String newQuery) -> {
                 handler.removeCallbacks(workRunnable);
                 workRunnable = () -> autoCompleteRequest(newQuery);
                 handler.postDelayed(workRunnable, 250 /*delay*/);
             }
-        });
+        );
       
         mSearchView.setOnLeftMenuClickListener(new FloatingSearchView.OnLeftMenuClickListener() {
             @Override
@@ -178,38 +201,33 @@ public final class MapsActivity extends AppCompatActivity implements OnMapReadyC
             public void onMenuClosed() { mHomeView.closeDrawer(mHomeMenu); }
         });
 
-        mSearchView.setOnBindSuggestionCallback(
-                new SearchSuggestionsAdapter.OnBindSuggestionCallback() {
-                    @Override
-                    public void onBindSuggestion(View suggestionView, ImageView leftIcon,
-                            TextView textView, SearchSuggestion item, int itemPosition) {
-                        LocationAutocomplete suggestion = (LocationAutocomplete) item;
+        mSearchView.setOnBindSuggestionCallback((View suggestionView, ImageView leftIcon,
+                            TextView textView, SearchSuggestion item, int itemPosition) -> {
+                LocationAutocomplete suggestion = (LocationAutocomplete) item;
 
-                        if (suggestion.getPlace().getPlaceID() == null) {
-                            leftIcon.setImageDrawable(ResourcesCompat.getDrawable(getResources(),
-                                    R.drawable.ic_bus_stop, null));
-                            textView.setTextColor(Color.parseColor("#111111"));
-                            textView.setTextSize(15f);
-                        } else {
-                            leftIcon.setImageDrawable(ResourcesCompat.getDrawable(getResources(),
-                                    R.drawable.ic_loc_stop, null));
-                            Util.setIconColor(leftIcon, Color.parseColor("#cacaca"));
-                            String text = "<font color='black'>" + suggestion.getPlace().getName()
-                                    + "</font>"
-                                    + "<br/>" + suggestion.getPlace().getDetail();
-                            textView.setText(Html.fromHtml(text), TextView.BufferType.SPANNABLE);
-                            textView.setTextSize(15f);
-                        }
-                    }
-                });
+                if (suggestion.getPlace().getPlaceID() == null) {
+                    leftIcon.setImageDrawable(ResourcesCompat.getDrawable(getResources(),
+                            R.drawable.ic_bus_stop, null));
+                    textView.setTextColor(Color.parseColor("#111111"));
+                    textView.setTextSize(15f);
+                } else {
+                    leftIcon.setImageDrawable(ResourcesCompat.getDrawable(getResources(),
+                            R.drawable.ic_loc_stop, null));
+                    Util.setIconColor(leftIcon, Color.parseColor("#cacaca"));
+                    String text = "<font color='black'>" + suggestion.getPlace().getName()
+                            + "</font>"
+                            + "<br/>" + suggestion.getPlace().getDetail();
+                    textView.setText(Html.fromHtml(text), TextView.BufferType.SPANNABLE);
+                    textView.setTextSize(15f);
+                }
+            }
+        );
 
         mSearchView.setOnSearchListener(new FloatingSearchView.OnSearchListener() {
             @Override
             public void onSuggestionClicked(SearchSuggestion searchSuggestion) {
                 final Place dest = ((LocationAutocomplete) searchSuggestion).getPlace();
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
+                new Thread(() -> {
                         if (dest.getPlaceID() == null) {
                             launchRoute(MapsActivity.this.lastLocation.getLatitude() +
                                             ", " + MapsActivity.this.lastLocation.getLongitude(),
@@ -230,7 +248,7 @@ public final class MapsActivity extends AppCompatActivity implements OnMapReadyC
                             });
                         }
                     }
-                }).start();
+                ).start();
             }
 
             @Override
@@ -277,9 +295,7 @@ public final class MapsActivity extends AppCompatActivity implements OnMapReadyC
                     SectionedRoutes sectionedRoutes = response.getData();
                     Route optRoute = sectionedRoutes.getOptRoute();
 
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
+                    runOnUiThread(() -> {
                             if (optRoute != null) {
                                 getController().drawRoutes(optRoute, sectionedRoutes);
                                 getSearchView().setSearchText(name);
@@ -290,7 +306,7 @@ public final class MapsActivity extends AppCompatActivity implements OnMapReadyC
                                         Toast.LENGTH_SHORT).show();
                             }
                         }
-                    });
+                    );
                 });
     }
 
@@ -333,23 +349,18 @@ public final class MapsActivity extends AppCompatActivity implements OnMapReadyC
                     wrappedResults.add(new LocationAutocomplete(p));
                 }
             }
-            mSearchView.post(new Runnable() {
-                public void run() {
-                    mSearchView.swapSuggestions(wrappedResults);
-                }
-            });
+            mSearchView.post(() -> mSearchView.swapSuggestions(wrappedResults));
         });
     }
 
     private final void setMapLongClick(final GoogleMap map) {
-        map.setOnMapLongClickListener((new OnMapLongClickListener() {
-            public final void onMapLongClick(LatLng latLng) {
+        map.setOnMapLongClickListener((LatLng latLng) -> {
                 String snippet = String.format(Locale.getDefault(),
                         "Lat: %1$.5f, Long: %2$.5f", latLng.latitude, latLng.longitude);
                 map.addMarker((new MarkerOptions()).position(latLng)
                         .title(MapsActivity.this.getString(R.string.app_name)).snippet(snippet));
             }
-        }));
+        );
     }
 
     /**

@@ -1,8 +1,5 @@
 package ithaca_transit.android.cornellappdev.com.ithaca_transit.Models;
 
-
-import org.jetbrains.annotations.NotNull;
-
 import java.util.Date;
 
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Enums.BusDataType;
@@ -32,11 +29,11 @@ public final class Bus {
         return this.routeID != null ? Integer.parseInt(this.routeID) : 0;
     }
 
-    public Bus(@NotNull BusDataType dataType, int delay, @NotNull String destination,
-                       int deviation, @NotNull String direction, @NotNull String displayStatus,
-                       int gpsStatus, int heading, @NotNull String lastStop, @NotNull Date lastUpdated,
-                       double latitude, double longitude, int name, @NotNull String opStatus, @NotNull String routeID,
-                       int runID, int speed, @NotNull String tripID, int vehicleID) {
+    public Bus(BusDataType dataType, int delay, String destination,
+                       int deviation, String direction, String displayStatus,
+                       int gpsStatus, int heading, String lastStop, Date lastUpdated,
+                       double latitude, double longitude, int name, String opStatus, String routeID,
+                       int runID, int speed, String tripID, int vehicleID) {
 
         super();
         this.direction = direction;
