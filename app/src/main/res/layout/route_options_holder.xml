@@ -5,6 +5,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:gravity="bottom"
+    app:umanoOverlay="true"
     app:umanoPanelHeight="300dp"
     app:umanoShadowHeight="5dp"
     android:layout_height="wrap_content">

@@ -8,7 +8,7 @@
     android:layout_height="wrap_content"
     android:gravity="bottom"
     app:umanoDragView="@id/dragView"
-    app:umanoPanelHeight="0dp"
+    app:umanoPanelHeight="100dp"
     app:umanoScrollableView="@id/nearby_stops_routes"
     app:umanoShadowHeight="5dp">
 

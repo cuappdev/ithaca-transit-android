@@ -1,6 +1,7 @@
 package ithaca_transit.android.cornellappdev.com.ithaca_transit.Singleton;
 
 import android.content.Context;
+import android.location.Location;
 
 import com.google.android.gms.maps.GoogleMap;
 
@@ -16,6 +17,7 @@ public class Repository {
     private GoogleMap map;
     private Route selectedRoute;
     private SectionedRoutes routesList;
+    private Location lastLocation;
 
     public static Repository getInstance() {
         return sRepoInstance;
@@ -51,5 +53,13 @@ public class Repository {
 
     public void setSelectedRoute(Route selectedRoute) {
         this.selectedRoute = selectedRoute;
+    }
+
+    public void setLastLocation(Location loc) {
+        lastLocation = loc;
+    }
+
+    public Location getLastLocation() {
+        return lastLocation;
     }
 }

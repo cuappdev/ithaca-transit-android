@@ -10,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 
+import com.arlib.floatingsearchview.FloatingSearchView;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -18,11 +19,15 @@ import java.util.ArrayList;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Adapters.FavoritesListAdapter;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.Favorite;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.Place;
+import ithaca_transit.android.cornellappdev.com.ithaca_transit.Presenters.MapsPresenter;
 
-public class MainActivity extends AppCompatActivity implements FavoritesListAdapter.TextAdapterOnClickHandler{
+public class MainActivity extends AppCompatActivity implements FavoritesListAdapter.TextAdapterOnClickHandler,
+        SearchFragment.OnSearchFragmentListener{
     private RecyclerView mRecView;
     private MapFragment mapFragment;
     private FavoritesListAdapter favoriteListAdapter;
+    private SearchFragment mSearchFragment;
+    public static MapsPresenter mMapsPresenter;
 
     //TODO: move to presenter
     // Hardcoded data for favorites
@@ -40,10 +45,13 @@ public class MainActivity extends AppCompatActivity implements FavoritesListAdap
         setContentView(R.layout.activity_main);
 
         mapFragment = new MapFragment();
+        mMapsPresenter = new MapsPresenter();
+        mSearchFragment = new SearchFragment();
 
         FragmentManager manager = getSupportFragmentManager();
         FragmentTransaction ft = manager.beginTransaction();
         ft.replace(R.id.map_container, mapFragment, "");
+        ft.replace(R.id.search_view_container, mSearchFragment, "");
         ft.commitAllowingStateLoss();
 
         //TODO: move to presenter
@@ -78,5 +86,10 @@ public class MainActivity extends AppCompatActivity implements FavoritesListAdap
     public void onFavoriteClick(int position, @NotNull ArrayList<Favorite> list) {
         mapFragment.drawRoutes(favoriteListAdapter.getOptimalRoutes()[position],
                 favoriteListAdapter.getmAllRoutesToFavorites().get(position));
+    }
+
+    @Override
+    public void changeRoutes(String start, String end, String name) {
+        mapFragment.launchRoute(start, end, name);
     }
 }

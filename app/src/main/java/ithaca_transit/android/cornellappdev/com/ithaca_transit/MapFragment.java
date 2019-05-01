@@ -63,9 +63,9 @@ public class MapFragment extends Fragment implements GoogleMap.OnPolylineClickLi
     private FusedLocationProviderClient fusedLocationClient;
     private PlacesClient placesClient;
     private Location lastLocation;
-    public MapsPresenter mController;
     private GoogleMap mMap;
     private Context context;
+    private MapsPresenter mMapsPresenter = new MapsPresenter();
     private BusStop[] mStopsList;
     // Maps a polyline to its parent route
     private HashMap<ArrayList<Polyline>, Route>
@@ -84,7 +84,6 @@ public class MapFragment extends Fragment implements GoogleMap.OnPolylineClickLi
     public MapFragment() {
         // Required empty public constructor
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -105,7 +104,6 @@ public class MapFragment extends Fragment implements GoogleMap.OnPolylineClickLi
                 getResources().getString(R.string.google_maps_key));
         placesClient = Places.createClient(context);
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(context);
-        mController = new MapsPresenter(context, config);
         SupportMapFragment mapFragment =
                 (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(new OnMapReadyCallback() {
@@ -120,7 +118,7 @@ public class MapFragment extends Fragment implements GoogleMap.OnPolylineClickLi
     }
 
     //Retrieves Route info from backend, sends it to MapPresenter
-    private void launchRoute(String start, String end, String name) {
+    public void launchRoute(String start, String end, String name) {
 
         Calendar calendar = Calendar.getInstance(
                 TimeZone.getTimeZone("\"America/NewYork\""));
@@ -186,6 +184,7 @@ public class MapFragment extends Fragment implements GoogleMap.OnPolylineClickLi
                         public void onSuccess(Location location) {
                             if (location != null) {
                                 lastLocation = location;
+                                mMapsPresenter.setLastLocation(lastLocation);
                                 LatLng currentLatLng = new LatLng(lastLocation.getLatitude(),
                                         lastLocation.getLongitude());
                                 mMap.animateCamera(
@@ -379,7 +378,5 @@ public class MapFragment extends Fragment implements GoogleMap.OnPolylineClickLi
                         }
                     });
                 });
-
     }
-
 }
