@@ -1,14 +1,10 @@
 package ithaca_transit.android.cornellappdev.com.ithaca_transit.Models;
 
-import com.google.android.gms.common.util.ArrayUtils;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 import java.util.TimeZone;
 
 public class Route {
@@ -187,16 +183,20 @@ public class Route {
                     } else {
                         type = type + "arrive";
                     }
-                    Direction endBusPath = new Direction(0.0, lastStop, type);
+                    Direction endBusPath = new Direction(0.0, lastStop, type,
+                            directions[count].getRouteNumber());
                     truncatedDirections.add(endBusPath);
 
                     count = count + 2;
                 } else {
                     truncatedDirections.add(directions[count]);
-                    if (directions[count].getType().equals("depart")) {
+                    // If we have a transfer
+                    if (directions[count].getType().equals("depart") && count < directions.length - 2
+                            && directions[count + 1].getType().equals("depart")) {
                         int lastStopIdx = directions[count].getStops().length - 1;
                         String lastStop = directions[count].getStops()[lastStopIdx].getName();
-                        Direction endBusPath = new Direction(0.0, lastStop, "arrive");
+                        Direction endBusPath = new Direction(0.0, lastStop, "arrive",
+                                directions[count].getRouteNumber());
                         truncatedDirections.add(endBusPath);
                     }
                     count++;
@@ -246,11 +246,10 @@ public class Route {
                 detailDirections.add(direction);
 
                 // Adding last stop as its own direction
-                Direction arriveDirection = new Direction(0.0, lastStop.getName(),"arrive");
+                Direction arriveDirection = new Direction(0.0, lastStop.getName(), "arrive");
                 detailDirections.add(arriveDirection);
             }
         }
         return detailDirections;
     }
-
 }

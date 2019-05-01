@@ -129,7 +129,7 @@ public final class ExpandableListViewAdapter extends BaseExpandableListAdapter {
                 // Walking to bus
                 String walkString = "Walk to " + "<b>" + direction.getName() + "</b>";
                 directionType.setText(Html.fromHtml(walkString));
-                distance.setText(direction.getDistance() + " ft away");
+                distance.setText(direction.getDistance().intValue() + " ft away");
                 time.setText(getTime(direction.getStartTime()));
 
                 walkStartDot.setVisibility(View.VISIBLE);
@@ -140,7 +140,7 @@ public final class ExpandableListViewAdapter extends BaseExpandableListAdapter {
             } else {
                 // Walking to final destination
                 directionType.setText(direction.getName());
-                distance.setText(direction.getDistance() + " ft away");
+                distance.setText(direction.getDistance().intValue() + " ft away");
                 time.setText(getTime(direction.getEndTime()));
 
                 walkEndDot.setVisibility(View.VISIBLE);

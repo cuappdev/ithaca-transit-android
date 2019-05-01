@@ -91,7 +91,7 @@ public class SectionAdapter extends StatelessSection {
                 holder2.direction_destination_three.setText(routeDirections.get(2).getName());
                 if (routeDirections.get(2).getType().equals("walk")) {
                     holder2.direction_distance_three.setText(
-                            routeDirections.get(2).getDistance() + " ft");
+                            routeDirections.get(2).getDistance().intValue() + " ft");
 
                 }
             }
@@ -99,7 +99,7 @@ public class SectionAdapter extends StatelessSection {
                 holder2.direction_destination_four.setText(routeDirections.get(size - 1).getName());
                 if (routeDirections.get(size - 1).getType().equals("walk")) {
                     holder2.direction_distance_four.setText(
-                    routeDirections.get(size - 1).getDistance() + " ft");
+                    routeDirections.get(size - 1).getDistance().intValue() + " ft");
                 }
             }
         }
