@@ -404,37 +404,38 @@ public class MapFragment extends Fragment implements GoogleMap.OnPolylineClickLi
         drawSelectedRoute();
         drawWalkRoute();
 
+        // Code below causes the app to stop responding (without giving clear error)
+
         // Check to see if route invovles buses, if so, track the first bus
-        if (!Repository.getInstance().getSelectedRoute().isWalkOnlyRoute()) {
-            ArrayList<Direction> directionArrayList =
-                    Repository.getInstance().getSelectedRoute().getBusInfo();
+//        if (!Repository.getInstance().getSelectedRoute().isWalkOnlyRoute()) {
+//            ArrayList<Direction> directionArrayList =
+//                    Repository.getInstance().getSelectedRoute().getBusInfo();
+//
+//            // For now, only track first bus
+//            int dirCount = 0;
+//            Direction direction = directionArrayList.get(dirCount);
+//            ScheduledExecutorService scheduledExecutorService =
+//                    Executors.newSingleThreadScheduledExecutor();
+//            Runnable task = new Runnable() {
+//                @Override
+//                public void run() {
+//                    updateBusLocation(direction);
+//                }
+//            };
+//
+//            int initDelay = 0;
+//            int updatePeriod = 5;
+//            scheduledExecutorService.scheduleAtFixedRate(task, initDelay, updatePeriod,
+//                    TimeUnit.SECONDS);
+//        }
 
-            // For now, only track first bus
-            int dirCount = 0;
-            Direction direction = directionArrayList.get(dirCount);
-            ScheduledExecutorService scheduledExecutorService =
-                    Executors.newSingleThreadScheduledExecutor();
-            Runnable task = new Runnable() {
-                @Override
-                public void run() {
-                    updateBusLocation(direction);
-                }
-            };
-
-            int initDelay = 0;
-            int updatePeriod = 5;
-            scheduledExecutorService.scheduleAtFixedRate(task, initDelay, updatePeriod,
-                    TimeUnit.SECONDS);
-        }
-
-        ((MainActivity) context).makeDetailViewFragment();
+//        ((MainActivity) context).makeDetailViewFragment();
     }
 
     /* Place markers on map
       Right now, the method displays all the bus stops (which gets messy)
     */
     public void makeStopsMarkers(GoogleMap mMap) {
-        // Change icon size
 
         ((MainActivity) context).runOnUiThread(new Runnable() {
             @Override
