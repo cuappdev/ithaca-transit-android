@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/slideView"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/routeBackground"
+    tools:context=".MapsActivity"
+>
+    <RelativeLayout
+        android:id="@+id/header"
+        android:layout_width="match_parent"
+        android:layout_height="81dp"
+        android:layout_alignParentStart="true" android:layout_alignParentTop="true"
+        android:layout_marginStart="0dp" android:layout_marginTop="0dp"
+        android:background="#EEEEEE">
+
+        <LinearLayout
+            android:id="@+id/bus_container"
+            android:layout_width="50dp"
+            android:layout_height="26dp"
+            android:layout_alignParentStart="true"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/bus_background">
+            <ImageView
+                android:id="@+id/ic_bus"
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:layout_marginLeft="5dp" android:layout_marginTop="2dp"
+                android:src="@drawable/ic_bus_marker">
+            </ImageView>
+
+            <TextView
+                android:id="@+id/tv_bus_number_header"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:text="10"
+                android:textColor="@color/white"
+                android:textSize="13sp"/>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/header_direction"
+            android:layout_width="204dp"
+            android:layout_height="32dp"
+            android:layout_alignTop="@id/bus_container"
+            android:layout_marginLeft="20dp"
+            android:layout_toRightOf="@id/bus_container"
+            android:text="" android:textColor="@color/black"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/header">
+        <ExpandableListView
+            android:id="@+id/directions_list_view"
+            android:layout_width="344dp"
+            android:layout_height="match_parent"
+            android:layout_below="@id/optionsText"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginRight="16dp"
+            android:background="@color/lightGray"
+            android:clipToPadding="false"
+            android:nestedScrollingEnabled="true"/>
+    </RelativeLayout>
+
+</RelativeLayout>

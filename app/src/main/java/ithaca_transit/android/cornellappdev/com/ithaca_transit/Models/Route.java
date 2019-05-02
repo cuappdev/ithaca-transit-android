@@ -1,5 +1,8 @@
 package ithaca_transit.android.cornellappdev.com.ithaca_transit.Models;
 
+import android.os.Parcelable;
+
+import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -7,7 +10,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
 
-public class Route {
+public class Route implements Serializable {
 
     private String arrivalTime;
     private BoundingBox boundingBox;
@@ -41,6 +44,10 @@ public class Route {
 
     public Coordinate getStartCoords() {
         return startCoords;
+    }
+
+    public Coordinate getEndCoords() {
+        return endCoords;
     }
 
     public String getDescription() {
@@ -85,7 +92,6 @@ public class Route {
                 e.printStackTrace();
             }
         }
-
         return description;
     }
 
@@ -151,12 +157,16 @@ public class Route {
     public ArrayList<Direction> getTruncatedDirections() {
         ArrayList<Direction> truncatedDirections = new ArrayList<Direction>();
 
-        if (false) {
-
+        if (directions.length == 1 && directions[0].getType().equals("walk")) {
+            // Add Current Location
+            Direction start = new Direction(directions[0].getDistance(), "Current Location",
+                    "walk");
+            Direction destination = new Direction(0.0, directions[0].getName(), "walk");
+            truncatedDirections.add(start);
+            truncatedDirections.add(destination);
         } else {
             int count = 0;
             while (count < directions.length) {
-
                 if (count < directions.length - 1 && (directions[count].getName().equals(
                         directions[count + 1].getName())
                         && directions[count].getType().equals("walk")
@@ -164,11 +174,34 @@ public class Route {
 
                     // want to show distance walking to departure stop
                     Direction direction = directions[count + 1];
-                    direction.setDistance(directions[count].getDistance());
+                    direction.setDistance(directions[count].getDistance().doubleValue());
                     truncatedDirections.add(direction);
+
+                    int lastStopIdx = directions[count + 1].getStops().length - 1;
+                    String lastStop = directions[count + 1].getStops()[lastStopIdx].getName();
+
+                    String type = "";
+                    if (count < directions.length - 2) {
+                        type = type + directions[count + 2].getType();
+                    } else {
+                        type = type + "arrive";
+                    }
+                    Direction endBusPath = new Direction(0.0, lastStop, type,
+                            directions[count].getRouteNumber());
+                    truncatedDirections.add(endBusPath);
+
                     count = count + 2;
                 } else {
                     truncatedDirections.add(directions[count]);
+                    // If we have a transfer
+                    if (directions[count].getType().equals("depart") && count < directions.length - 2
+                            && directions[count + 1].getType().equals("depart")) {
+                        int lastStopIdx = directions[count].getStops().length - 1;
+                        String lastStop = directions[count].getStops()[lastStopIdx].getName();
+                        Direction endBusPath = new Direction(0.0, lastStop, "arrive",
+                                directions[count].getRouteNumber());
+                        truncatedDirections.add(endBusPath);
+                    }
                     count++;
                 }
             }
@@ -176,14 +209,50 @@ public class Route {
         return truncatedDirections;
     }
 
-    public int getTotalDelay(){
+    public int getTotalDelay() {
         int delay = 0;
-        for(Direction direction: directions){
-            if(direction.getType().equals("depart")){
+        for (Direction direction : directions) {
+            if (direction.getType().equals("depart")) {
                 delay = direction.getDelay() + delay;
             }
         }
         return delay;
     }
 
+    // Determines how many unique buses we need to track
+    // Returns the first direction associated with the unique bus
+    public ArrayList<Direction> getBusInfo() {
+        ArrayList<Direction> directionArrayList = new ArrayList<>();
+
+        int count = 0;
+        while (count < directions.length) {
+            if (directions[count].getType().equals("depart")) {
+                directionArrayList.add(directions[count]);
+            }
+        }
+        return directionArrayList;
+    }
+
+    // Used to display directions on detail view
+    public ArrayList<Direction> getDetailDirections() {
+        ArrayList<Direction> detailDirections = new ArrayList<Direction>();
+        int count = 0;
+        while (count < directions.length) {
+            Direction direction = directions[count];
+            if (direction.getType().equals("depart")) {
+                Place[] stops = direction.getStops();
+                int numStops = stops.length;
+                Place lastStop = stops[numStops - 1];
+
+                // Adding intial direction, removing last stop
+                direction.updateStops();
+                detailDirections.add(direction);
+
+                // Adding last stop as its own direction
+                Direction arriveDirection = new Direction(0.0, lastStop.getName(), "arrive");
+                detailDirections.add(arriveDirection);
+            }
+        }
+        return detailDirections;
+    }
 }

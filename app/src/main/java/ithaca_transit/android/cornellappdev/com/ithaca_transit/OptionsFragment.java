@@ -1,5 +1,6 @@
 package ithaca_transit.android.cornellappdev.com.ithaca_transit;
 
+import android.app.Dialog;
 import android.support.v4.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Context;
@@ -10,7 +11,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.widget.DatePicker;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.TimePicker;
 
 import io.github.luizgrp.sectionedrecyclerviewadapter.SectionedRecyclerViewAdapter;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Adapters.SectionAdapter;
@@ -33,20 +37,20 @@ public class OptionsFragment extends Fragment {
     private SectionedRecyclerViewAdapter routeOptionsListAdapter;
 
     public View onCreateView(@Nullable LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.route_options_holder, container, false);
+        View view = inflater.inflate(R.layout.route_options_extended_fragment, container, false);
         mContext = view.getContext();
-//        ((TextView)view.findViewById(R.id.allRoutes)).setOnClickListener((new OnClickListener() {
-//            public final void onClick(View view) {
-//                ExtendedFragment extendedFragment = new ExtendedFragment();
-//                FragmentTransaction fragmentTransaction = OptionsFragment.this.getFragmentManager().beginTransaction();
-//                fragmentTransaction.replace(R.id.container, (Fragment)extendedFragment);
-//                fragmentTransaction.addToBackStack(null);
-//                fragmentTransaction.commit();
-//            }
-//        }));
 
+        return view;
+    }
+
+    @NotNull
+    public final TextView getAllRoutesText() {
+        return allRoutesText;
+    }
+
+    public void setUpRecView(){
         // Setting up Extended Fragment recycler view
-        RecyclerView recyclerView = view.findViewById(
+        RecyclerView recyclerView = ((MainActivity) mContext).findViewById(
                 R.id.nearby_stops_routes);
         routeOptionsListAdapter = new SectionedRecyclerViewAdapter();
 
@@ -63,7 +67,6 @@ public class OptionsFragment extends Fragment {
         SectionAdapter walkingSection = new SectionAdapter(mContext,
                 Repository.getInstance().getRoutesList().getWalking(), "walking", "By Walking");
 
-        // Adding sections -- check if some of them are null before adding (optimal will never be null)
         routeOptionsListAdapter.addSection(optimalSection);
         if (Repository.getInstance().getRoutesList().getFromStop() != null &&
                 Repository.getInstance().getRoutesList().getFromStop().length != 0) {
@@ -80,15 +83,35 @@ public class OptionsFragment extends Fragment {
         }
 
         recyclerView.setLayoutManager((new LinearLayoutManager(mContext, 1, false)));
-
         recyclerView.setAdapter(routeOptionsListAdapter);
 
-        return view;
-    }
+        // Adding dialogue
+        ImageView clock = ((MainActivity) mContext).findViewById(R.id.ic_clock);
+        clock.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Dialog dialogFragment = new Dialog(mContext);
+                dialogFragment.setContentView(R.layout.dialog_leave_now);
 
-    @NotNull
-    public final TextView getAllRoutesText() {
-        return allRoutesText;
+                DatePicker datePicker = dialogFragment.findViewById(R.id.date_picker);
+                TimePicker timePicker = dialogFragment.findViewById(R.id.time_picker);
+
+                Date date = new Date();
+                datePicker.init(date.getYear(), date.getMonth(), date.getDay(),
+                        new DatePicker.OnDateChangedListener() {
+                            @Override
+                            public void onDateChanged(DatePicker datePicker, int i, int i1,
+                                    int i2) {
+                                Date leaveDate = new Date();
+                                leaveDate.setYear(leaveDate.getYear());
+                                leaveDate.setYear(leaveDate.getMonth());
+                                leaveDate.setYear(leaveDate.getDay());
+                            }
+                        });
+
+                dialogFragment.show();
+            }
+        });
     }
 
 }

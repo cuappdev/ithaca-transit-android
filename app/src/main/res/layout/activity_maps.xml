@@ -42,6 +42,7 @@
                     android:clickable="true"
                     android:id="@+id/dragView">
         <include layout = "@layout/route_options_extended_fragment"/>
+
     </RelativeLayout>
 
 </com.sothree.slidinguppanel.SlidingUpPanelLayout>

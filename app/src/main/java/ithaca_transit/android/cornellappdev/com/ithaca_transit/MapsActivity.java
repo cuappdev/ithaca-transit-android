@@ -183,6 +183,18 @@ public final class MapsActivity extends AppCompatActivity implements OnMapReadyC
             }
         });
 
+        mSearchView.setOnLeftMenuClickListener(new FloatingSearchView.OnLeftMenuClickListener() {
+            @Override
+            public void onMenuOpened() {
+                mHomeView.openDrawer(mHomeMenu);
+            }
+
+            @Override
+            public void onMenuClosed() {
+                mHomeView.closeDrawer(mHomeMenu);
+            }
+        });
+
         mSearchView.setOnBindSuggestionCallback(
                 new SearchSuggestionsAdapter.OnBindSuggestionCallback() {
                     @Override
@@ -242,7 +254,8 @@ public final class MapsActivity extends AppCompatActivity implements OnMapReadyC
             public void onSearchAction(String currentQuery) {
             }
         });
-    }
+
+     }
 
     //TODO: this method should be moved to the presenter
     //Retrieves Route info from backend, sends it to MapPresenter

@@ -81,13 +81,17 @@ public final class FavoritesListAdapter extends Adapter {
                     "null cannot be cast to non-null type com.cornellappdev.android.eatery"
                             + ".FavoritesFavoritesListAdapter.TextAdapterViewHolder");
         } else {
+
+
             FavoritesListAdapter.TextAdapterViewHolder holder2 =
                     (FavoritesListAdapter.TextAdapterViewHolder) holder;
-            holder2.getFavoriteName().setText(mFavList.get(position).getStartPlace().getName()
+            holder2.getFavoriteName().setText(mFavList.get(
+                    position).getStartPlace().getName()
                     + "--" +
                     mFavList.get(position).getEndPlace().getName());
 
-            Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("\"America/NewYork\""));
+            Calendar calendar = Calendar.getInstance(
+                    TimeZone.getTimeZone("\"America/NewYork\""));
             int secondsEpoch = (int) (calendar.getTimeInMillis() / 1000L);
 
             // Getting the other route options
@@ -97,7 +101,8 @@ public final class FavoritesListAdapter extends Adapter {
             try {
                 searchJSON.put("start", mFavList.get(position).getStartPlace().toString());
                 searchJSON.put("end", mFavList.get(position).getEndPlace().toString());
-                searchJSON.put("destinationName", mFavList.get(position).getEndPlace().getName());
+                searchJSON.put("destinationName", mFavList.get(
+                        position).getEndPlace().getName());
                 searchJSON.put("arriveBy", false);
                 searchJSON.put("time", secondsEpoch);
             } catch (JSONException e) {
@@ -120,6 +125,7 @@ public final class FavoritesListAdapter extends Adapter {
                         mAllRoutesToFavorites.put(position, sectionedRoutes);
                         mOptimalRoutes[position] = sectionedRoutes.getOptRoute();
                     });
+
         }
     }
 
