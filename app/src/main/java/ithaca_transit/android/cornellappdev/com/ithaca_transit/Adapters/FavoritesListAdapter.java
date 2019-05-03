@@ -14,8 +14,6 @@ import com.appdev.futurenovajava.APIResponse;
 import com.appdev.futurenovajava.Endpoint;
 import com.appdev.futurenovajava.FutureNovaRequest;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -46,9 +44,9 @@ public final class FavoritesListAdapter extends Adapter {
     // stores most optimal route for favorite
     private Route[] mOptimalRoutes;
 
-    public FavoritesListAdapter(@NotNull Context context,
-            @NotNull TextAdapterOnClickHandler listAdapterOnClickHandler,
-            @NotNull ArrayList<Favorite> favorites) {
+    public FavoritesListAdapter(Context context,
+            TextAdapterOnClickHandler listAdapterOnClickHandler,
+            ArrayList<Favorite> favorites) {
         super();
         mContext = context;
         mFavList = favorites;
@@ -56,14 +54,13 @@ public final class FavoritesListAdapter extends Adapter {
         mOptimalRoutes = new Route[favorites.size()];
     }
 
-    public final void setList(@NotNull ArrayList<Favorite> list, @NotNull String query) {
+    public final void setList(ArrayList<Favorite> list, String query) {
         mFavList = list;
         mOptimalRoutes = new Route[list.size()];
         notifyDataSetChanged();
     }
 
-    @Nullable
-    public ViewHolder onCreateViewHolder(@NotNull ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         int layoutId = R.layout.card_item_maps;
 
         View view = LayoutInflater.from(this.mContext).inflate(layoutId, parent, false);
@@ -75,7 +72,7 @@ public final class FavoritesListAdapter extends Adapter {
         return this.mFavList.size();
     }
 
-    public void onBindViewHolder(@Nullable ViewHolder holder, int position) {
+    public void onBindViewHolder(ViewHolder holder, int position) {
         if (holder == null) {
             throw new ClassCastException(
                     "null cannot be cast to non-null type com.cornellappdev.android.eatery"
@@ -128,26 +125,24 @@ public final class FavoritesListAdapter extends Adapter {
     }
 
     public interface TextAdapterOnClickHandler {
-        void onFavoriteClick(int var1, @NotNull ArrayList<Favorite> var2);
+        void onFavoriteClick(int var1, ArrayList<Favorite> var2);
     }
 
     public final class TextAdapterViewHolder extends ViewHolder implements OnClickListener {
-        @NotNull
         private TextView favoriteName;
 
-        @NotNull
         public final TextView getFavoriteName() {
             return this.favoriteName;
         }
 
-        public void onClick(@NotNull View v) {
+        public void onClick(View v) {
             int adapterPosition = this.getAdapterPosition();
             Log.d("FUCK THIS", mFavList.toString());
             FavoritesListAdapter.this.mListAdapterOnClickHandler.onFavoriteClick(adapterPosition,
                     mFavList);
         }
 
-        public TextAdapterViewHolder(@NotNull View itemView) {
+        public TextAdapterViewHolder(View itemView) {
             super(itemView);
             this.favoriteName = (TextView) itemView.findViewById(R.id.place_name);
             itemView.setOnClickListener((OnClickListener) this);

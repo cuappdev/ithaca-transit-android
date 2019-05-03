@@ -3,6 +3,9 @@ package ithaca_transit.android.cornellappdev.com.ithaca_transit;
 import android.app.Activity;
 import android.app.FragmentManager;
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
@@ -116,35 +119,56 @@ public final class MapsActivity extends AppCompatActivity implements OnMapReadyC
                 new DrawerLayout.DrawerListener() {
                     @Override
                     public void onDrawerSlide(View drawerView, float slideOffset) {
-                        if (slideOffset < 0.4) {
-                            mSearchView.setLeftMenuOpen(false);
-                        }
+                        if (slideOffset > 0.0) { mRecView.setVisibility(View.GONE); }
+                        if (slideOffset < 0.1) { mRecView.setVisibility(View.VISIBLE); }
+                        if (slideOffset < 0.4) { mSearchView.setLeftMenuOpen(false); }
                     }
 
                     @Override
-                    public void onDrawerOpened(View drawerView) {
-                        mSearchView.setLeftMenuOpen(true);
-                    }
+                    public void onDrawerOpened(View drawerView) { mSearchView.setLeftMenuOpen(true); }
 
                     @Override
-                    public void onDrawerClosed(View drawerView) {
-                    }
+                    public void onDrawerClosed(View drawerView) { mRecView.setVisibility(View.VISIBLE); }
 
                     @Override
-                    public void onDrawerStateChanged(int newState) {
-                    }
+                    public void onDrawerStateChanged(int newState) {}
                 }
         );
 
-        mHomeMenu.setNavigationItemSelectedListener(
-                new NavigationView.OnNavigationItemSelectedListener() {
-                    @Override
-                    public boolean onNavigationItemSelected(MenuItem item) {
-                        mHomeView.closeDrawer(mHomeMenu);
-                        return true;
-                    }
-                }
-        );
+        mHomeMenu.setNavigationItemSelectedListener((MenuItem item) -> {
+            switch (item.toString()) {
+                case "About Us":
+                    Intent moveToAbout = new Intent(MapsActivity.this, AboutActivity.class);
+                    startActivity(moveToAbout);
+                    break;
+                case "Send Feedback":
+                    sendFeedback();
+                    break;
+                default:
+                    System.out.println("Not handled");
+            }
+            mHomeView.closeDrawer(mHomeMenu);
+            return true;
+        });
+    }
+
+    private void sendFeedback() {
+        Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
+        String version = "Version not found.";
+
+        try {
+            PackageInfo pInfo = this.getPackageManager().getPackageInfo(getPackageName(), 0);
+            version = pInfo.versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        emailIntent.setType("message/rfc822");
+        emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, new String[]{"ithacatransit@cornellappdev.com"});
+        emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Ithaca Transit Android Feedback " + version);
+        emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, "");
+
+        startActivity(Intent.createChooser(emailIntent, "Send mail..."));
     }
 
     private MapsPresenter getController() {
@@ -156,15 +180,49 @@ public final class MapsActivity extends AppCompatActivity implements OnMapReadyC
     }
 
     //TODO: what is the point of this method
+    private void autoCompleteRequest(String query) {
+        Map<String, String> map = new HashMap<String, String>();
+
+        map.put("Content-Type", "application/json");
+
+        JSONObject searchJSON = new JSONObject();
+        try {
+            searchJSON.put("query", query);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        final RequestBody requestBody =
+                RequestBody.create(MediaType.get("application/json; charset=utf-8"),
+                        searchJSON.toString());
+
+        Endpoint searchEndpoint = new Endpoint()
+                .path("v1/search")
+                .body(Optional.of(requestBody))
+                .headers(map)
+                .method(Endpoint.Method.POST);
+
+        FutureNovaRequest.make(Place[].class, searchEndpoint).thenAccept(response -> {
+            Place[] searchResults = response.getData();
+
+            final List<LocationAutocomplete> wrappedResults = new ArrayList<>();
+            if (searchResults != null) {
+                for (Place p : searchResults) {
+                    wrappedResults.add(new LocationAutocomplete(p));
+                }
+            }
+            mSearchView.post(() -> mSearchView.swapSuggestions(wrappedResults));
+        });
+    }
+
     private final void setMapLongClick(final GoogleMap map) {
-        map.setOnMapLongClickListener((new OnMapLongClickListener() {
-            public final void onMapLongClick(LatLng latLng) {
+        map.setOnMapLongClickListener((LatLng latLng) -> {
                 String snippet = String.format(Locale.getDefault(),
                         "Lat: %1$.5f, Long: %2$.5f", latLng.latitude, latLng.longitude);
                 map.addMarker((new MarkerOptions()).position(latLng)
                         .title(MapsActivity.this.getString(R.string.app_name)).snippet(snippet));
             }
-        }));
+        );
     }
 
     /**

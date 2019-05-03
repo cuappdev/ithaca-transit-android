@@ -9,9 +9,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
-
-import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
 
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Adapters.FavoritesListAdapter;
@@ -87,7 +84,7 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onFavoriteClick(int position, @NotNull ArrayList<Favorite> list) {
+    public void onFavoriteClick(int position, ArrayList<Favorite> list) {
         mapFragment.drawRoutes(favoriteListAdapter.getOptimalRoutes()[position],
                 favoriteListAdapter.getmAllRoutesToFavorites().get(position));
         mSlidingPanel.setPanelHeight(600);
