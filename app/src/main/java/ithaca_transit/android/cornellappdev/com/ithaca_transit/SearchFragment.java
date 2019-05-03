@@ -29,7 +29,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -69,7 +68,6 @@ public class SearchFragment extends Fragment {
     private DrawerLayout mHomeView;
     private NavigationView mHomeMenu;
 
-
     private Handler handler = new Handler(Looper.getMainLooper() /*UI thread*/);
     private Runnable workRunnable;
     private PlacesClient placesClient;
@@ -90,8 +88,6 @@ public class SearchFragment extends Fragment {
     private int focusedInput;
     private boolean routeSwitcherOpen;
 
-<<<<<<< HEAD
-=======
     public SearchFragment() {
     }
 
@@ -99,7 +95,6 @@ public class SearchFragment extends Fragment {
         endLoc = end;
     }
 
->>>>>>> 6c3926a5857bf5dadf3b88efffd14f8a73544bf6
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
@@ -181,7 +176,7 @@ public class SearchFragment extends Fragment {
                             startLoc = new Place(lastLocation.getLatitude(),
                                     lastLocation.getLongitude(), "Current Location");
                             endLoc = dest;
-                            launchRoute(startLoc,endLoc);
+                            launchRoute(startLoc, endLoc);
                         } else {
                             FetchPlaceRequest request = FetchPlaceRequest.builder(dest.toString(),
                                     Arrays.asList(
@@ -195,7 +190,7 @@ public class SearchFragment extends Fragment {
                                 endLoc = new Place(response.getPlace().getLatLng().latitude,
                                         response.getPlace().getLatLng().longitude,
                                         dest.getName());
-                                launchRoute(startLoc,endLoc);
+                                launchRoute(startLoc, endLoc);
                             });
                         }
                         //TODO: change slider height to 0dp, must add method to interface and
@@ -253,12 +248,13 @@ public class SearchFragment extends Fragment {
                             routeSwitcherOpen = false;
                             if (startLoc.getPlaceID() == null) {
                                 if (endLoc.getPlaceID() == null) {
-                                    launchRoute(startLoc,endLoc);
+                                    launchRoute(startLoc, endLoc);
                                 } else {
                                     FetchPlaceRequest request = FetchPlaceRequest.builder(
                                             endLoc.toString(),
                                             Arrays.asList(
-                                                    com.google.android.libraries.places.api.model.Place
+                                                    com.google.android.libraries.places.api.model
+                                                            .Place
                                                             .Field.LAT_LNG)).build();
 
                                     placesClient.fetchPlace(request).addOnSuccessListener(
@@ -267,7 +263,7 @@ public class SearchFragment extends Fragment {
                                                         response.getPlace().getLatLng().latitude,
                                                         response.getPlace().getLatLng().longitude,
                                                         endLoc.getName());
-                                                launchRoute(startLoc,endLoc);
+                                                launchRoute(startLoc, endLoc);
                                             });
                                 }
                             } else {
@@ -281,27 +277,36 @@ public class SearchFragment extends Fragment {
                                         (responseStart) -> {
                                             if (endLoc.getPlaceID() == null) {
                                                 startLoc = new Place(
-                                                        responseStart.getPlace().getLatLng().latitude,
-                                                        responseStart.getPlace().getLatLng().longitude,
+                                                        responseStart.getPlace().getLatLng()
+                                                                .latitude,
+                                                        responseStart.getPlace().getLatLng()
+                                                                .longitude,
                                                         startLoc.getName());
                                                 launchRoute(startLoc, endLoc);
                                             } else {
                                                 FetchPlaceRequest requestEnd =
                                                         FetchPlaceRequest.builder(endLoc.toString(),
                                                                 Arrays.asList(
-                                                                        com.google.android.libraries.places.api.model.Place
-                                                                                .Field.LAT_LNG)).build();
+                                                                        com.google.android
+                                                                                .libraries.places
+                                                                                .api.model.Place
+                                                                                .Field.LAT_LNG))
+                                                                .build();
 
                                                 placesClient.fetchPlace(
                                                         requestEnd).addOnSuccessListener(
                                                         (responseEnd) -> {
                                                             startLoc = new Place(
-                                                                            responseStart.getPlace().getLatLng().latitude,
-                                                                            responseStart.getPlace().getLatLng().longitude,
-                                                                            startLoc.getName());
+                                                                    responseStart.getPlace()
+                                                                            .getLatLng().latitude,
+                                                                    responseStart.getPlace()
+                                                                            .getLatLng().longitude,
+                                                                    startLoc.getName());
                                                             endLoc = new Place(
-                                                                    responseEnd.getPlace().getLatLng().latitude,
-                                                                    responseEnd.getPlace().getLatLng().longitude,
+                                                                    responseEnd.getPlace()
+                                                                            .getLatLng().latitude,
+                                                                    responseEnd.getPlace()
+                                                                            .getLatLng().longitude,
                                                                     endLoc.getName());
                                                             launchRoute(startLoc, endLoc);
                                                         });
@@ -445,23 +450,31 @@ public class SearchFragment extends Fragment {
         endLoc = endRoute;
         mCallback.changeRoutes(startRoute.toString(),
                 endRoute.toString(), endRoute.getName());
-        mSearchView.clearSearchFocus();
-        mSearchView.setVisibility(View.GONE);
-        String s = (startRoute.getName().length() > 20 ?
-                startRoute.getName().substring(0, 17) + "..." : startRoute.getName()) + "  >  "
-                + (endRoute.getName().length() > 20 ?
-                endRoute.getName().substring(0, 17) + "..." : endRoute.getName());
-        SpannableString route =
-                new SpannableString(
-                        s.substring(0, Math.min(s.length(), 42)));
-        route.setSpan(new ForegroundColorSpan(Color.parseColor("#08a0e0")),
-                0, 19, 0);
-        route.setSpan(new ForegroundColorSpan(Color.BLACK),
-                Math.min(startRoute.getName().length(), 20),
-                route.length(), 0);
-        mRouteIndicator.setText(route, TextView.BufferType.SPANNABLE);
-        mRouteIndicator.setVisibility(View.VISIBLE);
-        mRouteSwitchLayout.setVisibility(View.GONE);
+
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mSearchView.clearSearchFocus();
+                mSearchView.setVisibility(View.GONE);
+
+                String s = (startRoute.getName().length() > 20 ?
+                        startRoute.getName().substring(0, 17) + "..." : startRoute.getName()) + "  >  "
+                        + (endRoute.getName().length() > 20 ?
+                        endRoute.getName().substring(0, 17) + "..." : endRoute.getName());
+                SpannableString route =
+                        new SpannableString(
+                                s.substring(0, Math.min(s.length(), 42)));
+                route.setSpan(new ForegroundColorSpan(Color.parseColor("#08a0e0")),
+                        0, 19, 0);
+                route.setSpan(new ForegroundColorSpan(Color.BLACK),
+                        Math.min(startRoute.getName().length(), 20),
+                        route.length(), 0);
+                mRouteIndicator.setText(route, TextView.BufferType.SPANNABLE);
+                mRouteIndicator.setVisibility(View.VISIBLE);
+                mRouteSwitchLayout.setVisibility(View.GONE);
+            }
+        });
+
 
     }
 
@@ -548,7 +561,7 @@ public class SearchFragment extends Fragment {
         void changeRoutes(String start, String end, String name);
     }
 
-    private void resizeSelf(){
+    private void resizeSelf() {
 
     }
 
