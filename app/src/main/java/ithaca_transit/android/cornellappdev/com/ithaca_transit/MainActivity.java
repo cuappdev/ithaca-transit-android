@@ -28,6 +28,10 @@ public class MainActivity extends AppCompatActivity implements
     public static MapsPresenter mMapsPresenter;
     private OptionsFragment mOptionsFragment;
 
+    public SearchFragment getSearchFragment() {
+        return mSearchFragment;
+    }
+
     //TODO: move to presenter
     // Hardcoded data for favorites
     private Place goldwin = new Place(42.4491, -76.4835, "Goldwin");
