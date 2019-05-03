@@ -1,6 +1,7 @@
 package ithaca_transit.android.cornellappdev.com.ithaca_transit;
 
 import android.app.Dialog;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Context;
@@ -20,15 +21,11 @@ import io.github.luizgrp.sectionedrecyclerviewadapter.SectionedRecyclerViewAdapt
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Adapters.SectionAdapter;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.Route;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Singleton.Repository;
-import kotlin.jvm.internal.Intrinsics;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.Date;
-
 
 public class OptionsFragment extends Fragment {
     private TextView allRoutesText;
@@ -43,7 +40,6 @@ public class OptionsFragment extends Fragment {
         return view;
     }
 
-    @NotNull
     public final TextView getAllRoutesText() {
         return allRoutesText;
     }

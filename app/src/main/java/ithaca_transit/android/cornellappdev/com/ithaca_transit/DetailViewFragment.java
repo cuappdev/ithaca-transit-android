@@ -6,9 +6,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ExpandableListView;
 
-import org.jetbrains.annotations.Nullable;
-
 import java.util.ArrayList;
+
+import javax.annotation.Nullable;
 
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Adapters.ExpandableListViewAdapter;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.Direction;

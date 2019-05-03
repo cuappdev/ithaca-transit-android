@@ -38,7 +38,6 @@ public final class MapsPresenter {
 //        mMapFragment = mapFragment;
     }
 
-
     public void drawRoutes(Route route, SectionedRoutes routeList) {
         Repository.getInstance().setSelectedRoute(route);
         Repository.getInstance().setRoutesList(routeList);

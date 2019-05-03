@@ -1,8 +1,16 @@
 <resources>
     <string name="about">About Us</string>
+    <string name="about_made_by">Made by Cornell App Development</string>
+    <string name="about_proj_team">An Engineering Project Team at Cornell University. View more of our apps here.</string>
+    <string name="about_clickable_here">here.</string>
+    <string name="about_onboarding">VIEW ONBOARDING</string>
+    <string name="about_feedback">SEND FEEDBACK</string>
+    <string name="about_website">VISIT OUR WEBSITE</string>
     <string name="alerts">Service Alerts</string>
     <string name="all_routes">See all route options</string>
     <string name="app_name">ithaca-transit</string>
+    <string name="appdev_google_play">https://play.google.com/store/apps/developer?id=Cornell+AppDev</string>
+    <string name="appdev_website">https://www.cornellappdev.com/</string>
     <string name="feedback">Send Feedback</string>
     <string name="field_arrival_time">arrivalTime</string>
     <string name="field_bounding_box">boundingBox</string>
@@ -41,8 +49,7 @@
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
     <string name="title_activity_maps">Map</string>
-
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="version_not_found">Version not found.</string>
 </resources>
-
