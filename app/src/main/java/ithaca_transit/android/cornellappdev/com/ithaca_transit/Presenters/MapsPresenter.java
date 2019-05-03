@@ -2,19 +2,13 @@ package ithaca_transit.android.cornellappdev.com.ithaca_transit.Presenters;
 
 import android.location.Location;
 
-import com.arlib.floatingsearchview.FloatingSearchView;
 import com.google.android.gms.maps.model.Dot;
 import com.google.android.gms.maps.model.PatternItem;
 
-import org.jetbrains.annotations.NotNull;
-
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import io.github.luizgrp.sectionedrecyclerviewadapter.SectionedRecyclerViewAdapter;
-import ithaca_transit.android.cornellappdev.com.ithaca_transit.MapsActivity;
-import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.Favorite;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.Route;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.SectionedRoutes;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Singleton.Repository;
@@ -62,5 +56,4 @@ public final class MapsPresenter {
     public Location getLastLocation() {
         return mRepo.getLastLocation();
     }
-
 }
