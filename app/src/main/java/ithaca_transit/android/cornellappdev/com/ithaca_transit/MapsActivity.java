@@ -265,6 +265,7 @@ public final class MapsActivity extends AppCompatActivity implements OnMapReadyC
                 TimeZone.getTimeZone("\"America/NewYork\""));
         int secondsEpoch = (int) (calendar.getTimeInMillis() / 1000L);
 
+
         Map<String, String> mapString = new HashMap<String, String>();
         mapString.put("Content-Type", "application/json");
         JSONObject searchJSON = new JSONObject();

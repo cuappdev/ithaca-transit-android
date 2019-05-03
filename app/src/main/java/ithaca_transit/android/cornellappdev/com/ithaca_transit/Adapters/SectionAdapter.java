@@ -79,7 +79,7 @@ public class SectionAdapter extends StatelessSection {
         // Want to set distance in middle of card if only walk route
         if (size == 2 && routeDirections.get(0).getType().equals("walk") && routeDirections.get(
                 1).getType().equals("walk")) {
-            holder2.direction_destination_two.setText(routeDirections.get(0).getDistance() + " ft");
+            holder2.direction_destination_two.setText(routeDirections.get(0).getDistance().intValue() + " ft");
 
             holder2.direction_destination_two.setTextColor(Color.GRAY);
             holder2.direction_destination_three.setText(routeDirections.get(1).getName());

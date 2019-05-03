@@ -81,8 +81,6 @@ public final class FavoritesListAdapter extends Adapter {
                     "null cannot be cast to non-null type com.cornellappdev.android.eatery"
                             + ".FavoritesFavoritesListAdapter.TextAdapterViewHolder");
         } else {
-
-
             FavoritesListAdapter.TextAdapterViewHolder holder2 =
                     (FavoritesListAdapter.TextAdapterViewHolder) holder;
             holder2.getFavoriteName().setText(mFavList.get(
@@ -92,7 +90,7 @@ public final class FavoritesListAdapter extends Adapter {
 
             Calendar calendar = Calendar.getInstance(
                     TimeZone.getTimeZone("\"America/NewYork\""));
-            int secondsEpoch = (int) (calendar.getTimeInMillis() / 1000L);
+            long secondsEpoch = (int) (calendar.getTimeInMillis() / 1000L);
 
             // Getting the other route options
             HashMap<String, String> map = new HashMap();

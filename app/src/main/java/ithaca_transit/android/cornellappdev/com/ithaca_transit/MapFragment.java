@@ -44,6 +44,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -131,13 +132,14 @@ public class MapFragment extends Fragment implements GoogleMap.OnPolylineClickLi
     public void launchRoute(String start, String end, String name) {
 
         Calendar calendar = Calendar.getInstance(
-                TimeZone.getTimeZone("\"America/NewYork\""));
+                TimeZone.getTimeZone("UTC"));
+        calendar.clear();
+        calendar.setTime(new Date());
         int secondsEpoch = (int) (calendar.getTimeInMillis() / 1000L);
 
         Map<String, String> mapString = new HashMap<String, String>();
         mapString.put("Content-Type", "application/json");
         JSONObject searchJSON = new JSONObject();
-
         try {
             searchJSON.put("start", start);
             searchJSON.put("end", end);
@@ -429,7 +431,7 @@ public class MapFragment extends Fragment implements GoogleMap.OnPolylineClickLi
 //                    TimeUnit.SECONDS);
 //        }
 
-//        ((MainActivity) context).makeDetailViewFragment();
+        ((MainActivity) context).makeDetailViewFragment();
     }
 
     /* Place markers on map

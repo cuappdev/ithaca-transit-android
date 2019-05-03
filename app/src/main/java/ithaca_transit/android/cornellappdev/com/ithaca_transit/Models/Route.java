@@ -1,7 +1,5 @@
 package ithaca_transit.android.cornellappdev.com.ithaca_transit.Models;
 
-import android.os.Parcelable;
-
 import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -60,8 +58,9 @@ public class Route implements Serializable {
                 if (firstItem) {
                     description = direction.getName();
                     firstItem = false;
+                } else {
+                    description = "via " + description + append + direction.getName();
                 }
-                description = description + append + direction.getName();
             }
         } else {
             description = "Board";
@@ -96,17 +95,18 @@ public class Route implements Serializable {
     }
 
     public String getDuration() {
-        Calendar calendar = Calendar.getInstance();
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
-        try {
-            calendar.setTimeZone(TimeZone.getTimeZone("America/NewYork"));
-            calendar.setTime(format.parse(arrivalTime));
-            int arrivalHour = calendar.get(Calendar.HOUR_OF_DAY);
-            int arrivalMintues = calendar.get(Calendar.MINUTE);
 
-            calendar.setTime(format.parse(departureTime));
-            int departureHour = calendar.get(Calendar.HOUR_OF_DAY);
-            int departureMinutes = calendar.get(Calendar.MINUTE);
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+        simpleDateFormat.setTimeZone(TimeZone.getTimeZone("America/NewYork"));
+        try {
+            Date arrivalDate = (simpleDateFormat.parse(arrivalTime));
+            String date = simpleDateFormat.format(arrivalDate);
+            int arrivalHour = arrivalDate.getHours();
+            int arrivalMintues = arrivalDate.getMinutes();
+
+            Date departureDate = (simpleDateFormat.parse(departureTime));
+            int departureHour = departureDate.getHours();
+            int departureMinutes = departureDate.getMinutes();
 
             String arrivalAppend;
             String departureAppend;
@@ -194,7 +194,8 @@ public class Route implements Serializable {
                 } else {
                     truncatedDirections.add(directions[count]);
                     // If we have a transfer
-                    if (directions[count].getType().equals("depart") && count < directions.length - 2
+                    if (directions[count].getType().equals("depart")
+                            && count < directions.length - 2
                             && directions[count + 1].getType().equals("depart")) {
                         int lastStopIdx = directions[count].getStops().length - 1;
                         String lastStop = directions[count].getStops()[lastStopIdx].getName();
