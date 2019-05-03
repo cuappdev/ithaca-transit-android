@@ -129,7 +129,7 @@ public class MapFragment extends Fragment implements GoogleMap.OnPolylineClickLi
     }
 
     //Retrieves Route info from backend, sends it to MapPresenter
-    public void launchRoute(String start, String end, String name) {
+    public void launchRoute(String start, String end, String name, MainActivity mainActivity) {
 
         Calendar calendar = Calendar.getInstance(
                 TimeZone.getTimeZone("UTC"));
@@ -172,6 +172,8 @@ public class MapFragment extends Fragment implements GoogleMap.OnPolylineClickLi
                         public void run() {
                             if (optRoute != null) {
                                 drawRoutes(optRoute, sectionedRoutes);
+                                Repository.getInstance().setRoutesList(sectionedRoutes);
+                                mainActivity.makeDetailViewFragment();
                             } else {
                                 Toast.makeText(context,
                                         "Something went wrong, we can't provide a route.",
@@ -226,7 +228,7 @@ public class MapFragment extends Fragment implements GoogleMap.OnPolylineClickLi
     /* Removes bus route currently displayed on screen
        Called when a user selects a route to display from route options fragment
     */
-    public void removeSelectdRoute() {
+    public void removeSelectedRoute() {
         Route previousRoute = Repository.getInstance().getSelectedRoute();
 
         // Removing paths of selected route from map
@@ -398,8 +400,9 @@ public class MapFragment extends Fragment implements GoogleMap.OnPolylineClickLi
 
     public void onRouteClick(int position, Route[] routeList) {
         // Remove currently selected route from map
-        removeSelectdRoute();
+        removeSelectedRoute();
         Route newRoute = routeList[position];
+
         // Getting position within section
         Repository.getInstance().setSelectedRoute(newRoute);
 

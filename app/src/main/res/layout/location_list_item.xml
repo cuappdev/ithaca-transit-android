@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="81dp" android:background="@color/background">
+
+    <ImageView
+        android:id="@+id/rs_autocomplete_icon"
+        android:layout_width="32dp" android:layout_height="64dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="11dp"
+        app:layout_constraintEnd_toStartOf="@+id/rs_autocomplete_title"
+        app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_loc_stop"/>
+    <TextView
+        android:id="@+id/rs_autocomplete_title"
+        android:layout_width="0dp"
+        android:layout_height="24dp"
+        android:layout_marginTop="12dp" android:layout_marginEnd="19dp"
+        android:text="TextView"
+        android:textColor="@color/black"
+        app:layout_constraintBottom_toTopOf="@+id/rs_autocomplete_detail"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/rs_autocomplete_icon"
+        app:layout_constraintTop_toTopOf="parent"/>
+    <TextView
+        android:id="@+id/rs_autocomplete_detail"
+        android:layout_width="333dp"
+        android:layout_height="24dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginBottom="8dp"
+        android:text="TextView"
+        android:textColor="@color/gray"
+        android:textSize="10sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/rs_autocomplete_icon"
+        app:layout_constraintTop_toBottomOf="@+id/rs_autocomplete_title"/>
+    <View
+        android:id="@+id/divider2"
+        android:layout_width="395dp"
+        android:layout_height="1dp"
+        android:layout_marginTop="1dp"
+        android:background="?android:attr/listDivider"
+        app:layout_constraintTop_toBottomOf="@+id/rs_autocomplete_detail"
+        tools:layout_editor_absoluteX="8dp"/>
+</android.support.constraint.ConstraintLayout>

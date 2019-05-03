@@ -100,7 +100,6 @@ public class Route implements Serializable {
         simpleDateFormat.setTimeZone(TimeZone.getTimeZone("America/NewYork"));
         try {
             Date arrivalDate = (simpleDateFormat.parse(arrivalTime));
-            String date = simpleDateFormat.format(arrivalDate);
             int arrivalHour = arrivalDate.getHours();
             int arrivalMintues = arrivalDate.getMinutes();
 
