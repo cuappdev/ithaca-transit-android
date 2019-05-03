@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools"
     android:background="@color/routeBackground"
-    tools:context=".MapsActivity"
+    tools:context=".MainActivity"
     android:id="@+id/slideView"
     >
 

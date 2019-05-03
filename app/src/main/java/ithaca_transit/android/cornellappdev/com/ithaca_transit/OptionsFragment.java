@@ -1,33 +1,29 @@
 package ithaca_transit.android.cornellappdev.com.ithaca_transit;
 
 import android.app.Dialog;
-import android.support.v4.app.Fragment;
-import android.app.FragmentTransaction;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.View.OnClickListener;
 import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.Date;
+
 import io.github.luizgrp.sectionedrecyclerviewadapter.SectionedRecyclerViewAdapter;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Adapters.SectionAdapter;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.Route;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Singleton.Repository;
-import kotlin.jvm.internal.Intrinsics;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.util.Calendar;
-import java.util.Date;
 
 
 public class OptionsFragment extends Fragment {
@@ -36,7 +32,8 @@ public class OptionsFragment extends Fragment {
     private Context mContext;
     private SectionedRecyclerViewAdapter routeOptionsListAdapter;
 
-    public View onCreateView(@Nullable LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@Nullable LayoutInflater inflater, @Nullable ViewGroup container,
+            @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.route_options_extended_fragment, container, false);
         mContext = view.getContext();
 
@@ -48,7 +45,7 @@ public class OptionsFragment extends Fragment {
         return allRoutesText;
     }
 
-    public void setUpRecView(){
+    public void setUpRecView() {
         // Setting up Extended Fragment recycler view
         RecyclerView recyclerView = ((MainActivity) mContext).findViewById(
                 R.id.nearby_stops_routes);

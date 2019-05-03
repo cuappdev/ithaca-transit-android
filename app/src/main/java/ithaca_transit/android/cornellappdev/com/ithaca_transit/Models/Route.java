@@ -111,7 +111,7 @@ public class Route implements Serializable {
             String arrivalAppend;
             String departureAppend;
 
-            if (arrivalHour > 11) {
+            if (arrivalHour > 12) {
                 arrivalAppend = "PM";
                 arrivalHour = arrivalHour - 12;
 
@@ -122,7 +122,7 @@ public class Route implements Serializable {
                 }
             }
 
-            if (departureHour > 11) {
+            if (departureHour > 12) {
                 departureAppend = "PM";
                 departureHour = departureHour - 12;
             } else {
@@ -234,7 +234,7 @@ public class Route implements Serializable {
         return directionArrayList;
     }
 
-    // Used to display directions on detail view
+    // Check here for errors
     public ArrayList<Direction> getDetailDirections() {
         ArrayList<Direction> detailDirections = new ArrayList<Direction>();
         int count = 0;
@@ -253,6 +253,10 @@ public class Route implements Serializable {
                 Direction arriveDirection = new Direction(0.0, lastStop.getName(), "arrive");
                 detailDirections.add(arriveDirection);
             }
+            else{
+                detailDirections.add(directions[count]);
+            }
+            count++;
         }
         return detailDirections;
     }

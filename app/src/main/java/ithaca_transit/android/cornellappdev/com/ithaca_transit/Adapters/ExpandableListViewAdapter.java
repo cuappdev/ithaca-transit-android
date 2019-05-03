@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -90,7 +91,7 @@ public final class ExpandableListViewAdapter extends BaseExpandableListAdapter {
 
         TextView directionType = view.findViewById(R.id.direction_type);
         TextView directionDestination = view.findViewById(R.id.direction_destination);
-        RelativeLayout busContainer = view.findViewById(R.id.bus_container);
+        LinearLayout busContainer = view.findViewById(R.id.bus_container);
         TextView time = view.findViewById(R.id.time);
         View bottomDivider = view.findViewById(R.id.bottom_divider);
         View stopsDivider = view.findViewById(R.id.stops_divider);
@@ -101,7 +102,7 @@ public final class ExpandableListViewAdapter extends BaseExpandableListAdapter {
             duration.setVisibility(View.VISIBLE);
             long difference = TimeUnit.MILLISECONDS.toMinutes(
                     direction.getEndTime().getTime() - direction.getStartTime().getTime());
-            duration.setText(difference + "min");
+            duration.setText(difference + " min");
 
             dotPartition.setVisibility(View.VISIBLE);
             dropArrow.setVisibility(View.VISIBLE);
@@ -116,7 +117,7 @@ public final class ExpandableListViewAdapter extends BaseExpandableListAdapter {
 
             directionType.setText("Board");
             TextView busNumber = busContainer.findViewById(R.id.tv_bus_number_detail);
-            busNumber.setText(direction.getRouteNumber());
+            busNumber.setText(direction.getRouteNumber().toString());
 
             time.setText(getTime(direction.getStartTime()));
         } else if (direction.getType().equals("walk")) {

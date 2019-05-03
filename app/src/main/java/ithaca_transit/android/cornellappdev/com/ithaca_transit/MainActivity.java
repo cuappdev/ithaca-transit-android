@@ -1,34 +1,31 @@
 package ithaca_transit.android.cornellappdev.com.ithaca_transit;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.View;
 
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Adapters.FavoritesListAdapter;
-import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.Direction;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.Favorite;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.Place;
-import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.Route;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Presenters.MapsPresenter;
 
-public class MainActivity extends AppCompatActivity implements FavoritesListAdapter.TextAdapterOnClickHandler,
-        SearchFragment.OnSearchFragmentListener{
+public class MainActivity extends AppCompatActivity implements
+        FavoritesListAdapter.TextAdapterOnClickHandler,
+        SearchFragment.OnSearchFragmentListener {
     private RecyclerView mRecView;
     private SlidingUpPanelLayout mSlidingPanel;
     private MapFragment mapFragment;
+    private DetailViewFragment mDetailViewFragment;
     private FavoritesListAdapter favoriteListAdapter;
     private SearchFragment mSearchFragment;
     public static MapsPresenter mMapsPresenter;
@@ -109,7 +106,7 @@ public class MainActivity extends AppCompatActivity implements FavoritesListAdap
         mapFragment.launchRoute(start, end, name, this);
     }
 
-    public void makeDetailViewFragment() {
+    public void makeOptionsFragment() {
         mSlidingPanel.setPanelHeight(600);
 
         mOptionsFragment = new OptionsFragment();
@@ -117,25 +114,17 @@ public class MainActivity extends AppCompatActivity implements FavoritesListAdap
         ft.replace(R.id.options_container, mOptionsFragment, "");
         ft.commitAllowingStateLoss();
         manager.executePendingTransactions();
-
         mOptionsFragment.setUpRecView();
-//        Route route = mMapsPresenter.mRepo.getSelectedRoute();
-//        ArrayList<Direction> detailDirections = route.getDetailDirections();
-//
-//        DetailViewFragment detailViewFragment = new DetailViewFragment();
-//        Bundle bundle = new Bundle();
-//
-//        LayoutInflater mLayoutInflater = (LayoutInflater) getSystemService(
-//                Context.LAYOUT_INFLATER_SERVICE);
-//        bundle.putSerializable("inflater", (Serializable) mLayoutInflater);
-//        bundle.putSerializable("directions", detailDirections);
-//        detailViewFragment.setArguments(bundle);
-//
-//        FragmentTransaction fragmentTransaction = manager.beginTransaction();
-//        fragmentTransaction.replace(R.id.container, detailViewFragment);
-//        fragmentTransaction.addToBackStack((String) null);
-//        fragmentTransaction.commit();
-//         manager.executePendingTransactions();
+    }
+
+    public void makeDetailViewFragment() {
+        mDetailViewFragment = new DetailViewFragment();
+        FragmentTransaction fragmentTransaction = manager.beginTransaction();
+        fragmentTransaction.replace(R.id.options_container, mDetailViewFragment, "");
+        fragmentTransaction.addToBackStack((String) null);
+        fragmentTransaction.commitAllowingStateLoss();
+        manager.executePendingTransactions();
+        mDetailViewFragment.setUpList();
     }
 
     public MapFragment getMapFragment() {

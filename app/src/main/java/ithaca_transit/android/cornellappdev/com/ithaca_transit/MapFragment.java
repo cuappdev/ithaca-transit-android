@@ -49,10 +49,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
+import ithaca_transit.android.cornellappdev.com.ithaca_transit.Adapters.SectionAdapter;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.BoundingBox;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.BusLocation;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.BusStop;
@@ -69,7 +67,8 @@ import okhttp3.RequestBody;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class MapFragment extends Fragment implements GoogleMap.OnPolylineClickListener {
+public class MapFragment extends Fragment implements GoogleMap.OnPolylineClickListener,
+        SectionAdapter.ListAdapterOnClickHandler {
     private FusedLocationProviderClient fusedLocationClient;
     private PlacesClient placesClient;
     private Location lastLocation;
@@ -122,7 +121,7 @@ public class MapFragment extends Fragment implements GoogleMap.OnPolylineClickLi
             public void onMapReady(GoogleMap googleMap) {
                 mMap = googleMap;
                 setUpMap();
-                makeStopsMarkers(mMap);
+                //makeStopsMarkers(mMap);
             }
         });
         return rootView;
@@ -167,20 +166,17 @@ public class MapFragment extends Fragment implements GoogleMap.OnPolylineClickLi
                     SectionedRoutes sectionedRoutes = response.getData();
                     Route optRoute = sectionedRoutes.getOptRoute();
 
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (optRoute != null) {
-                                drawRoutes(optRoute, sectionedRoutes);
-                                Repository.getInstance().setRoutesList(sectionedRoutes);
-                                mainActivity.makeDetailViewFragment();
-                            } else {
-                                Toast.makeText(context,
-                                        "Something went wrong, we can't provide a route.",
-                                        Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    });
+
+                    if (optRoute != null) {
+                        drawRoutes(optRoute, sectionedRoutes);
+                        Repository.getInstance().setRoutesList(sectionedRoutes);
+                        mainActivity.makeOptionsFragment();
+                    } else {
+                        Toast.makeText(context,
+                                "Something went wrong, we can't provide a route.",
+                                Toast.LENGTH_SHORT).show();
+                    }
+
                 });
     }
 
@@ -222,7 +218,7 @@ public class MapFragment extends Fragment implements GoogleMap.OnPolylineClickLi
         polylineMap.clear();
         routeMap.clear();
         mMap.clear();
-        makeStopsMarkers(mMap);
+        //makeStopsMarkers(mMap);
     }
 
     /* Removes bus route currently displayed on screen
