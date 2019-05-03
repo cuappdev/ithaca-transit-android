@@ -93,6 +93,9 @@ public class SearchFragment extends Fragment {
     public SearchFragment() {
     }
 
+    public void setEndLoc(Place end) {
+        endLoc = end;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -202,6 +205,26 @@ public class SearchFragment extends Fragment {
             public void onSearchAction(String currentQuery) {
             }
         });
+    }
+
+    public void clickRouteIndicator() {
+        Location lastLocation = mMapsPresenter.getLastLocation();
+        startLoc = new Place(lastLocation.getLatitude(),
+                lastLocation.getLongitude(), "Current Location");
+
+        mRouteStartInput.setHint(startLoc.getName());
+        mRouteEndInput.setHint(endLoc.getName());
+        mRouteIndicator.setVisibility(View.GONE);
+        mRouteSwitchLayout.setVisibility(View.VISIBLE);
+        mRouteStartInput.requestFocus();
+        InputMethodManager imm = (InputMethodManager) getContext().getSystemService(
+                Context.INPUT_METHOD_SERVICE);
+        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED,
+                InputMethodManager.HIDE_IMPLICIT_ONLY);
+        handler.removeCallbacks(workRunnable);
+        workRunnable = () -> routeSwitcherOpen = true;
+        //Delay Setting Boolean
+        handler.postDelayed(workRunnable, 100);
     }
 
     private void setUpRouteSwitcher() {
@@ -326,19 +349,7 @@ public class SearchFragment extends Fragment {
         mRouteIndicator.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mRouteStartInput.setHint(startLoc.getName());
-                mRouteEndInput.setHint(endLoc.getName());
-                mRouteIndicator.setVisibility(View.GONE);
-                mRouteSwitchLayout.setVisibility(View.VISIBLE);
-                mRouteStartInput.requestFocus();
-                InputMethodManager imm = (InputMethodManager) getContext().getSystemService(
-                        Context.INPUT_METHOD_SERVICE);
-                imm.toggleSoftInput(InputMethodManager.SHOW_FORCED,
-                        InputMethodManager.HIDE_IMPLICIT_ONLY);
-                handler.removeCallbacks(workRunnable);
-                workRunnable = () -> routeSwitcherOpen = true;
-                //Delay Setting Boolean
-                handler.postDelayed(workRunnable, 100);
+                clickRouteIndicator();
             }
         });
         mRouteStartInput.addTextChangedListener(new TextWatcher() {

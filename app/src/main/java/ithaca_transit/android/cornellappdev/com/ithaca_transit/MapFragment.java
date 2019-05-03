@@ -10,6 +10,7 @@ import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -57,6 +58,7 @@ import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.BusLocatio
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.BusStop;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.Coordinate;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.Direction;
+import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.Place;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.Route;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.SectionedRoutes;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Presenters.MapsPresenter;
@@ -122,7 +124,7 @@ public class MapFragment extends Fragment implements GoogleMap.OnPolylineClickLi
             public void onMapReady(GoogleMap googleMap) {
                 mMap = googleMap;
                 setUpMap();
-                //makeStopsMarkers(mMap);
+                makeStopsMarkers(mMap);
             }
         });
         return rootView;
@@ -496,8 +498,15 @@ public class MapFragment extends Fragment implements GoogleMap.OnPolylineClickLi
         });
 
         mMap.setOnInfoWindowClickListener((Marker marker) -> {
+            Double lat = marker.getPosition().latitude;
+            Double lon = marker.getPosition().longitude;
             String stopName = marker.getTitle();
-            // TODO: Link to Kevin's PR!
+
+            Place stop = new Place(lat, lon, stopName);
+
+            SearchFragment sf = ((MainActivity) context).getSearchFragment();
+            sf.setEndLoc(stop);
+            sf.clickRouteIndicator();
         });
     }
 
