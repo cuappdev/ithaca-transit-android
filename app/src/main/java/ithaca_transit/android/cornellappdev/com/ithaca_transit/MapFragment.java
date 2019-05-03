@@ -224,7 +224,7 @@ public class MapFragment extends Fragment implements GoogleMap.OnPolylineClickLi
     /* Removes bus route currently displayed on screen
        Called when a user selects a route to display from route options fragment
     */
-    public void removeSelectdRoute() {
+    public void removeSelectedRoute() {
         Route previousRoute = Repository.getInstance().getSelectedRoute();
 
         // Removing paths of selected route from map
@@ -396,8 +396,9 @@ public class MapFragment extends Fragment implements GoogleMap.OnPolylineClickLi
 
     public void onRouteClick(int position, Route[] routeList) {
         // Remove currently selected route from map
-        removeSelectdRoute();
+        removeSelectedRoute();
         Route newRoute = routeList[position];
+
         // Getting position within section
         Repository.getInstance().setSelectedRoute(newRoute);
 
