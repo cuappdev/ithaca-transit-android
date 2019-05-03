@@ -29,6 +29,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -97,6 +98,7 @@ public class SearchFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_search, container, false);
+
         mContext = rootView.getContext();
         Places.initialize(mContext, getResources().getString(R.string.google_maps_key));
         placesClient = Places.createClient(mContext);
@@ -173,7 +175,7 @@ public class SearchFragment extends Fragment {
                             startLoc = new Place(lastLocation.getLatitude(),
                                     lastLocation.getLongitude(), "Current Location");
                             endLoc = dest;
-                            launchRoute();
+                            launchRoute(startLoc,endLoc);
                         } else {
                             FetchPlaceRequest request = FetchPlaceRequest.builder(dest.toString(),
                                     Arrays.asList(
@@ -187,7 +189,7 @@ public class SearchFragment extends Fragment {
                                 endLoc = new Place(response.getPlace().getLatLng().latitude,
                                         response.getPlace().getLatLng().longitude,
                                         dest.getName());
-                                launchRoute();
+                                launchRoute(startLoc,endLoc);
                             });
                         }
                         //TODO: change slider height to 0dp, must add method to interface and
@@ -225,7 +227,7 @@ public class SearchFragment extends Fragment {
                             routeSwitcherOpen = false;
                             if (startLoc.getPlaceID() == null) {
                                 if (endLoc.getPlaceID() == null) {
-                                    launchRoute();
+                                    launchRoute(startLoc,endLoc);
                                 } else {
                                     FetchPlaceRequest request = FetchPlaceRequest.builder(
                                             endLoc.toString(),
@@ -238,8 +240,8 @@ public class SearchFragment extends Fragment {
                                                 endLoc = new Place(
                                                         response.getPlace().getLatLng().latitude,
                                                         response.getPlace().getLatLng().longitude,
-                                                        response.getPlace().getName());
-                                                launchRoute();
+                                                        endLoc.getName());
+                                                launchRoute(startLoc,endLoc);
                                             });
                                 }
                             } else {
@@ -255,8 +257,8 @@ public class SearchFragment extends Fragment {
                                                 startLoc = new Place(
                                                         responseStart.getPlace().getLatLng().latitude,
                                                         responseStart.getPlace().getLatLng().longitude,
-                                                        responseStart.getPlace().getName());
-                                                launchRoute();
+                                                        startLoc.getName());
+                                                launchRoute(startLoc, endLoc);
                                             } else {
                                                 FetchPlaceRequest requestEnd =
                                                         FetchPlaceRequest.builder(endLoc.toString(),
@@ -270,12 +272,12 @@ public class SearchFragment extends Fragment {
                                                             startLoc = new Place(
                                                                             responseStart.getPlace().getLatLng().latitude,
                                                                             responseStart.getPlace().getLatLng().longitude,
-                                                                            responseStart.getPlace().getName());
+                                                                            startLoc.getName());
                                                             endLoc = new Place(
                                                                     responseEnd.getPlace().getLatLng().latitude,
                                                                     responseEnd.getPlace().getLatLng().longitude,
-                                                                    responseEnd.getPlace().getName());
-                                                            launchRoute();
+                                                                    endLoc.getName());
+                                                            launchRoute(startLoc, endLoc);
                                                         });
                                             }
                                         });
@@ -424,22 +426,24 @@ public class SearchFragment extends Fragment {
         });
     }
 
-    private void launchRoute() {
-        mCallback.changeRoutes(startLoc.toString(),
-                endLoc.toString(), endLoc.getName());
+    private void launchRoute(Place startRoute, Place endRoute) {
+        startLoc = startRoute;
+        endLoc = endRoute;
+        mCallback.changeRoutes(startRoute.toString(),
+                endRoute.toString(), endRoute.getName());
         mSearchView.clearSearchFocus();
         mSearchView.setVisibility(View.GONE);
-        String s = (startLoc.getName().length() > 20 ?
-                startLoc.getName().substring(0, 17) + "..." : startLoc.getName()) + "  >  "
-                + (endLoc.getName().length() > 20 ?
-                endLoc.getName().substring(0, 17) + "..." : endLoc.getName());
+        String s = (startRoute.getName().length() > 20 ?
+                startRoute.getName().substring(0, 17) + "..." : startRoute.getName()) + "  >  "
+                + (endRoute.getName().length() > 20 ?
+                endRoute.getName().substring(0, 17) + "..." : endRoute.getName());
         SpannableString route =
                 new SpannableString(
                         s.substring(0, Math.min(s.length(), 42)));
         route.setSpan(new ForegroundColorSpan(Color.parseColor("#08a0e0")),
                 0, 19, 0);
         route.setSpan(new ForegroundColorSpan(Color.BLACK),
-                Math.min(startLoc.getName().length(), 20),
+                Math.min(startRoute.getName().length(), 20),
                 route.length(), 0);
         mRouteIndicator.setText(route, TextView.BufferType.SPANNABLE);
         mRouteIndicator.setVisibility(View.VISIBLE);

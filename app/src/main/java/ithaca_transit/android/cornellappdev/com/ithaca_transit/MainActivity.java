@@ -93,7 +93,7 @@ public class MainActivity extends AppCompatActivity implements FavoritesListAdap
     public void onFavoriteClick(int position, @NotNull ArrayList<Favorite> list) {
         mapFragment.drawRoutes(favoriteListAdapter.getOptimalRoutes()[position],
                 favoriteListAdapter.getmAllRoutesToFavorites().get(position));
-        mSlidingPanel.setPanelHeight(300);
+        mSlidingPanel.setPanelHeight(600);
 
         mOptionsFragment = new OptionsFragment();
         FragmentTransaction ft = manager.beginTransaction();
@@ -102,33 +102,40 @@ public class MainActivity extends AppCompatActivity implements FavoritesListAdap
         manager.executePendingTransactions();
 
         mOptionsFragment.setUpRecView();
-
     }
 
     @Override
     public void changeRoutes(String start, String end, String name) {
-        mapFragment.launchRoute(start, end, name);
+        mapFragment.launchRoute(start, end, name, this);
     }
 
     public void makeDetailViewFragment() {
+        mSlidingPanel.setPanelHeight(600);
 
-        Route route = mMapsPresenter.mRepo.getSelectedRoute();
-        ArrayList<Direction> detailDirections = route.getDetailDirections();
+        mOptionsFragment = new OptionsFragment();
+        FragmentTransaction ft = manager.beginTransaction();
+        ft.replace(R.id.options_container, mOptionsFragment, "");
+        ft.commitAllowingStateLoss();
+        manager.executePendingTransactions();
 
-        DetailViewFragment detailViewFragment = new DetailViewFragment();
-        Bundle bundle = new Bundle();
-
-        LayoutInflater mLayoutInflater = (LayoutInflater) getSystemService(
-                Context.LAYOUT_INFLATER_SERVICE);
-        bundle.putSerializable("inflater", (Serializable) mLayoutInflater);
-        bundle.putSerializable("directions", detailDirections);
-        detailViewFragment.setArguments(bundle);
-
-        FragmentTransaction fragmentTransaction = manager.beginTransaction();
-        fragmentTransaction.replace(R.id.container, detailViewFragment);
-        fragmentTransaction.addToBackStack((String) null);
-        fragmentTransaction.commit();
-         manager.executePendingTransactions();
+        mOptionsFragment.setUpRecView();
+//        Route route = mMapsPresenter.mRepo.getSelectedRoute();
+//        ArrayList<Direction> detailDirections = route.getDetailDirections();
+//
+//        DetailViewFragment detailViewFragment = new DetailViewFragment();
+//        Bundle bundle = new Bundle();
+//
+//        LayoutInflater mLayoutInflater = (LayoutInflater) getSystemService(
+//                Context.LAYOUT_INFLATER_SERVICE);
+//        bundle.putSerializable("inflater", (Serializable) mLayoutInflater);
+//        bundle.putSerializable("directions", detailDirections);
+//        detailViewFragment.setArguments(bundle);
+//
+//        FragmentTransaction fragmentTransaction = manager.beginTransaction();
+//        fragmentTransaction.replace(R.id.container, detailViewFragment);
+//        fragmentTransaction.addToBackStack((String) null);
+//        fragmentTransaction.commit();
+//         manager.executePendingTransactions();
     }
 
     public MapFragment getMapFragment() {

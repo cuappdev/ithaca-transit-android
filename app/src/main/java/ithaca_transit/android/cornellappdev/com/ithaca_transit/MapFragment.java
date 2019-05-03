@@ -128,7 +128,7 @@ public class MapFragment extends Fragment implements GoogleMap.OnPolylineClickLi
     }
 
     //Retrieves Route info from backend, sends it to MapPresenter
-    public void launchRoute(String start, String end, String name) {
+    public void launchRoute(String start, String end, String name, MainActivity mainActivity) {
 
         Calendar calendar = Calendar.getInstance(
                 TimeZone.getTimeZone("\"America/NewYork\""));
@@ -170,6 +170,8 @@ public class MapFragment extends Fragment implements GoogleMap.OnPolylineClickLi
                         public void run() {
                             if (optRoute != null) {
                                 drawRoutes(optRoute, sectionedRoutes);
+                                Repository.getInstance().setRoutesList(sectionedRoutes);
+                                mainActivity.makeDetailViewFragment();
                             } else {
                                 Toast.makeText(context,
                                         "Something went wrong, we can't provide a route.",
