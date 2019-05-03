@@ -10,11 +10,9 @@ import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -52,9 +50,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.BoundingBox;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.BusLocation;
@@ -496,15 +491,14 @@ public class MapFragment extends Fragment implements GoogleMap.OnPolylineClickLi
                                             return v;
                                         }
                                     });
-
-                                    mMap.setOnInfoWindowClickListener((Marker marker) -> {
-                                        String stopName = marker.getTitle();
-
-                                        // TODO: Link to Kevin's PR!
-                                    });
                                 }
                             });
                         });
+        });
+
+        mMap.setOnInfoWindowClickListener((Marker marker) -> {
+            String stopName = marker.getTitle();
+            // TODO: Link to Kevin's PR!
         });
     }
 
