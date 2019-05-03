@@ -2,8 +2,8 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:background="@color/white"
-    android:layout_height="100dp">
+    android:layout_height="100dp"
+    android:background="@color/white">
     <ImageView
         android:layout_width="33dp"
         android:layout_height="37dp"

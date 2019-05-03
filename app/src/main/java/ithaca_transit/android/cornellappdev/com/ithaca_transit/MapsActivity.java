@@ -146,7 +146,7 @@ public final class MapsActivity extends AppCompatActivity implements OnMapReadyC
                 }
         );
     }
-    
+
     private MapsPresenter getController() {
         return mController;
     }

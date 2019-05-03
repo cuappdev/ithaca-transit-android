@@ -29,43 +29,38 @@
                 android:layout_alignParentTop="true"
                 android:layout_marginLeft="8dp"
                 android:layout_marginTop="8dp"
-                android:text=""
                 android:textColor="@color/black"
-                android:textSize="16sp"/>
+                android:textSize="20sp" android:textStyle="bold"/>
 
             <TextView
                 android:id="@+id/route_description"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="20dp"
                 android:layout_below="@id/duration"
                 android:layout_marginLeft="8dp"
+                android:layout_marginTop="0dp"
                 android:paddingRight="48dp"
-                android:text=""
                 android:textColor="@color/routeDetails"
-                android:textSize="14sp"
-                android:textStyle="normal"/>
+                android:textSize="16sp" android:textStyle="normal"/>
 
             <TextView
                 android:id="@+id/delay"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="20dp"
                 android:layout_below="@id/duration"
-                android:layout_marginStart="122dp"
-                android:layout_marginLeft="45dp"
+                android:layout_marginLeft="160dp"
                 android:paddingRight="48dp"
-                android:text=""
-                android:textColor="@color/green"
-                android:textSize="14sp"
-                android:textStyle="bold"/>
+                android:textColor="@color/green" android:textSize="16sp" android:textStyle="bold"/>
 
             <ImageView
                 android:id="@+id/delay_image"
                 android:layout_width="15dp"
                 android:layout_height="15dp"
-                android:layout_alignStart="@+id/destinations"
-                android:layout_marginStart="3dp"
-                android:layout_marginTop="30dp" android:layout_marginBottom="3dp"
-                android:src="@drawable/ic_wifi" android:visibility="gone"/>
+                android:layout_alignTop="@+id/delay"
+                android:layout_alignBottom="@+id/delay" android:layout_marginStart="230dp"
+                android:layout_marginTop="0dp"
+                android:layout_marginBottom="0dp" android:src="@drawable/ontime"
+                android:visibility="invisible"/>
 
 
             <RelativeLayout
@@ -73,8 +68,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="105dp"
                 android:layout_below="@+id/delay"
-                android:layout_marginStart="40dp"
-                android:layout_marginLeft="20dp" android:layout_marginTop="15dp">
+                android:layout_marginStart="10dp"
+                android:layout_marginLeft="0dp" android:layout_marginTop="20dp">
 
                 <RelativeLayout
                     android:id="@+id/icon_container_one"
@@ -235,7 +230,8 @@
             <RelativeLayout
                 android:layout_width="57dp"
                 android:layout_height="158dp" android:layout_alignTop="@+id/destinations"
-                android:layout_alignParentStart="true" android:layout_marginStart="101dp">
+                android:layout_alignParentStart="true" android:layout_marginStart="80dp"
+                android:layout_marginTop="15dp">
                 <ImageView
                     android:id="@+id/dots_one_bus"
 
@@ -298,7 +294,7 @@
                 android:layout_width="200dp"
                 android:layout_height="160dp"
                 android:layout_below="@+id/delay"
-                android:layout_alignParentStart="true" android:layout_marginStart="179dp"
+                android:layout_alignParentStart="true" android:layout_marginStart="140dp"
                 android:layout_marginTop="2dp">
                 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                               android:layout_width="174dp"
@@ -312,7 +308,7 @@
                         android:paddingTop="2dp"
                         android:text=""
                         android:textColor="@color/black"
-                        android:textSize="14sp"/>
+                        android:textSize="16sp"/>
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -336,7 +332,7 @@
                         android:paddingLeft="10dp"
                         android:paddingTop="2dp"
                         android:textColor="@color/black"
-                        android:textSize="14sp"/>
+                        android:textSize="16sp"/>
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -359,7 +355,7 @@
                         android:paddingLeft="10dp"
                         android:paddingTop="2dp"
                         android:textColor="@color/black"
-                        android:textSize="14sp"/>
+                        android:textSize="16sp"/>
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -382,7 +378,7 @@
                         android:paddingLeft="10dp"
                         android:paddingTop="2dp"
                         android:textColor="@color/black"
-                        android:textSize="14sp"/>
+                        android:textSize="16sp"/>
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"

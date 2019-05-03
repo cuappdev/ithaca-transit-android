@@ -14,22 +14,22 @@
         android:textSize="14sp"/>
 
     <ImageView
-        android:visibility="invisible"
         android:id="@+id/bus_stop_dot"
         android:layout_width="24dp"
-        android:layout_height="22dp" android:layout_alignParentTop="true"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="0dp" android:layout_toRightOf="@id/time"
-        android:src="@drawable/busstop"/>
+        android:layout_height="22dp"
+        android:layout_alignParentTop="true" android:layout_marginLeft="10dp"
+        android:layout_marginTop="0dp"
+        android:layout_toRightOf="@id/time" android:src="@drawable/busstop"
+        android:visibility="invisible"/>
 
     <ImageView
-        android:visibility="invisible"
         android:id="@+id/walk_end_dot"
         android:layout_width="24dp"
-        android:layout_height="22dp" android:layout_alignParentTop="true"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="0dp" android:layout_toRightOf="@id/time"
-        android:src="@drawable/destination"/>
+        android:layout_height="22dp"
+        android:layout_alignParentTop="true" android:layout_marginLeft="10dp"
+        android:layout_marginTop="0dp"
+        android:layout_toRightOf="@id/time" android:src="@drawable/destination"
+        android:visibility="invisible"/>
     <ImageView
         android:id="@+id/walk_start_dot"
         android:layout_width="24dp"
@@ -38,37 +38,37 @@
         android:layout_marginTop="0dp" android:layout_toRightOf="@id/time"
         android:src="@drawable/walkstart" android:visibility="invisible"/>
     <ImageView
-        android:visibility="invisible"
         android:id="@+id/dot_partition"
         android:layout_width="7dp"
-        android:layout_height="13dp" android:layout_alignParentTop="true"
-        android:layout_marginLeft="91dp"
-        android:layout_marginTop="39dp" android:layout_toRightOf="@id/time"
-        android:src="@drawable/walkstart"/>
+        android:layout_height="13dp"
+        android:layout_alignParentTop="true" android:layout_marginLeft="91dp"
+        android:layout_marginTop="39dp"
+        android:layout_toRightOf="@id/time" android:src="@drawable/walkstart"
+        android:visibility="invisible"/>
     <ImageView
-        android:visibility="invisible"
         android:id="@+id/walk_path_1"
         android:layout_width="7dp"
-        android:layout_height="13dp" android:layout_alignParentTop="true"
-        android:layout_marginLeft="19dp"
-        android:layout_marginTop="25dp" android:layout_toRightOf="@id/time"
-        android:src="@drawable/walkstart"/>
+        android:layout_height="13dp"
+        android:layout_alignParentTop="true" android:layout_marginLeft="19dp"
+        android:layout_marginTop="25dp"
+        android:layout_toRightOf="@id/time" android:src="@drawable/walkstart"
+        android:visibility="invisible"/>
     <ImageView
-        android:visibility="invisible"
         android:id="@+id/walk_path_2"
         android:layout_width="7dp"
-        android:layout_height="13dp" android:layout_alignParentTop="true"
-        android:layout_marginLeft="18dp"
-        android:layout_marginTop="42dp" android:layout_toRightOf="@id/time"
-        android:src="@drawable/walkstart"/>
+        android:layout_height="13dp"
+        android:layout_alignParentTop="true" android:layout_marginLeft="18dp"
+        android:layout_marginTop="42dp"
+        android:layout_toRightOf="@id/time" android:src="@drawable/walkstart"
+        android:visibility="invisible"/>
     <ImageView
-        android:visibility="invisible"
         android:id="@+id/walk_path_3"
         android:layout_width="7dp"
-        android:layout_height="13dp" android:layout_alignParentTop="true"
-        android:layout_marginLeft="18dp"
-        android:layout_marginTop="58dp" android:layout_toRightOf="@id/time"
-        android:src="@drawable/walkstart"/>
+        android:layout_height="13dp"
+        android:layout_alignParentTop="true" android:layout_marginLeft="18dp"
+        android:layout_marginTop="58dp"
+        android:layout_toRightOf="@id/time" android:src="@drawable/walkstart"
+        android:visibility="invisible"/>
     <ImageView
         android:id="@+id/drop_down_arrow"
         android:layout_width="13dp"

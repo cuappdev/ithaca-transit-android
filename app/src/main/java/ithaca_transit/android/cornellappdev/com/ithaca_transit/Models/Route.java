@@ -64,15 +64,10 @@ public class Route implements Serializable {
             }
         } else {
             description = "Board";
-            Calendar calendar = Calendar.getInstance(
-                    TimeZone.getTimeZone("America/New_York"));
+
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
-
-            Date now = Calendar.getInstance(
-                    TimeZone.getTimeZone("America/New_York")).getTime();
-
-            calendar.setTime(now);
-            Date currentDate = calendar.getTime();
+            format.setTimeZone(TimeZone.getTimeZone("America/NewYork"));
+            Date currentDate = new Date();
 
             try {
                 Date departureDate = format.parse(departureTime);
@@ -84,8 +79,14 @@ public class Route implements Serializable {
                     description = description + " in " + (departureDate.getHours()
                             - currentDate.getHours()) + " hours";
                 } else {
-                    description = description + " in " + (departureDate.getMinutes()
-                            - currentDate.getMinutes()) + " minutes";
+                    int diff =  (departureDate.getMinutes()
+                            - currentDate.getMinutes());
+
+                    // When departure's minutes are less, but still ahead of current time
+                    if (diff < 0){
+                        diff = 60 + diff;
+                    }
+                    description = description + " in " + diff + " minutes";
                 }
             } catch (ParseException e) {
                 e.printStackTrace();
@@ -141,7 +142,7 @@ public class Route implements Serializable {
                 arrivalZero = "0";
             }
 
-            String duration = String.format("%s:%s%s %s--%s:%s%s %s", departureHour, departureZero,
+            String duration = String.format("%s:%s%s %s - %s:%s%s %s", departureHour, departureZero,
                     departureMinutes, departureAppend, arrivalHour, arrivalZero, arrivalMintues,
                     arrivalAppend);
 
