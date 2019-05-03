@@ -90,10 +90,6 @@ public class SearchFragment extends Fragment {
     private int focusedInput;
     private boolean routeSwitcherOpen;
 
-    public SearchFragment() {
-    }
-
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {

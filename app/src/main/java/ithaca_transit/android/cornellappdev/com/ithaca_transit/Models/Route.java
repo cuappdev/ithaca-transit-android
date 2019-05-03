@@ -75,7 +75,11 @@ public class Route implements Serializable {
                 if (departureDate.getDay() != currentDate.getDay()) {
                     description = description + " on " + (departureDate.getMonth() + 1) + "/" +
                             departureDate.getDate();
-                } else if (departureDate.getHours() - currentDate.getHours() > 1) {
+                }
+                else if (departureDate.getTime() < currentDate.getTime()){
+                    description = "Board now";
+                }
+                else if (departureDate.getHours() - currentDate.getHours() > 1) {
                     description = description + " in " + (departureDate.getHours()
                             - currentDate.getHours()) + " hours";
                 } else {
@@ -86,7 +90,16 @@ public class Route implements Serializable {
                     if (diff < 0){
                         diff = 60 + diff;
                     }
-                    description = description + " in " + diff + " minutes";
+
+                    if(diff > 1){
+                        description = description + " in " + diff + " minutes";
+                    }
+                    else if(diff == 1){
+                        description = description + " in " + diff + " minute";
+                    }
+                    else{
+                        description = description + " now";
+                    }
                 }
             } catch (ParseException e) {
                 e.printStackTrace();

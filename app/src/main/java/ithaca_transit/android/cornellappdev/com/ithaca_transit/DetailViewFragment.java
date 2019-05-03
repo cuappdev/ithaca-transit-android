@@ -8,6 +8,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ExpandableListView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 
@@ -22,6 +24,7 @@ public class DetailViewFragment extends Fragment {
     private Context mContext;
     private ArrayList<Direction> mDetailDirections;
     private LayoutInflater mLayoutInflater;
+    private Route mRoute;
 
 
     @Nullable
@@ -30,9 +33,8 @@ public class DetailViewFragment extends Fragment {
         View view = inflater.inflate(R.layout.detail_view_fragment, container, false);
 
         mContext = view.getContext();
-
-        Route route = mMapsPresenter.mRepo.getSelectedRoute();
-        mDetailDirections = route.getDetailDirections();
+        mRoute = mMapsPresenter.mRepo.getSelectedRoute();
+        mDetailDirections = mRoute.getDetailDirections();
         mLayoutInflater = (LayoutInflater) ((MainActivity)mContext).getSystemService(
                  Context.LAYOUT_INFLATER_SERVICE);
 
@@ -44,7 +46,6 @@ public class DetailViewFragment extends Fragment {
                 R.id.directions_list_view);
         ExpandableListViewAdapter listViewAdapter = new ExpandableListViewAdapter(mLayoutInflater,
                 mDetailDirections);
-
         listView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
             @Override
             public boolean onGroupClick(ExpandableListView expandableListView, View view, int i,
@@ -53,5 +54,24 @@ public class DetailViewFragment extends Fragment {
             }
         });
         listView.setAdapter(listViewAdapter);
+
+//        if(mRoute.isWalkOnlyRoute()){
+//            LinearLayout linearLayout = ((MainActivity) mContext).findViewById(
+//                    R.id.bus_container);
+//            linearLayout.setVisibility(View.VISIBLE);
+//
+//            int count = 0;
+//            Direction direction;
+//            while(count < mRoute.getDirections().length){
+//                direction = mRoute.getDirections()[count];
+//                if(direction.equals("depart")){
+//                    direction =
+//                }
+//            }
+//            TextView busNumber = linearLayout.findViewById(R.id.tv_bus_number_header);
+//            busNumber.setText();
+//        }
+
+
     }
 }

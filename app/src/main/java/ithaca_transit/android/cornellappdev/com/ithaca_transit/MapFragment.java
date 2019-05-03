@@ -166,17 +166,20 @@ public class MapFragment extends Fragment implements GoogleMap.OnPolylineClickLi
 
                     SectionedRoutes sectionedRoutes = response.getData();
                     Route optRoute = sectionedRoutes.getOptRoute();
-
-
-                    if (optRoute != null) {
-                        drawRoutes(optRoute, sectionedRoutes);
-                        Repository.getInstance().setRoutesList(sectionedRoutes);
-                        mainActivity.makeOptionsFragment();
-                    } else {
-                        Toast.makeText(context,
-                                "Something went wrong, we can't provide a route.",
-                                Toast.LENGTH_SHORT).show();
-                    }
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (optRoute != null) {
+                                drawRoutes(optRoute, sectionedRoutes);
+                                Repository.getInstance().setRoutesList(sectionedRoutes);
+                                mainActivity.makeOptionsFragment();
+                            } else {
+                                Toast.makeText(context,
+                                        "Something went wrong, we can't provide a route.",
+                                        Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
 
                 });
     }

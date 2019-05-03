@@ -120,7 +120,6 @@ public final class FavoritesListAdapter extends Adapter {
                         mAllRoutesToFavorites.put(position, sectionedRoutes);
                         mOptimalRoutes[position] = sectionedRoutes.getOptRoute();
                     });
-
         }
     }
 

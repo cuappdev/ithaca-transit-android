@@ -122,6 +122,7 @@ public class MainActivity extends AppCompatActivity implements
         fragmentTransaction.commitAllowingStateLoss();
         manager.executePendingTransactions();
         mDetailViewFragment.setUpList();
+        mSlidingPanel.setPanelHeight(600);
     }
 
     public MapFragment getMapFragment() {

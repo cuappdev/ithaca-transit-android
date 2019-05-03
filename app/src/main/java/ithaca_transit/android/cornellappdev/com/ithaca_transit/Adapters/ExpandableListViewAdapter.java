@@ -113,7 +113,7 @@ public final class ExpandableListViewAdapter extends BaseExpandableListAdapter {
             numStops.setVisibility(View.VISIBLE);
 
             // Include last stop in count (last stop isn't in Stops[])
-            numStops.setText((direction.getStops().length + 1) + "stops");
+            numStops.setText((direction.getStops().length + 1) + " stops");
 
             directionType.setText("Board");
             TextView busNumber = busContainer.findViewById(R.id.tv_bus_number_detail);
