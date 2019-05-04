@@ -224,7 +224,7 @@ public class MapFragment extends Fragment implements GoogleMap.OnPolylineClickLi
         polylineMap.clear();
         routeMap.clear();
         mMap.clear();
-        //makeStopsMarkers(mMap);
+        makeStopsMarkers(mMap);
     }
 
     /* Removes bus route currently displayed on screen
