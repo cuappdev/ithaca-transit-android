@@ -59,7 +59,6 @@ import java8.util.Optional;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
 
-
 /**
  * A simple {@link Fragment} subclass.
  */
@@ -111,7 +110,7 @@ public class SearchFragment extends Fragment {
         setUpSearch();
         //TODO: removed drawer for now bc it was overlaying on top of the entire map...need to
         // rethink architecture and hierarchy of views
-//        setUpMenu();
+        //setUpMenu();
         setUpRouteSwitcher();
         return rootView;
     }
@@ -127,17 +126,7 @@ public class SearchFragment extends Fragment {
         });
 
         //TODO: removed the drawer for now and commented out these lines for debugging purposes
-//        mSearchView.setOnLeftMenuClickListener(new FloatingSearchView.OnLeftMenuClickListener() {
-//            @Override
-//            public void onMenuOpened() {
-//                mHomeView.openDrawer(mHomeMenu);
-//            }
-//
-//            @Override
-//            public void onMenuClosed() {
-//                mHomeView.closeDrawer(mHomeMenu);
-//            }
-//        });
+
 
         mSearchView.setOnBindSuggestionCallback(
                 new SearchSuggestionsAdapter.OnBindSuggestionCallback() {
@@ -458,7 +447,8 @@ public class SearchFragment extends Fragment {
                 mSearchView.setVisibility(View.GONE);
 
                 String s = (startRoute.getName().length() > 20 ?
-                        startRoute.getName().substring(0, 17) + "..." : startRoute.getName()) + "  >  "
+                        startRoute.getName().substring(0, 17) + "..." : startRoute.getName())
+                        + "  >  "
                         + (endRoute.getName().length() > 20 ?
                         endRoute.getName().substring(0, 17) + "..." : endRoute.getName());
                 SpannableString route =
@@ -478,41 +468,6 @@ public class SearchFragment extends Fragment {
 
     }
 
-    private void setUpMenu() {
-        mHomeView.addDrawerListener(
-                new DrawerLayout.DrawerListener() {
-                    @Override
-                    public void onDrawerSlide(View drawerView, float slideOffset) {
-                        if (slideOffset < 0.4) {
-                            mSearchView.setLeftMenuOpen(false);
-                        }
-                    }
-
-                    @Override
-                    public void onDrawerOpened(View drawerView) {
-                        mSearchView.setLeftMenuOpen(true);
-                    }
-
-                    @Override
-                    public void onDrawerClosed(View drawerView) {
-                    }
-
-                    @Override
-                    public void onDrawerStateChanged(int newState) {
-                    }
-                }
-        );
-
-        mHomeMenu.setNavigationItemSelectedListener(
-                new NavigationView.OnNavigationItemSelectedListener() {
-                    @Override
-                    public boolean onNavigationItemSelected(MenuItem item) {
-                        mHomeView.closeDrawer(mHomeMenu);
-                        return true;
-                    }
-                }
-        );
-    }
 
     private void autoCompleteRequest(String query) {
         Map<String, String> map = new HashMap<String, String>();
@@ -582,4 +537,52 @@ public class SearchFragment extends Fragment {
         mCallback = null;
     }
 
+
+    public void setUpMenu(DrawerLayout homeView, NavigationView navigationMenu) {
+        homeView.addDrawerListener(
+                new DrawerLayout.DrawerListener() {
+                    @Override
+                    public void onDrawerSlide(View drawerView, float slideOffset) {
+                        if (slideOffset < 0.4) {
+                            mSearchView.setLeftMenuOpen(false);
+                        }
+                    }
+
+                    @Override
+                    public void onDrawerOpened(View drawerView) {
+                        mSearchView.setLeftMenuOpen(true);
+                    }
+
+                    @Override
+                    public void onDrawerClosed(View drawerView) {
+                    }
+
+                    @Override
+                    public void onDrawerStateChanged(int newState) {
+                    }
+                }
+        );
+
+        navigationMenu.setNavigationItemSelectedListener(
+                new NavigationView.OnNavigationItemSelectedListener() {
+                    @Override
+                    public boolean onNavigationItemSelected(MenuItem item) {
+                        homeView.closeDrawer(navigationMenu);
+                        return true;
+                    }
+                }
+        );
+
+//        mSearchView.setOnLeftMenuClickListener(new FloatingSearchView.OnLeftMenuClickListener() {
+//            @Override
+//            public void onMenuOpened() {
+//                homeView.openDrawer(navigationMenu);
+//            }
+//
+//            @Override
+//            public void onMenuClosed() {
+//                homeView.closeDrawer(navigationMenu);
+//            }
+//        });
+    }
 }

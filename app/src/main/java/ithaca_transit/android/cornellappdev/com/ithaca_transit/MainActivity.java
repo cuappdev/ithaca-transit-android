@@ -1,13 +1,17 @@
 package ithaca_transit.android.cornellappdev.com.ithaca_transit;
 
 import android.os.Bundle;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.MenuItem;
 import android.view.View;
 
+import com.arlib.floatingsearchview.FloatingSearchView;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import java.util.ArrayList;
 
@@ -28,6 +32,10 @@ public class MainActivity extends AppCompatActivity implements
     public static MapsPresenter mMapsPresenter;
     private OptionsFragment mOptionsFragment;
 
+    private FloatingSearchView mSearchView;
+    private DrawerLayout mHomeView;
+    private NavigationView mHomeMenu;
+
     public SearchFragment getSearchFragment() {
         return mSearchFragment;
     }
@@ -43,7 +51,6 @@ public class MainActivity extends AppCompatActivity implements
     private static ArrayList<Favorite> favoriteList = new ArrayList<Favorite>();
     FragmentManager manager = getSupportFragmentManager();
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,6 +65,10 @@ public class MainActivity extends AppCompatActivity implements
         ft.replace(R.id.map_container, mapFragment, "");
         ft.replace(R.id.search_view_container, mSearchFragment, "");
         ft.commitAllowingStateLoss();
+
+        mHomeView = findViewById(R.id.home_view);
+        mHomeMenu = findViewById(R.id.home_menu);
+        mSearchFragment.setUpMenu(mHomeView, mHomeMenu);
 
         //TODO: move to presenter
         // Adding hardcoded favorites
@@ -76,6 +87,8 @@ public class MainActivity extends AppCompatActivity implements
         mRecView.setAdapter(favoriteListAdapter);
         mRecView.setVisibility(View.VISIBLE);
         favoriteListAdapter.notifyDataSetChanged();
+
+
 
     }
 
@@ -107,6 +120,7 @@ public class MainActivity extends AppCompatActivity implements
         mapFragment.launchRoute(start, end, name, this);
     }
 
+
     public void makeOptionsFragment() {
         mSlidingPanel.setPanelHeight(600);
 
@@ -132,4 +146,6 @@ public class MainActivity extends AppCompatActivity implements
     public MapFragment getMapFragment() {
         return mapFragment;
     }
+
+
 }
