@@ -136,7 +136,6 @@ public final class FavoritesListAdapter extends Adapter {
 
         public void onClick(View v) {
             int adapterPosition = this.getAdapterPosition();
-            Log.d("FUCK THIS", mFavList.toString());
             FavoritesListAdapter.this.mListAdapterOnClickHandler.onFavoriteClick(adapterPosition,
                     mFavList);
         }

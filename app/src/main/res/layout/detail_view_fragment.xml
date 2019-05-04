@@ -78,16 +78,18 @@
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:background="#fafafa"
         android:layout_below="@id/header">
         <ExpandableListView
             android:id="@+id/directions_list_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/optionsText"
-            android:layout_marginLeft="16dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginRight="16dp"
-            android:background="@color/lightGray"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="9dp"
+            android:layout_marginBottom="9dp"
+            android:layout_marginRight="20dp"
+            android:background="#fafafa"
             android:clipToPadding="false"
             android:nestedScrollingEnabled="true"/>
     </RelativeLayout>

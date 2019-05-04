@@ -129,7 +129,7 @@ public class MainActivity extends AppCompatActivity implements
         mDetailViewFragment = new DetailViewFragment();
         FragmentTransaction fragmentTransaction = manager.beginTransaction();
         fragmentTransaction.replace(R.id.options_container, mDetailViewFragment, "");
-        fragmentTransaction.addToBackStack((String) null);
+
         fragmentTransaction.commitAllowingStateLoss();
         manager.executePendingTransactions();
         mDetailViewFragment.setUpList();

@@ -4,12 +4,19 @@ import static ithaca_transit.android.cornellappdev.com.ithaca_transit.MainActivi
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.Html;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ExpandableListView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.sothree.slidinguppanel.SlidingUpPanelLayout;
+
+import org.checkerframework.checker.linear.qual.Linear;
 
 import java.util.ArrayList;
 
@@ -25,7 +32,10 @@ public class DetailViewFragment extends Fragment {
     private ArrayList<Direction> mDetailDirections;
     private LayoutInflater mLayoutInflater;
     private TextView headerText;
+    private TextView busNumber;
     private Route mRoute;
+    private SlidingUpPanelLayout mSlidingPanel;
+    private RelativeLayout mRelativeLayout;
 
 
     @Nullable
@@ -39,17 +49,22 @@ public class DetailViewFragment extends Fragment {
         mLayoutInflater = (LayoutInflater) ((MainActivity)mContext).getSystemService(
                  Context.LAYOUT_INFLATER_SERVICE);
 
-        String timeText = String.format("Depart at %s from %s", mRoute.getBusArrival(),
-                mDetailDirections.get(mDetailDirections.size()-1).getName());
+        mRelativeLayout = view.findViewById(R.id.detailView);
+        mSlidingPanel = view.findViewById(R.id.sliding_panel);
+
+        String timeText = String.format("Depart at <b>%s</b> from <b>%s</b>",
+                mRoute.getBusArrival(),
+                mDetailDirections.get(0).getName());
         headerText = view.findViewById(R.id.header_direction);
         //TODO: add bold formatting
-        headerText.setText(timeText);
+        headerText.setText(Html.fromHtml(timeText));
+
+        busNumber = view.findViewById(R.id.tv_bus_number_two);
+        busNumber.setText(mDetailDirections.get(1).getRouteNumber().toString());
         return view;
     }
 
-    public interface OnDetailViewFragmentListener {
-        void changeRoutes(String start, String end, String name);
-    }
+
 
     public void setUpList(){
         ExpandableListView listView = ((MainActivity) mContext).findViewById(
@@ -60,10 +75,13 @@ public class DetailViewFragment extends Fragment {
             @Override
             public boolean onGroupClick(ExpandableListView expandableListView, View view, int i,
                     long l) {
-                return mDetailDirections.get(i).getStops().length > 0;
+                Log.d("dddetail", mDetailDirections.toString());
+                return false;
             }
         });
         listView.setAdapter(listViewAdapter);
+
+//        mSlidingPanel.setPanelHeight(600);
 
 //        if(mRoute.isWalkOnlyRoute()){
 //            LinearLayout linearLayout = ((MainActivity) mContext).findViewById(

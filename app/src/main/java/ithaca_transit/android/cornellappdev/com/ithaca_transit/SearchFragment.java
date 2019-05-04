@@ -514,9 +514,6 @@ public class SearchFragment extends Fragment {
         void changeRoutes(String start, String end, String name);
     }
 
-    private void resizeSelf() {
-
-    }
 
     @Override
     public void onAttach(Context context) {

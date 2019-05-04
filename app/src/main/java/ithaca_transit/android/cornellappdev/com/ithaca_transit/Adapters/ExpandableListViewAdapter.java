@@ -1,5 +1,8 @@
 package ithaca_transit.android.cornellappdev.com.ithaca_transit.Adapters;
 
+import android.content.Context;
+import android.graphics.Color;
+import android.support.annotation.ColorRes;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +13,9 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import org.checkerframework.checker.linear.qual.Linear;
+
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
@@ -37,7 +43,10 @@ public final class ExpandableListViewAdapter extends BaseExpandableListAdapter {
 
     @Override
     public int getChildrenCount(int i) {
-        return mDirections.get(i).getStops().length;
+        if (mDirections.get(i).getStops() != null) {
+            return mDirections.get(i).getStops().length;
+        }
+        return 0;
     }
 
     @Override
@@ -68,15 +77,16 @@ public final class ExpandableListViewAdapter extends BaseExpandableListAdapter {
     @Override
     public View getGroupView(int directionIdx, boolean b, View view, ViewGroup viewGroup) {
         view = mLayoutInflater.inflate(R.layout.detail_list_item, null);
-
+        Context mContext = view.getContext();
 
         Direction direction = mDirections.get(directionIdx);
+        SimpleDateFormat sdf = new SimpleDateFormat("h:mm a");
 
-        TextView numStops = view.findViewById(R.id.num_stops);
-        TextView duration = view.findViewById(R.id.direction_duration);
+//        TextView numStops = view.findViewById(R.id.num_stops);
+//        TextView duration = view.findViewById(R.id.direction_duration);
         TextView distance = view.findViewById(R.id.distance);
-        ImageView dropArrow = view.findViewById(R.id.drop_down_arrow);
-        ImageView dotPartition = view.findViewById(R.id.dot_partition);
+//        ImageView dropArrow = view.findViewById(R.id.drop_down_arrow);
+//        ImageView dotPartition = view.findViewById(R.id.dot_partition);
 
         ImageView busStopDot = view.findViewById(R.id.bus_stop_dot);
         ImageView busStopPath = view.findViewById(R.id.bus_stop_path);
@@ -92,42 +102,69 @@ public final class ExpandableListViewAdapter extends BaseExpandableListAdapter {
         TextView directionDestination = view.findViewById(R.id.direction_destination);
         LinearLayout busContainer = view.findViewById(R.id.bus_container);
         TextView time = view.findViewById(R.id.time);
-        View bottomDivider = view.findViewById(R.id.bottom_divider);
-        View stopsDivider = view.findViewById(R.id.stops_divider);
+        RelativeLayout stopInfo = view.findViewById(R.id.clickable_info);
+//        View bottomDivider = view.findViewById(R.id.bottom_divider);
+//        View stopsDivider = view.findViewById(R.id.stops_divider);
 
         if (direction.getType().equals("depart")) {
 
             // Setting duration of the route
-            duration.setVisibility(View.VISIBLE);
-            long difference = TimeUnit.MILLISECONDS.toMinutes(
-                    direction.getEndTime().getTime() - direction.getStartTime().getTime());
-            duration.setText(difference + " min");
+//            duration.setVisibility(View.VISIBLE);
+//            long difference = TimeUnit.MILLISECONDS.toMinutes(
+//                    direction.getEndTime().getTime() - direction.getStartTime().getTime());
+//            duration.setText(difference + " min");
 
-            dotPartition.setVisibility(View.VISIBLE);
-            dropArrow.setVisibility(View.VISIBLE);
-            stopsDivider.setVisibility(View.VISIBLE);
+//            dotPartition.setVisibility(View.VISIBLE);
+//            dropArrow.setVisibility(View.VISIBLE);
+//            stopsDivider.setVisibility(View.VISIBLE);
             busStopDot.setVisibility(View.VISIBLE);
             busStopPath.setVisibility(View.VISIBLE);
 
-            numStops.setVisibility(View.VISIBLE);
+//            numStops.setVisibility(View.VISIBLE);
 
             // Include last stop in count (last stop isn't in Stops[])
-            numStops.setText((direction.getStops().length + 1) + " stops");
+//            numStops.setText((direction.getStops().length + 1) + " stops");
 
-            directionType.setText("Board");
+            String directionStr = String.format("Board &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at <b>%s</b>",
+                    direction.getName());
+            directionType.setText(Html.fromHtml(directionStr));
+
+            busContainer.setVisibility(View.VISIBLE);
             TextView busNumber = busContainer.findViewById(R.id.tv_bus_number_detail);
             busNumber.setText(direction.getRouteNumber().toString());
 
-            time.setText(getTime(direction.getStartTime()));
+            time.setText(sdf.format(direction.getStartTime()));
+
+            long difference = TimeUnit.MILLISECONDS.toMinutes(
+                    direction.getEndTime().getTime() - direction.getStartTime().getTime());
+            TextView numStops = new TextView(mContext);
+            numStops.setText(Html.fromHtml((direction.getStops().length + 1) + " stops&nbsp;&#8226;&nbsp;"+ difference +" min"));
+            numStops.setTextColor(Color.parseColor("#9e9e9e"));
+            numStops.setTextSize(10);
+
+            ImageView arrow = new ImageView(mContext);
+            arrow.setImageDrawable(view.getResources().getDrawable(R.drawable.arrow));
+
+            RelativeLayout.LayoutParams imageParams;
+            imageParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,
+                    RelativeLayout.LayoutParams.WRAP_CONTENT);
+            imageParams.addRule(RelativeLayout.ALIGN_RIGHT, numStops.getId());
+            imageParams.setMargins(10, 0, 0, 0);
+            arrow.setLayoutParams(imageParams);
+
+            stopInfo.addView(numStops);
+            //TODO: add arrow to screen
+//            stopInfo.addView(arrow);
         } else if (direction.getType().equals("walk")) {
-            bottomDivider.setVisibility(View.VISIBLE);
+//            bottomDivider.setVisibility(View.VISIBLE);
 
             if (directionIdx != mDirections.size() - 1) {
                 // Walking to bus
                 String walkString = "Walk to " + "<b>" + direction.getName() + "</b>";
                 directionType.setText(Html.fromHtml(walkString));
                 distance.setText(direction.getDistance().intValue() + " ft away");
-                time.setText(getTime(direction.getStartTime()));
+
+                time.setText(sdf.format(direction.getStartTime()));
 
                 walkStartDot.setVisibility(View.VISIBLE);
                 walkPath1.setVisibility(View.VISIBLE);
@@ -137,18 +174,18 @@ public final class ExpandableListViewAdapter extends BaseExpandableListAdapter {
             } else {
                 // Walking to final destination
                 directionType.setText(direction.getName());
-                distance.setText(direction.getDistance().intValue() + " ft away");
-                time.setText(getTime(direction.getEndTime()));
+//                distance.setText(direction.getDistance().intValue() + " ft away");
+                time.setText(sdf.format(direction.getEndTime()));
 
                 walkEndDot.setVisibility(View.VISIBLE);
             }
         }
         // Arriving to final stop on bus path (not necessarily final destination)
         else if (direction.getType().equals("arrive")) {
-            bottomDivider.setVisibility(View.VISIBLE);
+//            bottomDivider.setVisibility(View.VISIBLE);
 
             Direction previousDirection = mDirections.get(directionIdx - 1);
-            time.setText(getTime(previousDirection.getEndTime()));
+            time.setText(sdf.format(previousDirection.getEndTime()));
 
             busStopDot.setVisibility(View.VISIBLE);
             if (directionIdx != mDirections.size() - 1) {
