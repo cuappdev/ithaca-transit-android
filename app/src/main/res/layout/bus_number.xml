@@ -19,7 +19,7 @@
             android:layout_width="12dp"
             android:layout_height="12dp"
             android:layout_marginTop="2dp"
-            android:text="10"
+            android:text="##"
             android:textColor="@color/white"
             android:textSize="9sp"/>
     </LinearLayout>
