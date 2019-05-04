@@ -501,6 +501,8 @@ public class MapFragment extends Fragment implements GoogleMap.OnPolylineClickLi
         });
 
         mMap.setOnInfoWindowClickListener((Marker marker) -> {
+            mMap.setOnMapClickListener((LatLng latLng) -> marker.hideInfoWindow());
+
             Double lat = marker.getPosition().latitude;
             Double lon = marker.getPosition().longitude;
             String stopName = marker.getTitle();
@@ -510,6 +512,8 @@ public class MapFragment extends Fragment implements GoogleMap.OnPolylineClickLi
             SearchFragment sf = ((MainActivity) context).getSearchFragment();
             sf.setEndLoc(stop);
             sf.clickRouteIndicator();
+
+            marker.hideInfoWindow();
         });
     }
 
