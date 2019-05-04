@@ -112,6 +112,7 @@ public final class MapsActivity extends AppCompatActivity implements OnMapReadyC
                 (SupportMapFragment) this.getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync((OnMapReadyCallback) this);
         mRecView = this.findViewById(R.id.recycler_view_maps);
+
     }
 
     private void setUpMenu() {

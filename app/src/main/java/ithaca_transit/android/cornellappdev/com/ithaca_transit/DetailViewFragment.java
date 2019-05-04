@@ -24,6 +24,7 @@ public class DetailViewFragment extends Fragment {
     private Context mContext;
     private ArrayList<Direction> mDetailDirections;
     private LayoutInflater mLayoutInflater;
+    private TextView headerText;
     private Route mRoute;
 
 
@@ -38,7 +39,16 @@ public class DetailViewFragment extends Fragment {
         mLayoutInflater = (LayoutInflater) ((MainActivity)mContext).getSystemService(
                  Context.LAYOUT_INFLATER_SERVICE);
 
+        String timeText = String.format("Depart at %s from %s", mRoute.getBusArrival(),
+                mDetailDirections.get(mDetailDirections.size()-1).getName());
+        headerText = view.findViewById(R.id.header_direction);
+        //TODO: add bold formatting
+        headerText.setText(timeText);
         return view;
+    }
+
+    public interface OnDetailViewFragmentListener {
+        void changeRoutes(String start, String end, String name);
     }
 
     public void setUpList(){

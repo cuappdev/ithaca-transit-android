@@ -6,8 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/routeBackground"
-    tools:context=".MainActivity"
->
+    tools:context=".MainActivity">
     <RelativeLayout
         android:id="@+id/header"
         android:layout_width="match_parent"
@@ -19,9 +18,20 @@
         android:background="#EEEEEE">
 
         <RelativeLayout
+            android:id="@+id/fab"
+            android:layout_width="48dp"
+            android:layout_height="6dp"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="12dp"
+            android:layout_toEndOf="@+id/allRoutes"
+            android:background="@drawable/fab"/>
+
+        <RelativeLayout
+            android:id="@+id/bus_icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/bus_icon"
             android:layout_marginLeft="20dp"
             android:layout_marginTop="33dp">
 
@@ -51,24 +61,24 @@
         </RelativeLayout>
 
         <TextView
-        android:id="@+id/header_direction"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="32dp"
-        android:layout_marginRight="17dp"
-        android:layout_marginTop="30dp"
-        android:layout_toRightOf="@id/bus_icon"
-        android:textSize="16sp"
-        android:fontFamily="sans-serif"
-        android:text="Depart at xx:xx PM from xxxxxxxxxxxxxxxxxxxx"
-        android:textColor="@color/black"/>
+            android:id="@+id/header_direction"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="32dp"
+            android:layout_marginTop="30dp"
+            android:layout_marginRight="17dp"
+            android:layout_toRightOf="@id/bus_icon"
+            android:fontFamily="sans-serif"
+            android:text="Depart at xx:xx PM from xxxxxxxxxxxxxxxxxxxx"
+            android:textColor="@color/black"
+            android:textSize="16sp"/>
 
     </RelativeLayout>
 
     <RelativeLayout
         android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/header">
+        android:layout_height="wrap_content"
+        android:layout_below="@id/header">
         <ExpandableListView
             android:id="@+id/directions_list_view"
             android:layout_width="match_parent"

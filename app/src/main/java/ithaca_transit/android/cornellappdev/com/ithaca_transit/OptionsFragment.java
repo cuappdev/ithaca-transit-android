@@ -63,7 +63,7 @@ public class OptionsFragment extends Fragment {
                 Repository.getInstance().getRoutesList().getFromStop(), "fromStops", "From Stops");
         SectionAdapter boardingSoonSection = new SectionAdapter(mContext,
                 Repository.getInstance().getRoutesList().getBoardingSoon(), "boardingSoon",
-                "Boarding Soon");
+                "Boarding Soon from Nearby Stops");
         SectionAdapter walkingSection = new SectionAdapter(mContext,
                 Repository.getInstance().getRoutesList().getWalking(), "walking", "By Walking");
 

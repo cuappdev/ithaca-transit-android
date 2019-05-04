@@ -1,16 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:background="@color/routeBackground"
+    xmlns:app="http://schemas.android.com/apk/res-auto" android:background="@color/routeBackground"
     android:layout_width="match_parent"
     android:layout_height="50dp">
     <TextView
-        android:paddingTop="5dp"
-        android:textSize="20sp"
-        android:textColor="@color/black"
         android:id="@+id/header_holder"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="16dp" android:layout_marginBottom="14dp"
+        android:textColor="@color/dark_gray" android:textSize="12sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toTopOf="parent"/>
 
 
 </android.support.constraint.ConstraintLayout>

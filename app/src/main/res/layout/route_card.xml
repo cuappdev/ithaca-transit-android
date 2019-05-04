@@ -28,7 +28,7 @@
                 android:layout_marginLeft="8dp"
                 android:layout_marginTop="8dp"
                 android:textColor="@color/black"
-                android:textSize="20sp" android:textStyle="bold"/>
+                android:textSize="16sp" android:textStyle="bold"/>
 
             <TextView
                 android:id="@+id/route_description"
@@ -39,7 +39,7 @@
                 android:layout_marginTop="0dp"
                 android:paddingRight="48dp"
                 android:textColor="@color/routeDetails"
-                android:textSize="16sp" android:textStyle="normal"/>
+                android:textSize="14sp" android:textStyle="normal"/>
 
             <TextView
                 android:id="@+id/delay"
@@ -48,7 +48,7 @@
                 android:layout_below="@id/duration"
                 android:layout_marginLeft="160dp"
                 android:paddingRight="48dp"
-                android:textColor="@color/green" android:textSize="16sp" android:textStyle="bold"/>
+                android:textColor="@color/green" android:textSize="14sp" android:textStyle="bold"/>
 
             <ImageView
                 android:id="@+id/delay_image"
@@ -229,7 +229,8 @@
                 android:layout_width="57dp"
                 android:layout_height="158dp" android:layout_alignTop="@+id/destinations"
                 android:layout_alignParentStart="true" android:layout_marginStart="80dp"
-                android:layout_marginTop="15dp">
+                android:layout_marginTop="8dp">
+
                 <ImageView
                     android:id="@+id/dots_one_bus"
 
@@ -293,7 +294,7 @@
                 android:layout_height="160dp"
                 android:layout_below="@+id/delay"
                 android:layout_alignParentStart="true" android:layout_marginStart="140dp"
-                android:layout_marginTop="2dp">
+                android:layout_marginTop="5dp">
                 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                               android:layout_width="174dp"
                               android:layout_height="match_parent"
@@ -302,21 +303,23 @@
                         android:id="@+id/direction_destination_one"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:maxHeight="22dp"
                         android:paddingLeft="10dp"
                         android:paddingTop="2dp"
                         android:text=""
                         android:textColor="@color/black"
-                        android:textSize="16sp"/>
+                        android:textSize="14sp"/>
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         android:paddingLeft="10dp"
-                        android:paddingTop="2dp">
+                        android:paddingTop="0dp">
                         <TextView
                             android:id="@+id/direction_distance_one"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:maxHeight="18dp"
                             android:paddingRight="4dp"
                             android:text=""
                             android:textColor="@color/gray"
@@ -327,20 +330,22 @@
                         android:id="@+id/direction_destination_two"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:maxHeight="22dp"
                         android:paddingLeft="10dp"
                         android:paddingTop="2dp"
                         android:textColor="@color/black"
-                        android:textSize="16sp"/>
+                        android:textSize="14sp"/>
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         android:paddingLeft="10dp"
-                        android:paddingTop="2dp">
+                        android:paddingTop="0dp">
                         <TextView
                             android:id="@+id/direction_distance_two"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:maxHeight="18dp"
                             android:paddingRight="4dp"
                             android:text=""
                             android:textColor="@color/gray"
@@ -350,20 +355,22 @@
                         android:id="@+id/direction_destination_three"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:maxHeight="22dp"
                         android:paddingLeft="10dp"
                         android:paddingTop="2dp"
                         android:textColor="@color/black"
-                        android:textSize="16sp"/>
+                        android:textSize="14sp"/>
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         android:paddingLeft="10dp"
-                        android:paddingTop="2dp">
+                        android:paddingTop="0dp">
                         <TextView
                             android:id="@+id/direction_distance_three"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:maxHeight="18dp"
                             android:paddingRight="4dp"
                             android:text=""
                             android:textColor="@color/gray"
@@ -373,20 +380,22 @@
                         android:id="@+id/direction_destination_four"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:maxHeight="22dp"
                         android:paddingLeft="10dp"
                         android:paddingTop="2dp"
                         android:textColor="@color/black"
-                        android:textSize="16sp"/>
+                        android:textSize="14sp"/>
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         android:paddingLeft="10dp"
-                        android:paddingTop="2dp">
+                        android:paddingTop="0dp">
                         <TextView
                             android:id="@+id/direction_distance_four"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:maxHeight="18dp"
                             android:paddingRight="4dp"
                             android:text=""
                             android:textColor="@color/gray"

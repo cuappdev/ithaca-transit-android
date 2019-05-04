@@ -67,9 +67,8 @@ public final class ExpandableListViewAdapter extends BaseExpandableListAdapter {
 
     @Override
     public View getGroupView(int directionIdx, boolean b, View view, ViewGroup viewGroup) {
-        if (view == null) {
-            view = mLayoutInflater.inflate(R.layout.detail_list_item, null);
-        }
+        view = mLayoutInflater.inflate(R.layout.detail_list_item, null);
+
 
         Direction direction = mDirections.get(directionIdx);
 

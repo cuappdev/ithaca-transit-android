@@ -2,6 +2,9 @@ package ithaca_transit.android.cornellappdev.com.ithaca_transit;
 
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.location.Location;
@@ -18,6 +21,7 @@ import android.text.Html;
 import android.text.SpannableString;
 import android.text.TextWatcher;
 import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -58,7 +62,6 @@ import ithaca_transit.android.cornellappdev.com.ithaca_transit.Utils.LocationAut
 import java8.util.Optional;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
-
 
 /**
  * A simple {@link Fragment} subclass.
@@ -105,13 +108,11 @@ public class SearchFragment extends Fragment {
         placesClient = Places.createClient(mContext);
 
         mSearchView = (FloatingSearchView) rootView.findViewById(R.id.search_view);
-//        mHomeView = rootView.findViewById(R.id.home_view);
-//        mHomeMenu = rootView.findViewById(R.id.home_menu);
 
         setUpSearch();
         //TODO: removed drawer for now bc it was overlaying on top of the entire map...need to
         // rethink architecture and hierarchy of views
-//        setUpMenu();
+        //setUpMenu();
         setUpRouteSwitcher();
         return rootView;
     }
@@ -127,17 +128,7 @@ public class SearchFragment extends Fragment {
         });
 
         //TODO: removed the drawer for now and commented out these lines for debugging purposes
-//        mSearchView.setOnLeftMenuClickListener(new FloatingSearchView.OnLeftMenuClickListener() {
-//            @Override
-//            public void onMenuOpened() {
-//                mHomeView.openDrawer(mHomeMenu);
-//            }
-//
-//            @Override
-//            public void onMenuClosed() {
-//                mHomeView.closeDrawer(mHomeMenu);
-//            }
-//        });
+
 
         mSearchView.setOnBindSuggestionCallback(
                 new SearchSuggestionsAdapter.OnBindSuggestionCallback() {
@@ -458,7 +449,8 @@ public class SearchFragment extends Fragment {
                 mSearchView.setVisibility(View.GONE);
 
                 String s = (startRoute.getName().length() > 20 ?
-                        startRoute.getName().substring(0, 17) + "..." : startRoute.getName()) + "  >  "
+                        startRoute.getName().substring(0, 17) + "..." : startRoute.getName())
+                        + "  >  "
                         + (endRoute.getName().length() > 20 ?
                         endRoute.getName().substring(0, 17) + "..." : endRoute.getName());
                 SpannableString route =
@@ -478,41 +470,6 @@ public class SearchFragment extends Fragment {
 
     }
 
-    private void setUpMenu() {
-        mHomeView.addDrawerListener(
-                new DrawerLayout.DrawerListener() {
-                    @Override
-                    public void onDrawerSlide(View drawerView, float slideOffset) {
-                        if (slideOffset < 0.4) {
-                            mSearchView.setLeftMenuOpen(false);
-                        }
-                    }
-
-                    @Override
-                    public void onDrawerOpened(View drawerView) {
-                        mSearchView.setLeftMenuOpen(true);
-                    }
-
-                    @Override
-                    public void onDrawerClosed(View drawerView) {
-                    }
-
-                    @Override
-                    public void onDrawerStateChanged(int newState) {
-                    }
-                }
-        );
-
-        mHomeMenu.setNavigationItemSelectedListener(
-                new NavigationView.OnNavigationItemSelectedListener() {
-                    @Override
-                    public boolean onNavigationItemSelected(MenuItem item) {
-                        mHomeView.closeDrawer(mHomeMenu);
-                        return true;
-                    }
-                }
-        );
-    }
 
     private void autoCompleteRequest(String query) {
         Map<String, String> map = new HashMap<String, String>();
@@ -553,10 +510,6 @@ public class SearchFragment extends Fragment {
         });
     }
 
-    private FloatingSearchView getSearchView() {
-        return mSearchView;
-    }
-
     public interface OnSearchFragmentListener {
         void changeRoutes(String start, String end, String name);
     }
@@ -582,4 +535,81 @@ public class SearchFragment extends Fragment {
         mCallback = null;
     }
 
+    private void setOnLeftMenuClickListener(DrawerLayout homeView, NavigationView navigationMenu) {
+        mSearchView.setOnLeftMenuClickListener(new FloatingSearchView.OnLeftMenuClickListener() {
+            @Override
+            public void onMenuOpened() {
+                homeView.openDrawer(navigationMenu);
+            }
+
+            @Override
+            public void onMenuClosed() {
+                homeView.closeDrawer(navigationMenu);
+            }
+        });
+    }
+
+    public void setUpMenu(DrawerLayout homeView, NavigationView navigationMenu) {
+        homeView.addDrawerListener(
+            new DrawerLayout.DrawerListener() {
+                @Override
+                public void onDrawerSlide(View drawerView, float slideOffset) {
+                    if (slideOffset < 0.4) {
+                        mSearchView.setLeftMenuOpen(false);
+                    }
+                }
+
+                @Override
+                public void onDrawerOpened(View drawerView) {
+                    mSearchView.setLeftMenuOpen(true);
+                }
+
+                @Override
+                public void onDrawerClosed(View drawerView) {
+                }
+
+                @Override
+                public void onDrawerStateChanged(int newState) {
+                }
+            }
+        );
+
+        navigationMenu.setNavigationItemSelectedListener((MenuItem item) -> {
+            switch (item.toString()) {
+                case "About Us":
+                    Intent moveToAbout = new Intent(mContext, AboutActivity.class);
+                    startActivity(moveToAbout);
+                    break;
+                case "Send Feedback":
+                    sendFeedback();
+                    break;
+                default:
+                    System.out.println("Not handled");
+            }
+
+            homeView.closeDrawer(navigationMenu);
+            return true;
+        });
+
+        (new Handler()).postDelayed(() -> setOnLeftMenuClickListener(homeView, navigationMenu), 500);
+    }
+
+    private void sendFeedback() {
+        Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
+        String version = "Version not found.";
+
+        try {
+            PackageInfo pInfo = getActivity().getPackageManager().getPackageInfo(getActivity().getPackageName(), 0);
+            version = pInfo.versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        emailIntent.setType("message/rfc822");
+        emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, new String[]{"ithacatransit@cornellappdev.com"});
+        emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Ithaca Transit Android Feedback " + version);
+        emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, "");
+
+        startActivity(Intent.createChooser(emailIntent, "Send mail..."));
+    }
 }

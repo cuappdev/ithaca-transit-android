@@ -32,6 +32,7 @@ public class Route implements Serializable {
         return walkOnlyRoute;
     }
 
+
     public BoundingBox getBoundingBox() {
         return boundingBox;
     }
@@ -106,6 +107,11 @@ public class Route implements Serializable {
             }
         }
         return description;
+    }
+
+    public String getBusArrival() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("h:mm a");
+        return dateFormat.format(directions[0].getStartTime());
     }
 
     public String getDuration() {
@@ -253,7 +259,10 @@ public class Route implements Serializable {
         int count = 0;
         while (count < directions.length) {
             Direction direction = directions[count];
-            if (direction.getType().equals("depart")) {
+            if(directions.length == 1 && directions[count].getType().equals("walk")){
+
+            }
+            else if (direction.getType().equals("depart")) {
                 Place[] stops = direction.getStops();
                 int numStops = stops.length;
                 Place lastStop = stops[numStops - 1];
