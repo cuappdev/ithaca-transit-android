@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/slideView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:tools="http://schemas.android.com/tools"
     android:background="@color/routeBackground"
-    tools:context=".MainActivity"
-    android:id="@+id/slideView"
-    >
+    android:elevation="2dp"
+    tools:context=".MainActivity">
 
     <RelativeLayout
         android:id="@+id/fab"
-        android:layout_width="60dp"
-        android:layout_height="8dp"
+        android:layout_width="48dp"
+        android:layout_height="6dp"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginStart="15dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="12dp"
         android:layout_toEndOf="@+id/allRoutes"
         android:background="@drawable/fab"></RelativeLayout>
 
@@ -24,14 +24,14 @@
         android:id="@+id/optionsText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/fab"
         android:layout_alignParentLeft="true"
         android:layout_marginLeft="20dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="4dp"
         android:text="Route Options"
         android:textColor="@color/black"
-        android:textSize="22sp"
-        android:textStyle="bold"
-        />
+        android:textSize="16sp"
+        android:textStyle="bold"/>
 
     <ImageView
         android:id="@+id/ic_clock"
@@ -39,32 +39,31 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/fab"
         android:layout_alignLeft="@+id/chooseTime" android:layout_marginLeft="-28dp"
-        android:layout_marginTop="6dp" android:src="@drawable/ic_clock"/>
+        android:layout_marginTop="2dp" android:src="@drawable/ic_clock"/>
 
     <TextView
         android:id="@+id/chooseTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
+        android:layout_below="@+id/fab"
         android:layout_alignParentRight="true"
         android:layout_marginStart="20dp"
-        android:layout_marginTop="23dp"
+        android:layout_marginTop="4dp"
         android:layout_marginEnd="20dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginBottom="20dp" android:text="Leave now"
-        android:textColor="@color/leaveNowGray" android:textSize="16sp"/>
+        android:layout_marginRight="20dp" android:layout_marginBottom="20dp"
+        android:text="Leave now" android:textColor="@color/leaveNowGray"
+        android:textSize="14sp"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/nearby_stops_routes"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/optionsText"
-        android:clipToPadding="false"
-        android:nestedScrollingEnabled="true"
-        android:background="@color/lightGray"
-        android:layout_marginTop="8dp"
+        android:layout_below="@+id/fab"
         android:layout_marginLeft="16dp"
+        android:layout_marginTop="32dp"
         android:layout_marginRight="16dp"
-        />
+        android:background="@color/routeBackground"
+        android:clipToPadding="false"
+        android:elevation="0dp" android:nestedScrollingEnabled="true"/>
 
 </RelativeLayout>

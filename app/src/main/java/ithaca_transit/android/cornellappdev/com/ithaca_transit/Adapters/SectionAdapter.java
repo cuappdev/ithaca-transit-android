@@ -2,8 +2,10 @@ package ithaca_transit.android.cornellappdev.com.ithaca_transit.Adapters;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -79,7 +81,8 @@ public class SectionAdapter extends StatelessSection {
         // Want to set distance in middle of card if only walk route
         if (size == 2 && routeDirections.get(0).getType().equals("walk") && routeDirections.get(
                 1).getType().equals("walk")) {
-            holder2.direction_destination_two.setText(routeDirections.get(0).getDistance().intValue() + " ft");
+            holder2.direction_destination_two.setText(routeDirections.get(
+                    0).getDistance().intValue() + " ft");
 
             holder2.direction_destination_two.setTextColor(Color.GRAY);
             holder2.direction_destination_three.setText(routeDirections.get(1).getName());
@@ -281,7 +284,11 @@ public class SectionAdapter extends StatelessSection {
     @Override
     public void onBindHeaderViewHolder(RecyclerView.ViewHolder holder) {
         HeaderHolder headerHolder = (HeaderHolder) holder;
-        headerHolder.header.setText(mTitle);
+        if (mTitle != null) {
+            headerHolder.header.setText(mTitle);
+        } else {
+            ((ConstraintLayout)headerHolder.header.getParent()).setMaxHeight(0);
+        }
     }
 
     @Override

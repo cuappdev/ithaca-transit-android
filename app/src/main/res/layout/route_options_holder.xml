@@ -11,10 +11,6 @@
     android:layout_height="wrap_content">
 
     <RelativeLayout android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-    </RelativeLayout>
-
-    <RelativeLayout android:layout_width="match_parent"
                      android:layout_height="wrap_content">
         <include layout = "@layout/route_options_extended_fragment"/>
     </RelativeLayout>
