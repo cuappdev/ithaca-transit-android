@@ -8,19 +8,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:theme="@style/AppTheme"
-    tools:context=".MainActivity"
->
-    <android.support.design.widget.NavigationView
-        android:id="@+id/home_menu"
-        android:layout_width="320dp"
-        android:layout_height="match_parent"
-        android:layout_gravity="start"
-        android:background="#fff"
-        android:divider="@android:color/transparent"
-        android:dividerHeight="0dp"
-        android:orientation="vertical"
-        app:headerLayout="@layout/home_drawer_header"
-        app:menu="@menu/home_drawer_menu"/>
+    tools:context=".MainActivity">
+
     <com.sothree.slidinguppanel.SlidingUpPanelLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -66,8 +55,22 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
             </FrameLayout>
+
         </RelativeLayout>
 
     </com.sothree.slidinguppanel.SlidingUpPanelLayout>
+
+    <android.support.design.widget.NavigationView
+        android:id="@+id/home_menu"
+        android:layout_width="320dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:background="#fff"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="0dp"
+        android:orientation="vertical"
+        app:headerLayout="@layout/home_drawer_header"
+        app:menu="@menu/home_drawer_menu"/>
+
 </android.support.v4.widget.DrawerLayout>
 

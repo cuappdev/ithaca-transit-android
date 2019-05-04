@@ -69,7 +69,7 @@ public class AboutActivity extends AppCompatActivity {
 
         mAboutMenuHeader.setOnClickListener((View v) -> {
                 mAboutView.closeDrawer(mAboutMenu);
-                Intent goHome = new Intent(AboutActivity.this, MapsActivity.class);
+                Intent goHome = new Intent(AboutActivity.this, MainActivity.class);
                 startActivity(goHome);
             }
         );

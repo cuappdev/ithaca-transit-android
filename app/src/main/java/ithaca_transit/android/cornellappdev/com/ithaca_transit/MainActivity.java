@@ -36,10 +36,6 @@ public class MainActivity extends AppCompatActivity implements
     private DrawerLayout mHomeView;
     private NavigationView mHomeMenu;
 
-    public SearchFragment getSearchFragment() {
-        return mSearchFragment;
-    }
-
     //TODO: move to presenter
     // Hardcoded data for favorites
     private Place goldwin = new Place(42.4491, -76.4835, "Goldwin");
@@ -87,9 +83,6 @@ public class MainActivity extends AppCompatActivity implements
         mRecView.setAdapter(favoriteListAdapter);
         mRecView.setVisibility(View.VISIBLE);
         favoriteListAdapter.notifyDataSetChanged();
-
-
-
     }
 
     @Override
@@ -147,5 +140,7 @@ public class MainActivity extends AppCompatActivity implements
         return mapFragment;
     }
 
-
+    public SearchFragment getSearchFragment() {
+        return mSearchFragment;
+    }
 }

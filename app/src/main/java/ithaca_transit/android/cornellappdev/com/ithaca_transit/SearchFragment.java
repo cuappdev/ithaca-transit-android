@@ -2,6 +2,9 @@ package ithaca_transit.android.cornellappdev.com.ithaca_transit;
 
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.location.Location;
@@ -18,6 +21,7 @@ import android.text.Html;
 import android.text.SpannableString;
 import android.text.TextWatcher;
 import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -104,8 +108,6 @@ public class SearchFragment extends Fragment {
         placesClient = Places.createClient(mContext);
 
         mSearchView = (FloatingSearchView) rootView.findViewById(R.id.search_view);
-//        mHomeView = rootView.findViewById(R.id.home_view);
-//        mHomeMenu = rootView.findViewById(R.id.home_menu);
 
         setUpSearch();
         //TODO: removed drawer for now bc it was overlaying on top of the entire map...need to
@@ -508,10 +510,6 @@ public class SearchFragment extends Fragment {
         });
     }
 
-    private FloatingSearchView getSearchView() {
-        return mSearchView;
-    }
-
     public interface OnSearchFragmentListener {
         void changeRoutes(String start, String end, String name);
     }
@@ -537,52 +535,81 @@ public class SearchFragment extends Fragment {
         mCallback = null;
     }
 
+    private void setOnLeftMenuClickListener(DrawerLayout homeView, NavigationView navigationMenu) {
+        mSearchView.setOnLeftMenuClickListener(new FloatingSearchView.OnLeftMenuClickListener() {
+            @Override
+            public void onMenuOpened() {
+                homeView.openDrawer(navigationMenu);
+            }
+
+            @Override
+            public void onMenuClosed() {
+                homeView.closeDrawer(navigationMenu);
+            }
+        });
+    }
 
     public void setUpMenu(DrawerLayout homeView, NavigationView navigationMenu) {
         homeView.addDrawerListener(
-                new DrawerLayout.DrawerListener() {
-                    @Override
-                    public void onDrawerSlide(View drawerView, float slideOffset) {
-                        if (slideOffset < 0.4) {
-                            mSearchView.setLeftMenuOpen(false);
-                        }
-                    }
-
-                    @Override
-                    public void onDrawerOpened(View drawerView) {
-                        mSearchView.setLeftMenuOpen(true);
-                    }
-
-                    @Override
-                    public void onDrawerClosed(View drawerView) {
-                    }
-
-                    @Override
-                    public void onDrawerStateChanged(int newState) {
+            new DrawerLayout.DrawerListener() {
+                @Override
+                public void onDrawerSlide(View drawerView, float slideOffset) {
+                    if (slideOffset < 0.4) {
+                        mSearchView.setLeftMenuOpen(false);
                     }
                 }
-        );
 
-        navigationMenu.setNavigationItemSelectedListener(
-                new NavigationView.OnNavigationItemSelectedListener() {
-                    @Override
-                    public boolean onNavigationItemSelected(MenuItem item) {
-                        homeView.closeDrawer(navigationMenu);
-                        return true;
-                    }
+                @Override
+                public void onDrawerOpened(View drawerView) {
+                    mSearchView.setLeftMenuOpen(true);
                 }
+
+                @Override
+                public void onDrawerClosed(View drawerView) {
+                }
+
+                @Override
+                public void onDrawerStateChanged(int newState) {
+                }
+            }
         );
 
-//        mSearchView.setOnLeftMenuClickListener(new FloatingSearchView.OnLeftMenuClickListener() {
-//            @Override
-//            public void onMenuOpened() {
-//                homeView.openDrawer(navigationMenu);
-//            }
-//
-//            @Override
-//            public void onMenuClosed() {
-//                homeView.closeDrawer(navigationMenu);
-//            }
-//        });
+        navigationMenu.setNavigationItemSelectedListener((MenuItem item) -> {
+            switch (item.toString()) {
+                case "About Us":
+                    Intent moveToAbout = new Intent(mContext, AboutActivity.class);
+                    startActivity(moveToAbout);
+                    break;
+                case "Send Feedback":
+                    sendFeedback();
+                    break;
+                default:
+                    System.out.println("Not handled");
+            }
+
+            homeView.closeDrawer(navigationMenu);
+            return true;
+        });
+
+        (new Handler()).postDelayed(() -> setOnLeftMenuClickListener(homeView, navigationMenu), 500);
+    }
+
+    private void sendFeedback() {
+        Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
+        String version = "Version not found.";
+
+        try {
+            PackageInfo pInfo = getActivity().getPackageManager().getPackageInfo(getActivity().getPackageName(), 0);
+            version = pInfo.versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        emailIntent.setType("message/rfc822");
+        emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, new String[]{"ithacatransit@cornellappdev.com"});
+        emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Ithaca Transit Android Feedback " + version);
+        emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, "");
+
+        startActivity(Intent.createChooser(emailIntent, "Send mail..."));
     }
 }
