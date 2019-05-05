@@ -11,21 +11,20 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.MenuItem;
 import android.view.View;
 
 import com.arlib.floatingsearchview.FloatingSearchView;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
+
 import java.util.ArrayList;
 
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Adapters.FavoritesListAdapter;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.Place;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Presenters.MapsPresenter;
+import ithaca_transit.android.cornellappdev.com.ithaca_transit.Singleton.Repository;
 
 public class MainActivity extends AppCompatActivity implements
         FavoritesListAdapter.TextAdapterOnClickHandler,
@@ -48,8 +47,8 @@ public class MainActivity extends AppCompatActivity implements
     private Place ctb = new Place(42.4383786067072, -76.4633538315693, "Collegetown Bagels");
     private Place duffield = new Place(42.4446, -76.4823, "Duffield");
     private Place goldwin = new Place(42.4491, -76.4835, "Goldwin Smith Hall");
-    private Place noyes = new Place(42.4465,  -76.4880, "Noyes Recreation Center");
-    private Place rpcc = new Place( 42.4559, -76.4775, "Robert Purcell Community Center");
+    private Place noyes = new Place(42.4465, -76.4880, "Noyes Recreation Center");
+    private Place rpcc = new Place(42.4559, -76.4775, "Robert Purcell Community Center");
     private Place commons = new Place(42.4405, -76.4965, "Ithaca Commons - Seneca Street");
 
     private static ArrayList<Place> favoriteList = new ArrayList<Place>();
@@ -91,7 +90,8 @@ public class MainActivity extends AppCompatActivity implements
 
         // Only showing favorites if we get user's current location
         Context context = this;
-        FusedLocationProviderClient fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        FusedLocationProviderClient fusedLocationClient =
+                LocationServices.getFusedLocationProviderClient(this);
         if (ActivityCompat.checkSelfPermission(this,
                 "android.permission.ACCESS_FINE_LOCATION") != 0) {
             ActivityCompat.requestPermissions(this,
@@ -102,7 +102,8 @@ public class MainActivity extends AppCompatActivity implements
                         @Override
                         public void onSuccess(Location location) {
                             if (location != null) {
-                                favoriteListAdapter = new FavoritesListAdapter(getApplicationContext(),
+                                favoriteListAdapter = new FavoritesListAdapter(
+                                        getApplicationContext(),
                                         (FavoritesListAdapter.TextAdapterOnClickHandler) context,
                                         favoriteList, location);
                                 mRecView.setAdapter(favoriteListAdapter);
@@ -126,15 +127,8 @@ public class MainActivity extends AppCompatActivity implements
     public void onFavoriteClick(int position, ArrayList<Place> list) {
         mapFragment.drawRoutes(favoriteListAdapter.getOptimalRoutes()[position],
                 favoriteListAdapter.getmAllRoutesToFavorites().get(position));
-        mSlidingPanel.setPanelHeight(600);
-
-        mOptionsFragment = new OptionsFragment();
-        FragmentTransaction ft = manager.beginTransaction();
-        ft.replace(R.id.options_container, mOptionsFragment, "");
-        ft.commitAllowingStateLoss();
-        manager.executePendingTransactions();
-
-        mOptionsFragment.setUpRecView();
+        Repository.getInstance().setRoutesList(favoriteListAdapter.getmAllRoutesToFavorites().get(position));
+        makeOptionsFragment();
     }
 
     @Override
