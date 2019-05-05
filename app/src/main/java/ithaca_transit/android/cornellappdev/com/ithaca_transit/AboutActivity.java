@@ -15,6 +15,7 @@ import android.text.Spanned;
 import android.text.TextPaint;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.TouchDelegate;
 import android.view.View;
@@ -65,13 +66,11 @@ public class AboutActivity extends AppCompatActivity {
             }
         );
 
+        mAboutMenu.setCheckedItem(R.id.nav_about);
+
         mMenuButton.setOnClickListener((View v) -> mAboutView.openDrawer(mAboutMenu));
 
-        mAboutMenuHeader.setOnClickListener((View v) -> {
-                mAboutView.closeDrawer(mAboutMenu);
-                finish();
-            }
-        );
+        mAboutMenuHeader.setOnClickListener((View v) -> finish());
 
         mAboutView.addDrawerListener(
                 new DrawerLayout.DrawerListener() {
@@ -100,7 +99,7 @@ public class AboutActivity extends AppCompatActivity {
                         System.out.println("Not handled");
                 }
                 mAboutView.closeDrawer(mAboutMenu);
-                return true;
+                return false;
             }
         );
     }
@@ -164,6 +163,8 @@ public class AboutActivity extends AppCompatActivity {
                 "Ithaca Transit Feedback " + version);
         emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, "");
 
-        startActivity(Intent.createChooser(emailIntent, "Send mail..."));
+        Intent completedEmailIntent = Intent.createChooser(emailIntent, "Send mail...");
+
+        startActivity(completedEmailIntent);
     }
 }
