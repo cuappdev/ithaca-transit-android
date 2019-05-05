@@ -585,7 +585,7 @@ public class SearchFragment extends Fragment {
             }
 
             homeView.closeDrawer(navigationMenu);
-            return true;
+            return false;
         });
 
         (new Handler()).postDelayed(() -> setOnLeftMenuClickListener(homeView, navigationMenu), 500);
