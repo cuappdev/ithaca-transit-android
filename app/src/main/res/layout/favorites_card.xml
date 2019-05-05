@@ -38,23 +38,39 @@
                 android:layout_marginLeft="12dp"
                 android:layout_marginTop="49dp"
                 android:fontFamily="sans-serif"
-                android:text=""
                 android:textColor="@color/green"
-                android:textSize="12sp"
-                android:textStyle="bold" />
+                android:textSize="12sp" android:textStyle="bold"/>
+
+            <ImageView
+                android:id="@+id/on_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" android:layout_alignTop="@+id/text_board"
+                android:layout_alignEnd="@id/text_board" android:layout_marginTop="4dp"
+                android:layout_marginEnd="-13dp" android:src="@drawable/ontime"
+                android:visibility="invisible"/>
+
 
             <TextView
-                android:id="@+id/text_arrival"
-                android:layout_below="@id/text_board"
+                android:id="@+id/text_departure"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="sans-serif"
-                android:text=""
+                android:layout_below="@id/text_board"
                 android:layout_marginLeft="12dp"
+                android:layout_toEndOf="@+id/text_late_departure"
+                android:fontFamily="sans-serif"
                 android:textColor="@color/textBlack"
-                android:textSize="12sp"
-                android:textStyle="normal" />
+                android:textSize="12sp" android:textStyle="normal"/>
 
+            <TextView
+                android:id="@+id/text_late_departure"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/text_board"
+                android:layout_marginLeft="12dp"
+                android:fontFamily="sans-serif"
+                android:textColor="@color/red"
+                android:textSize="12sp"
+                android:textStyle="normal"/>
             <ImageView
                 android:src="@drawable/ic_next"
                 android:id="@+id/next"

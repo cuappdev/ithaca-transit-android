@@ -5,7 +5,6 @@ import android.graphics.Color;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -169,15 +168,24 @@ public class SectionAdapter extends StatelessSection {
         }
 
 
-        // Set delay
-        if (routeModel.getTotalDelay() > 0) {
-            if (routeModel.getTotalDelay() < 60) {
-                holder2.delay.setText(routeModel.getTotalDelay() + " minutes late");
-            } else {
-                holder2.delay.setText(((int) routeModel.getTotalDelay() / 60) + " hour(s) late");
+        // Set delay for bus routes
+        if (routeModel.getTotalDelay() >= 60) {
+            if (routeModel.getTotalDelay() == 60) {
+                holder2.delay.setText((int)routeModel.getTotalDelay()/60 + " minute late");
+            } else if(routeModel.getTotalDelay() < 3600) {
+                holder2.delay.setText(((int) routeModel.getTotalDelay() / 60) + " minutes late");
+            }
+            else{
+                int hoursLate = ((int) routeModel.getTotalDelay() /3600);
+                int minutesLate = routeModel.getTotalDelay() % 3600;
+                if(minutesLate == 0){
+                    holder2.delay.setText(hoursLate + " hour(s) late");
+                }
+                else{
+                    holder2.delay.setText(hoursLate + " hour(s) " + minutesLate + " min late");
+                }
             }
             holder2.delay.setTextColor(Color.RED);
-
         } else if (!routeModel.isWalkOnlyRoute()) {
             holder2.delay.setText("On Time");
             holder2.delay_image.setVisibility(View.VISIBLE);
@@ -287,7 +295,7 @@ public class SectionAdapter extends StatelessSection {
         if (mTitle != null) {
             headerHolder.header.setText(mTitle);
         } else {
-            ((ConstraintLayout)headerHolder.header.getParent()).setMaxHeight(0);
+            ((ConstraintLayout) headerHolder.header.getParent()).setMaxHeight(0);
         }
     }
 

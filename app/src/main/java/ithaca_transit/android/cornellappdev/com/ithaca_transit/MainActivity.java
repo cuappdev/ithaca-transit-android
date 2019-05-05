@@ -1,7 +1,10 @@
 package ithaca_transit.android.cornellappdev.com.ithaca_transit;
 
+import android.content.Context;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
@@ -12,11 +15,15 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.arlib.floatingsearchview.FloatingSearchView;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import java.util.ArrayList;
 
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Adapters.FavoritesListAdapter;
-import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.Favorite;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Models.Place;
 import ithaca_transit.android.cornellappdev.com.ithaca_transit.Presenters.MapsPresenter;
 
@@ -38,13 +45,14 @@ public class MainActivity extends AppCompatActivity implements
 
     //TODO: move to presenter
     // Hardcoded data for favorites
-    private Place goldwin = new Place(42.4491, -76.4835, "Goldwin");
+    private Place ctb = new Place(42.4383786067072, -76.4633538315693, "Collegetown Bagels");
     private Place duffield = new Place(42.4446, -76.4823, "Duffield");
-    private Place dickson = new Place(42.4547, -76.4794, "Clara Dickson");
-    private Favorite favorite1 = new Favorite(goldwin, duffield);
-    private Favorite favorite2 = new Favorite(dickson, duffield);
-    private Favorite favorite3 = new Favorite(duffield, dickson);
-    private static ArrayList<Favorite> favoriteList = new ArrayList<Favorite>();
+    private Place goldwin = new Place(42.4491, -76.4835, "Goldwin Smith Hall");
+    private Place noyes = new Place(42.4465,  -76.4880, "Noyes Recreation Center");
+    private Place rpcc = new Place( 42.4559, -76.4775, "Robert Purcell Community Center");
+    private Place commons = new Place(42.4405, -76.4965, "Ithaca Commons - Seneca Street");
+
+    private static ArrayList<Place> favoriteList = new ArrayList<Place>();
     FragmentManager manager = getSupportFragmentManager();
 
     @Override
@@ -68,21 +76,42 @@ public class MainActivity extends AppCompatActivity implements
 
         //TODO: move to presenter
         // Adding hardcoded favorites
-        favoriteList.add(favorite1);
-        favoriteList.add(favorite2);
-        favoriteList.add(favorite3);
+        favoriteList.add(ctb);
+        favoriteList.add(duffield);
+        favoriteList.add(goldwin);
+        favoriteList.add(noyes);
+        favoriteList.add(rpcc);
+        favoriteList.add(commons);
 
         mRecView = this.findViewById(R.id.recycler_view_maps);
         mRecView.setHasFixedSize(true);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this,
                 LinearLayoutManager.HORIZONTAL, false);
         mRecView.setLayoutManager((RecyclerView.LayoutManager) layoutManager);
-        favoriteListAdapter = new FavoritesListAdapter(getApplicationContext(),
-                (FavoritesListAdapter.TextAdapterOnClickHandler) this,
-                favoriteList);
-        mRecView.setAdapter(favoriteListAdapter);
-        mRecView.setVisibility(View.VISIBLE);
-        favoriteListAdapter.notifyDataSetChanged();
+
+        // Only showing favorites if we get user's current location
+        Context context = this;
+        FusedLocationProviderClient fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        if (ActivityCompat.checkSelfPermission(this,
+                "android.permission.ACCESS_FINE_LOCATION") != 0) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{"android.permission.ACCESS_FINE_LOCATION"}, 1);
+        } else {
+            fusedLocationClient.getLastLocation()
+                    .addOnSuccessListener(new OnSuccessListener<Location>() {
+                        @Override
+                        public void onSuccess(Location location) {
+                            if (location != null) {
+                                favoriteListAdapter = new FavoritesListAdapter(getApplicationContext(),
+                                        (FavoritesListAdapter.TextAdapterOnClickHandler) context,
+                                        favoriteList, location);
+                                mRecView.setAdapter(favoriteListAdapter);
+                                mRecView.setVisibility(View.VISIBLE);
+                                favoriteListAdapter.notifyDataSetChanged();
+                            }
+                        }
+                    });
+        }
     }
 
     @Override
@@ -94,7 +123,7 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onFavoriteClick(int position, ArrayList<Favorite> list) {
+    public void onFavoriteClick(int position, ArrayList<Place> list) {
         mapFragment.drawRoutes(favoriteListAdapter.getOptimalRoutes()[position],
                 favoriteListAdapter.getmAllRoutesToFavorites().get(position));
         mSlidingPanel.setPanelHeight(600);
@@ -133,7 +162,7 @@ public class MainActivity extends AppCompatActivity implements
         fragmentTransaction.commitAllowingStateLoss();
         manager.executePendingTransactions();
         mDetailViewFragment.setUpList();
-        mSlidingPanel.setPanelHeight(600);
+        mSlidingPanel.setPanelHeight(300);
     }
 
     public MapFragment getMapFragment() {

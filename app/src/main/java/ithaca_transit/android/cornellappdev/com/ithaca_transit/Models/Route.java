@@ -76,29 +76,25 @@ public class Route implements Serializable {
                 if (departureDate.getDay() != currentDate.getDay()) {
                     description = description + " on " + (departureDate.getMonth() + 1) + "/" +
                             departureDate.getDate();
-                }
-                else if (departureDate.getTime() < currentDate.getTime()){
+                } else if (departureDate.getTime() < currentDate.getTime()) {
                     description = "Board now";
-                }
-                else if (departureDate.getHours() - currentDate.getHours() > 1) {
+                } else if (departureDate.getHours() - currentDate.getHours() > 1) {
                     description = description + " in " + (departureDate.getHours()
                             - currentDate.getHours()) + " hours";
                 } else {
-                    int diff =  (departureDate.getMinutes()
+                    int diff = (departureDate.getMinutes()
                             - currentDate.getMinutes());
 
                     // When departure's minutes are less, but still ahead of current time
-                    if (diff < 0){
+                    if (diff < 0) {
                         diff = 60 + diff;
                     }
 
-                    if(diff > 1){
+                    if (diff > 1) {
                         description = description + " in " + diff + " minutes";
-                    }
-                    else if(diff == 1){
+                    } else if (diff == 1) {
                         description = description + " in " + diff + " minute";
-                    }
-                    else{
+                    } else {
                         description = description + " now";
                     }
                 }
@@ -109,9 +105,27 @@ public class Route implements Serializable {
         return description;
     }
 
+    public Direction getFirstBusDirection(){
+        int count = 0;
+        boolean found = false;
+
+        // First direction is not necessarily depart
+        Direction firstBusDirection = directions[0];
+
+        while (count < directions.length && found == false) {
+            if (directions[count].getType().equals("depart")) {
+                found = true;
+                firstBusDirection = directions[count];
+            }
+            count++;
+        }
+        return firstBusDirection;
+    }
+
     public String getBusArrival() {
         SimpleDateFormat dateFormat = new SimpleDateFormat("h:mm a");
-        return dateFormat.format(directions[0].getStartTime());
+        Direction firstBusDirection = getFirstBusDirection();
+        return dateFormat.format(firstBusDirection.getStartTime());
     }
 
     public String getDuration() {
@@ -259,10 +273,9 @@ public class Route implements Serializable {
         int count = 0;
         while (count < directions.length) {
             Direction direction = directions[count];
-            if(directions.length == 1 && directions[count].getType().equals("walk")){
+            if (directions.length == 1 && directions[count].getType().equals("walk")) {
 
-            }
-            else if (direction.getType().equals("depart")) {
+            } else if (direction.getType().equals("depart")) {
                 Place[] stops = direction.getStops();
                 int numStops = stops.length;
                 Place lastStop = stops[numStops - 1];
@@ -274,12 +287,32 @@ public class Route implements Serializable {
                 // Adding last stop as its own direction
                 Direction arriveDirection = new Direction(0.0, lastStop.getName(), "arrive");
                 detailDirections.add(arriveDirection);
-            }
-            else{
+            } else {
                 detailDirections.add(directions[count]);
             }
             count++;
         }
         return detailDirections;
+    }
+
+    public String getDelayedBusArrival(int delay) {
+        Direction busDirection = getFirstBusDirection();
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(busDirection.getStartTime());
+
+        int minutes;
+        int hours;
+
+        if(delay > 3600){
+            hours = delay/3600;
+            minutes = 3600 % 60;
+            calendar.add(Calendar.HOUR_OF_DAY, hours);
+        }
+        else{
+            minutes = delay/60;
+        }
+        calendar.add(Calendar.MINUTE, minutes);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("h:mm a");
+        return dateFormat.format(calendar.getTime());
     }
 }
