@@ -45,9 +45,9 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.libraries.places.api.Places;
-import com.google.android.libraries.places.api.net.FetchPlaceRequest;
-import com.google.android.libraries.places.api.net.PlacesClient;
+//import com.google.android.libraries.places.api.Places;
+//import com.google.android.libraries.places.api.net.FetchPlaceRequest;
+//import com.google.android.libraries.places.api.net.PlacesClient;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -72,7 +72,7 @@ import okhttp3.RequestBody;
 
 public final class MapsActivity extends AppCompatActivity implements OnMapReadyCallback {
     private FusedLocationProviderClient fusedLocationClient;
-    private PlacesClient placesClient;
+//    private PlacesClient placesClient;
     private Location lastLocation;
     public MapsPresenter mController;
     private GoogleMap mMap;
@@ -105,9 +105,9 @@ public final class MapsActivity extends AppCompatActivity implements OnMapReadyC
         //Initializes Google Places, Location Identifier, and the Google Maps Controller
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
-        Places.initialize(getApplicationContext(),
-                getResources().getString(R.string.google_maps_key));
-        placesClient = Places.createClient(this);
+//        Places.initialize(getApplicationContext(),
+//                getResources().getString(R.string.google_maps_key));
+//        placesClient = Places.createClient(this);
         fusedLocationClient = LocationServices.getFusedLocationProviderClient((Activity) this);
         FragmentManager manager = this.getFragmentManager();
         mController = new MapsPresenter(manager, this, config);
@@ -233,19 +233,19 @@ public final class MapsActivity extends AppCompatActivity implements OnMapReadyC
                                             ", " + MapsActivity.this.lastLocation.getLongitude(),
                                     dest.toString(), dest.getName());
                         } else {
-                            FetchPlaceRequest request = FetchPlaceRequest.builder(dest.toString(),
-                                    Arrays.asList(
-                                            com.google.android.libraries.places.api.model.Place
-                                                    .Field.LAT_LNG)).build();
-
-                            placesClient.fetchPlace(request).addOnSuccessListener((response) -> {
-                                launchRoute(MapsActivity.this.lastLocation.getLatitude() +
-                                                ", " + MapsActivity.this.lastLocation
-                                                .getLongitude(),
-                                        response.getPlace().getLatLng().latitude + ", "
-                                                + response.getPlace().getLatLng().longitude,
-                                        dest.getName());
-                            });
+//                            FetchPlaceRequest request = FetchPlaceRequest.builder(dest.toString(),
+//                                    Arrays.asList(
+//                                            com.google.android.libraries.places.api.model.Place
+//                                                    .Field.LAT_LNG)).build();
+//
+//                            placesClient.fetchPlace(request).addOnSuccessListener((response) -> {
+//                                launchRoute(MapsActivity.this.lastLocation.getLatitude() +
+//                                                ", " + MapsActivity.this.lastLocation
+//                                                .getLongitude(),
+//                                        response.getPlace().getLatLng().latitude + ", "
+//                                                + response.getPlace().getLatLng().longitude,
+//                                        dest.getName());
+//                            });
                         }
                     }
                 ).start();
